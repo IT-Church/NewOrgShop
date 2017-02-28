@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +29,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -111,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Set Tabs inside Toolbar
         // Create Navigation drawer and inlfate layout
-        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -122,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        /*Set behavior of Navigation drawer
-        //navigationView.setNavigationItemSelectedListener(
-        //    new NavigationView.OnNavigationItemSelectedListener() {
+        //Set behavior of Navigation drawer
+        navigationView.setNavigationItemSelectedListener(
+            new NavigationView.OnNavigationItemSelectedListener() {
         // This method will trigger on item Click of navigation menu
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,9 +176,8 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
 
-    }*/
-    {
-    // Add Fragments to Tabs
+    }*/ {
+     // Add Fragments to Tabs
    /* private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new ListContentFragment(), "Shops");
@@ -212,14 +213,9 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-    }
-*/
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    }*/
+ }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -234,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
-    }*/
-}
+    }
 
 }
