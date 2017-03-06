@@ -19,11 +19,14 @@ package com.paramonod.kikos;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import 	android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.*;
+import android.content.Context;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.res.ResourcesCompat;
@@ -32,8 +35,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.*;
 import android.view.MenuItem;
+import android.view.Menu;
 
 import com.example.android.materialdesigncodelab.R;
 
@@ -215,6 +219,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
  }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_settings).getActionView();
+        System.out.println(searchView);
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        return  super.onCreateOptionsMenu(menu);
+    }
 
 
     @Override

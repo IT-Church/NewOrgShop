@@ -18,6 +18,7 @@
     <string name="action_settings">Settings</string>
     <string name="ShopView">Shops</string>
     <string name="MapView">Map</string>
+    <string name="search_hint">Shop search</string>
     <string name="Project">com.example.android.materialdesigncodelab.CardContentFragment</string>
     <string name="thirdView">Third</string>
     <string name="item_title">Palais Garnier</string>
