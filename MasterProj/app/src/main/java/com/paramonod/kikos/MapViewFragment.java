@@ -1,12 +1,13 @@
 package com.paramonod.kikos;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.materialdesigncodelab.R;
+
+import static com.paramonod.kikos.MainActivity.main;
 
 /**
  * Created by Dmitry Paramonov on 12/29/2016.
@@ -19,22 +20,15 @@ public class MapViewFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.map_view, container, false);
+       // View map = inflater.inflate(R.layout.map,container);
 
+        return inflater.inflate(R.layout.map, container, false);
     }
-    public class NewAsyncTask extends AsyncTask<Void,Void,Void>{
 
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            return null;
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        main.setupMap();
     }
 }

@@ -16,12 +16,18 @@
 
 package com.paramonod.kikos;
 
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import 	android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -36,13 +42,34 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.*;
 
 import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.pack.Adress;
 
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import ru.yandex.yandexmapkit.MapController;
+import ru.yandex.yandexmapkit.MapView;
+import ru.yandex.yandexmapkit.OverlayManager;
+import ru.yandex.yandexmapkit.map.GeoCode;
+import ru.yandex.yandexmapkit.map.GeoCodeListener;
+import ru.yandex.yandexmapkit.overlay.Overlay;
+import ru.yandex.yandexmapkit.overlay.OverlayItem;
+import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
+import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
+import ru.yandex.yandexmapkit.utils.GeoPoint;
 
 
 /**
@@ -58,9 +85,22 @@ public class MainActivity extends AppCompatActivity {
     final public ListContentFragment1 Listfr = new ListContentFragment1();
     public int x;
 
+    public static MainActivity main;
+    public static Context ctx;
+    public static MapController mc;
+    public static MapView mp;
+    public static Overlay o;
+    public static OverlayManager om;
+    public static JSONObject jsonObject;
+    public static Drawable shop;
+    public static Drawable itkerk;
+    public static android.widget.SearchView searchView;
+    final static float STANDART_ZOOM = 20.0f;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        main = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -225,11 +265,11 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.action_settings).getActionView();
-        System.out.println(searchView);
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+    //    SearchView searchView =
+   //             (SearchView) menu.findItem(R.id.action_settings).getActionView();
+  //      System.out.println(searchView);
+  //      searchView.setSearchableInfo(
+//                searchManager.getSearchableInfo(getComponentName()));
         return  super.onCreateOptionsMenu(menu);
     }
 
@@ -248,5 +288,167 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    public void setupMap(){
+        searchView =(android.widget.SearchView) findViewById(R.id.search);
+        searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                main.searchListener();
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        mp = (MapView)findViewById(R.id.map);
+        mp.showBuiltInScreenButtons(true);
+        mc = mp.getMapController();
+        mc.setPositionAnimationTo(new GeoPoint(new Adress().getP(), new Adress().getM()));
+        mc.setZoomCurrent(20);
+        FloatingActionButton plus = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        FloatingActionButton minus = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
+
+        plus.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mc.setZoomCurrent(mc.getZoomCurrent() + 0.1f);
+
+                return false;
+            }
+        });
+        minus.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mc.setZoomCurrent(mc.getZoomCurrent() - 0.1f);
+                return false;
+            }
+        });
+
+        om = mc.getOverlayManager();
+        o = new Overlay(mc);
+
+        o.setVisible(true);
+        om.addOverlay(o);
+        OverlayItem oi = new OverlayItem(new GeoPoint(new Adress().getP(), new Adress().getM()),
+                getResources().getDrawable(R.drawable.shop));
+
+        mc.getDownloader().getGeoCode(new GeoCodeListener() {
+            @Override
+            public boolean onFinishGeoCode(final GeoCode geoCode) {
+                if(geoCode!=null){
+                    Log.d("Not so fucking","title"+geoCode.getTitle()+"\nsubtitle"+geoCode.getSubtitle()+"\ndisplayname"+geoCode.getDisplayName()+"\nkind"+geoCode.getKind());
+
+                }
+                else{
+                    Log.e("OMFG","fail");
+                }
+                return true;
+            }
+        },oi.getGeoPoint());
+        makingFullStackIcon(R.drawable.orpgshop,50,50,oi.getGeoPoint());
+        OverlayItem oi2 = new OverlayItem(new GeoPoint(new Adress().getP() + 0.0001, new Adress().getM() + 0.0001), getResources().getDrawable(R.drawable.shop));
+        o.addOverlayItem(oi);
+        o.addOverlayItem(oi2);
+        // Set behavior of Navigation drawer
+        //navigationView.setNavigationItemSelectedListener(
+        //    new NavigationView.OnNavigationItemSelectedListener() {
+        // This method will trigger on item Click of navigation menu
+        /*            @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // Set item in checked state
+                        menuItem.setChecked(true);
+
+                        // TODO: handle navigation
+
+                        // Closing drawer on item click
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
+        // Adding Floating Action Button to bottom right of main view
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Hello Snackbar!",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });*/
+    }
+    public  void makingFullStackIcon(int id, int width, int height,GeoPoint geoPoint){
+        this.makingFullStackIcon(id,width,height,geoPoint,main.getString(R.string.itch__kerk),"");
+    }
+    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint, final String name, final String description){
+        OverlayItem oi = new OverlayItem(geoPoint,this.createScaledIcon(main.getResources().getDrawable(id),width,height,main.getResources()));
+        BalloonItem bi = new BalloonItem(main, oi.getGeoPoint());
+        bi.setOnBalloonListener(
+                new OnBalloonListener() {
+                    @Override
+                    public void onBalloonViewClick(BalloonItem balloonItem, View view) {
+                    }
+
+                    @Override
+                    public void onBalloonShow(BalloonItem balloonItem) {
+                        Intent intent = new Intent(main, DetailActivity.class);
+                        intent.putExtra(DetailActivity.EXTRA_POSITION, 0 + (int)Math.random() * 6);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onBalloonHide(BalloonItem balloonItem) {
+
+                    }
+
+                    @Override
+                    public void onBalloonAnimationStart(BalloonItem balloonItem) {
+
+
+                    }
+
+                    @Override
+                    public void onBalloonAnimationEnd(BalloonItem balloonItem) {
+
+                    }
+                }
+        );
+        oi.setBalloonItem(bi);
+        o.addOverlayItem(oi);
+
+    }
+    public  void searchListener() {
+        try {
+            Search s = new Search();
+            s.doSearch(searchView.getQuery().toString(),this);
+        } catch (MalformedURLException q) {
+            q.printStackTrace();
+        }
+    }
+
+    public static Drawable createScaledIcon(Drawable id, int width, int height, Resources res){
+        Bitmap bitmap = ((BitmapDrawable)id ).getBitmap();
+        // Scale it to 50 x 50
+        shop = new BitmapDrawable(res, Bitmap.createScaledBitmap(bitmap, width, height, true));
+        Bitmap.
+        return shop;
+    }
+
+    public void updatePins(GeoPoint[] overlayItems) {
+        // List<Overlay> l = mc.getOverlayManager().getOverlays();
+        // for (Overlay q : l) {
+        //     q.setVisible(false);
+        // }
+
+        //o = new Overlay(mc);
+        o.clearOverlayItems();
+        if(overlayItems != null){
+            for (int i = 0; i < overlayItems.length; i++) {
+                this.makingFullStackIcon(R.drawable.orpgshop,55,55,overlayItems[i]);
+            }}
+        o.setVisible(true);
+
+        //  om.addOverlay(o);
+    }
 }
