@@ -16,6 +16,7 @@
 
 package com.paramonod.kikos;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -24,7 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import 	android.app.SearchManager;
+import 	android.support.v4.*;
 import android.app.SearchableInfo;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +37,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.view.GravityCompat;
@@ -265,11 +267,24 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-    //    SearchView searchView =
-   //             (SearchView) menu.findItem(R.id.action_settings).getActionView();
-  //      System.out.println(searchView);
-  //      searchView.setSearchableInfo(
-//                searchManager.getSearchableInfo(getComponentName()));
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_settings));
+        System.out.println(searchView);
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+       searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+           @Override
+           public boolean onQueryTextSubmit(String query) {
+               main.searchListener();
+               return false;
+           }
+
+           @Override
+           public boolean onQueryTextChange(String newText) {
+               return false;
+           }
+       });
+
+
         return  super.onCreateOptionsMenu(menu);
     }
 
@@ -431,7 +446,6 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = ((BitmapDrawable)id ).getBitmap();
         // Scale it to 50 x 50
         shop = new BitmapDrawable(res, Bitmap.createScaledBitmap(bitmap, width, height, true));
-        Bitmap.
         return shop;
     }
 
