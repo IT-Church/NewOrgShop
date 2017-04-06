@@ -18,6 +18,7 @@ package com.paramonod.kikos;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -33,8 +34,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.paramonod.kikos.MainActivity.main;
+import static com.paramonod.kikos.MainActivity.sPref;
 
 /**
  * Provides UI for the view with Cards.
@@ -87,8 +93,11 @@ public class CardContentFragment extends Fragment {
             favoriteImageButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(v, "Added to Favorite",
-                            Snackbar.LENGTH_LONG).show();
+                    sPref = main.getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor ed = sPref.edit();
+                    ed.putString("q", Integer.toString(getAdapterPosition()));
+                    ed.commit();
+                    Toast.makeText(main, "Text saved", Toast.LENGTH_SHORT).show();
                 }
             });
 

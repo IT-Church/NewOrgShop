@@ -52,7 +52,7 @@ public class MapActivity extends AppCompatActivity {
         ctx = this;
 
         itkerk = createScaledIcon(getResources().getDrawable(R.drawable.itkerk),480,270,getResources());
-                searchView = (SearchView) findViewById(R.id.search);
+               /// searchView = (SearchView) findViewById(R.id.search);
         final MapActivity m = this;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

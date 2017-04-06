@@ -18,6 +18,7 @@ package com.paramonod.kikos;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -55,6 +56,7 @@ import android.widget.*;
 
 import com.example.android.materialdesigncodelab.R;
 import com.paramonod.kikos.pack.Adress;
+import com.paramonod.kikos.pack.Image;
 
 import org.json.JSONObject;
 
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     final public CardContentFragment Cardfr = new CardContentFragment();
     final public ListContentFragment1 Listfr = new ListContentFragment1();
     public int x;
-
+    public static SharedPreferences sPref;
     public static MainActivity main;
     public static Context ctx;
     public static MapController mc;
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("OrgShop");
+       ;
         // Adding Toolbar to Main screen
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigation);
@@ -180,8 +183,19 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(true);
 
                         // TODO: handle navigation
-
-                        // Closing drawer on item click
+                        if(menuItem.getItemId() == R.id.favorite_button){
+                            sPref = getPreferences(MODE_PRIVATE);
+                            String savedText = sPref.getString("q","null");
+                            Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
+                        }
+                        if(menuItem.getItemId() == R.id.mapButton){
+                            Manager.beginTransaction()
+                                    .replace(R.id.fragment1, PrFr)
+                                    .commit();
+                            Manager.beginTransaction()
+                                    .replace(R.id.fragment1, MapFr)
+                                    .commit();
+                        }// Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
                     }
@@ -301,10 +315,12 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
+
+
         return super.onOptionsItemSelected(item);
     }
     public void setupMap(){
-        searchView =(android.widget.SearchView) findViewById(R.id.search);
+      /*  searchView =(android.widget.SearchView) findViewById(R.id.search);
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -317,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+*/
         mp = (MapView)findViewById(R.id.map);
         mp.showBuiltInScreenButtons(true);
         mc = mp.getMapController();
@@ -367,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
         OverlayItem oi2 = new OverlayItem(new GeoPoint(new Adress().getP() + 0.0001, new Adress().getM() + 0.0001), getResources().getDrawable(R.drawable.shop));
         o.addOverlayItem(oi);
         o.addOverlayItem(oi2);
-      */  // Set behavior of Navigation drawer
+       // Set behavior of Navigation drawer
         //navigationView.setNavigationItemSelectedListener(
         //    new NavigationView.OnNavigationItemSelectedListener() {
         // This method will trigger on item Click of navigation menu
