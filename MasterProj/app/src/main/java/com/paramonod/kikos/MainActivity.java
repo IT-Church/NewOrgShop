@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
            @Override
            public boolean onQueryTextSubmit(String query) {
-               main.searchListener();
+               main.searchListener(query);
                return false;
            }
 
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                main.searchListener();
+                main.searchListener(searchView.getQuery().toString());
                 return false;
             }
 
@@ -433,10 +433,11 @@ public class MainActivity extends AppCompatActivity {
         o.addOverlayItem(oi);
 
     }
-    public  void searchListener() {
+    public  void searchListener(String a) {
         try {
             Search s = new Search();
-            s.doSearch(searchView.getQuery().toString(),this);
+            updatePins(null);
+            s.doSearch(a,this);
         } catch (MalformedURLException q) {
             q.printStackTrace();
         }

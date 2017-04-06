@@ -15,7 +15,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ru.yandex.yandexmapkit.overlay.location.MyLocationItem;
+import ru.yandex.yandexmapkit.overlay.location.OnMyLocationListener;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
+
+import static com.paramonod.kikos.MainActivity.mc;
 
 
 /**
@@ -27,9 +31,11 @@ public class Search {
     final static String NEW_STANDART_URL = "https://search-maps.yandex.ru/v1/?apikey=245e2b86-5cfb-40c3-a064-516c37dba6b2&lang=ru_RU&text=";
     public static URL url = null;
     public static MainActivity mainActivity = null;
+
     public void doSearch(String obj, MainActivity m) throws MalformedURLException {
         //this.url = new URL(STANDART_URL +obj);
-        this.url = new URL(NEW_STANDART_URL + obj);
+        String k = "\"";
+        this.url = new URL(NEW_STANDART_URL + k + obj+k+"&"+"results=500");
         System.out.println(url.toString());
         mainActivity = m;
         AsyncTask asyncTask = new AsyncTask() {
@@ -68,7 +74,7 @@ public class Search {
             protected void onPostExecute(Object ob) {
                 super.onPostExecute(ob);
 
-
+                GeoPoint nearG = null;
                 Log.e("PRINT", "IFUCKYOUR MUM");
                 mainActivity.updatePins(null);
                 String resultString = "";
@@ -79,10 +85,14 @@ public class Search {
                     items = new GeoPoint[ja1.length()];
                     */
                     JSONArray ja1 = MapActivity.jsonObject.getJSONArray("features");
+                    GeoPoint my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
+                    System.out.println(my.getLat()+" " +my.getLon());
+                    float maxL = Float.MAX_VALUE;
+                    int maxI = 0;
                     for (int i = 0; i < ja1.length(); i++) {
                         JSONObject j0 = ja1.getJSONObject(i);
                         JSONObject j11 = j0.getJSONObject("properties");
-                      //  JSONObject j21 = j11.getJSONObject("CompanyMetaData");
+                        //  JSONObject j21 = j11.getJSONObject("CompanyMetaData");
                         String name = j11.getString("name");
                         String description = j11.getString("description");
                         JSONObject j1 = j0.getJSONObject("geometry");
@@ -93,16 +103,22 @@ public class Search {
                         System.out.println(j3.toString());
                         JSONObject j4 = j3.getJSONObject("Point");
                         resultString = j4.getString("pos");*/
-                        resultString = ja2.get(0).toString()+" "+ja2.get(1).toString();
+                        resultString = ja2.get(0).toString() + " " + ja2.get(1).toString();
                         System.out.println(resultString);
                         String[] s1 = resultString.split(" ");
                         GeoPoint curG = new GeoPoint(Double.parseDouble(s1[1]), Double.parseDouble(s1[0]));
-                        mainActivity.mc.setPositionAnimationTo(curG);
-                        mainActivity.makingFullStackIcon(R.drawable.orpgshop,55,55,curG,name,description);
+
+                        mainActivity.makingFullStackIcon(R.drawable.orpgshop, 55, 55, curG, name, description);
+                        if (maxL > Math.sqrt((curG.getLat() - my.getLat()) * (curG.getLat() - my.getLat()) + (curG.getLon() - my.getLon()) * (curG.getLon() - my.getLon()))) {
+                            maxL = (float) Math.sqrt((curG.getLat() - my.getLat()) * (curG.getLat() - my.getLat()) + (curG.getLon() - my.getLon()) * (curG.getLon() - my.getLon()));
+                        nearG =    curG;
+                        }
                     }
 
+                    Log.e("FUCKUP",nearG.toString());
+                    mc.setPositionAnimationTo(nearG);
                 } catch (JSONException js) {
-                   System.err.println("F.U.C.K");
+                    System.err.println("F.U.C.K");
                     js.printStackTrace();
                 }
             }
