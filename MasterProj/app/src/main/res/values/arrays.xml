@@ -32,7 +32,7 @@
         <item>Description6</item>
     </string-array>
     <string-array name="place_details">
-        <item>Detail1</item>
+        <item>Макдональдс</item>
         <item>Detail2</item>
         <item>Detail3</item>
         <item>Detail4</item>
@@ -63,4 +63,7 @@
         <item>@drawable/e</item>
         <item>@drawable/f</item>
     </array>
+    <string-array name="places_coords">
+        <item>55.78522 37.596921</item>
+        </string-array>
 </resources>

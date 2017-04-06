@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
 
         o.setVisible(true);
         om.addOverlay(o);
-        OverlayItem oi = new OverlayItem(new GeoPoint(new Adress().getP(), new Adress().getM()),
+      /*  OverlayItem oi = new OverlayItem(new GeoPoint(new Adress().getP(), new Adress().getM()),
                 getResources().getDrawable(R.drawable.shop));
 
         mc.getDownloader().getGeoCode(new GeoCodeListener() {
@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         OverlayItem oi2 = new OverlayItem(new GeoPoint(new Adress().getP() + 0.0001, new Adress().getM() + 0.0001), getResources().getDrawable(R.drawable.shop));
         o.addOverlayItem(oi);
         o.addOverlayItem(oi2);
-        // Set behavior of Navigation drawer
+      */  // Set behavior of Navigation drawer
         //navigationView.setNavigationItemSelectedListener(
         //    new NavigationView.OnNavigationItemSelectedListener() {
         // This method will trigger on item Click of navigation menu
@@ -429,6 +429,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+        bi.setDrawable(getResources().getDrawable(R.drawable.itkerk));
         oi.setBalloonItem(bi);
         o.addOverlayItem(oi);
 
@@ -436,11 +437,14 @@ public class MainActivity extends AppCompatActivity {
     public  void searchListener(String a) {
         try {
             Search s = new Search();
-            updatePins(null);
+            o.clearOverlayItems();
+
             s.doSearch(a,this);
+
         } catch (MalformedURLException q) {
             q.printStackTrace();
         }
+
     }
 
     public static Drawable createScaledIcon(Drawable id, int width, int height, Resources res){

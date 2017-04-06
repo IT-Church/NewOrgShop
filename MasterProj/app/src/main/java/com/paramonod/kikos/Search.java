@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StreamCorruptedException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,7 +33,7 @@ public class Search {
     public static URL url = null;
     public static MainActivity mainActivity = null;
 
-    public void doSearch(String obj, MainActivity m) throws MalformedURLException {
+    public void doSearch(final String obj, MainActivity m) throws MalformedURLException {
         //this.url = new URL(STANDART_URL +obj);
         String k = "\"";
         this.url = new URL(NEW_STANDART_URL + k + obj+k+"&"+"results=500");
@@ -85,6 +86,7 @@ public class Search {
                     items = new GeoPoint[ja1.length()];
                     */
                     JSONArray ja1 = MapActivity.jsonObject.getJSONArray("features");
+                    System.out.println(mc);
                     GeoPoint my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
                     System.out.println(my.getLat()+" " +my.getLon());
                     float maxL = Float.MAX_VALUE;
@@ -121,6 +123,19 @@ public class Search {
                     System.err.println("F.U.C.K");
                     js.printStackTrace();
                 }
+
+                System.out.println("hi");
+                String[] geos = mainActivity.getResources().getStringArray(R.array.places_coords);
+                String[] strings = mainActivity.getResources().getStringArray(R.array.place_details);
+
+                for (int i = 0;i<strings.length;i++) {
+                    String a = strings[i];
+                    if(a.equalsIgnoreCase(obj)){
+                        String[] q = geos[i].split(" ");
+                        mainActivity.makingFullStackIcon(R.drawable.shop, 55, 55, new GeoPoint(Double.parseDouble(q[0]),Double.parseDouble(q[1])));
+                    }
+                }
+
             }
         }.execute();
 

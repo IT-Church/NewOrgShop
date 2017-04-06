@@ -10,7 +10,7 @@ public class Adress {
     public Adress(){
         this.street = "Novslobodskaya";
         this.house = 38;
-        this.coords= new double[]{55.785226,37.596921};
+        this.coords= new double[]{0,0};
     }
 
     public double[] getCoords() {
