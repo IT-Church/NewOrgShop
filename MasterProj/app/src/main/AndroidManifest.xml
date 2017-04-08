@@ -49,6 +49,12 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+        <activity
+
+            android:name="com.paramonod.kikos.DetailYandexActivity"
+            android:parentActivityName="com.paramonod.kikos.MainActivity">
+
+        </activity>
         <!-- All Product Activity -->
     </application>
 

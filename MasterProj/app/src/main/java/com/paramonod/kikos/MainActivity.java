@@ -19,6 +19,7 @@ package com.paramonod.kikos;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ObbInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -58,11 +59,17 @@ import com.example.android.materialdesigncodelab.R;
 import com.paramonod.kikos.pack.Adress;
 import com.paramonod.kikos.pack.Image;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ru.yandex.yandexmapkit.MapController;
 import ru.yandex.yandexmapkit.MapView;
@@ -88,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
     final public CardContentFragment Cardfr = new CardContentFragment();
     final public ListContentFragment1 Listfr = new ListContentFragment1();
     public int x;
+    public static Intent intent;
+    public static String namme;
     public static SharedPreferences sPref;
     public static MainActivity main;
     public static Context ctx;
@@ -100,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     public static Drawable itkerk;
     public static android.widget.SearchView searchView;
     final static float STANDART_ZOOM = 20.0f;
-
+    public static String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -437,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
     public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint, final String name, final String description){
         OverlayItem oi = new OverlayItem(geoPoint,this.createScaledIcon(main.getResources().getDrawable(id),width,height,main.getResources()));
         BalloonItem bi = new BalloonItem(main, oi.getGeoPoint());
-        bi.setOnBalloonListener(
+        if(id == R.drawable.shop){bi.setOnBalloonListener(
                 new OnBalloonListener() {
                     @Override
                     public void onBalloonViewClick(BalloonItem balloonItem, View view) {
@@ -466,7 +475,91 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 }
-        );
+        );}
+        else{
+            bi.setOnBalloonListener(
+                    new OnBalloonListener() {
+                        @Override
+                        public void onBalloonViewClick(BalloonItem balloonItem, View view) {
+                        }
+
+                        @Override
+                        public void onBalloonShow(BalloonItem balloonItem) {
+                            mc.getDownloader().getGeoCode(new GeoCodeListener() {
+                                @Override
+                                public boolean onFinishGeoCode(final GeoCode geoCode) {
+                                    if(geoCode!=null){
+                                        Log.e("Not so fucking","title"+geoCode.getTitle()+"\nsubtitle"+geoCode.getSubtitle()+"\ndisplayname"+geoCode.getDisplayName()+"\nkind"+geoCode.getKind());
+                                        main.name = geoCode.getTitle();
+                                    }
+                                    else{
+                                        Log.e("OMFG","fail");
+                                    }
+                                    AsyncTask asyncTask = new AsyncTask() {
+                                        @Override
+                                        protected Object doInBackground(Object[] params) {
+                                            String namme="";
+                                            try{URL url = new URL("https://search-maps.yandex.ru/v1/?text="+params[0]+"&type=biz&lang=ru_RU&apikey=245e2b86-5cfb-40c3-a064-516c37dba6b2");
+
+                                                System.out.println(url);
+                                                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                                                con.connect();
+                                                // optional default is GET
+                                                con.setRequestMethod("GET");
+                                                //int responseCode = con.getResponseCode(); if smth crashes
+                                                BufferedReader in = new BufferedReader(
+                                                        new InputStreamReader(con.getInputStream()));
+                                                String inputLine;
+                                                String response = "";
+
+                                                while ((inputLine = in.readLine()) != null) {
+                                                    response += inputLine;
+                                                }
+                                                in.close();
+                                                con.disconnect();
+                                                MapActivity.jsonObject = new JSONObject(response);
+                                                JSONArray ja1 = MapActivity.jsonObject.getJSONArray("features");
+                                                for (int i = 0; i < ja1.length(); i++) {
+                                                    JSONObject j0 = ja1.getJSONObject(i);
+                                                    JSONObject j11 = j0.getJSONObject("properties");
+                                                    main.namme +=" " +j11.getString("name");
+                                                }
+                                            }
+                                            catch(Exception e){e.printStackTrace();}
+                                            return null;
+                                        }
+
+                                        @Override
+                                        protected void onPostExecute(Object o) {
+                                            super.onPostExecute(o);
+                                            main.selectName();
+                                        }
+                                    }.execute(main.name);
+                                    return true;
+                                }
+                            },balloonItem.getGeoPoint());
+                            intent = new Intent(main, DetailYandexActivity.class);
+
+                        }
+
+                        @Override
+                        public void onBalloonHide(BalloonItem balloonItem) {
+
+                        }
+
+                        @Override
+                        public void onBalloonAnimationStart(BalloonItem balloonItem) {
+
+
+                        }
+
+                        @Override
+                        public void onBalloonAnimationEnd(BalloonItem balloonItem) {
+
+                        }
+                    }
+            );
+        }
         bi.setDrawable(getResources().getDrawable(R.drawable.itkerk));
         oi.setBalloonItem(bi);
         o.addOverlayItem(oi);
@@ -507,5 +600,12 @@ public class MainActivity extends AppCompatActivity {
         o.setVisible(true);
 
         //  om.addOverlay(o);
+    }
+
+    void selectName(){
+        System.out.println(main.namme+ " " + main.name);
+        intent.putExtra(DetailYandexActivity.DESC,main.namme);
+        intent.putExtra("loc",main.name);
+        startActivity(intent);
     }
 }

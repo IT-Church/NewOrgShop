@@ -127,12 +127,24 @@ public class Search {
                 System.out.println("hi");
                 String[] geos = mainActivity.getResources().getStringArray(R.array.places_coords);
                 String[] strings = mainActivity.getResources().getStringArray(R.array.place_details);
-
+                String[] r = obj.split(" ");
                 for (int i = 0;i<strings.length;i++) {
                     String a = strings[i];
-                    if(a.equalsIgnoreCase(obj)){
+                    String e[] = a.split(" ");
+                    boolean w = false;
+                    for (int j = 0; j <e.length ; j++) {
+                        for (int l = 0; l <r.length ; l++) {
+
+
+                            if (e[j].equalsIgnoreCase(r[l])) {
+                                w = true;
+                            }
+                        }
+                    }
+
+                    if (w) {
                         String[] q = geos[i].split(" ");
-                        mainActivity.makingFullStackIcon(R.drawable.shop, 55, 55, new GeoPoint(Double.parseDouble(q[0]),Double.parseDouble(q[1])));
+                        mainActivity.makingFullStackIcon(R.drawable.shop, 55, 55, new GeoPoint(Double.parseDouble(q[0]), Double.parseDouble(q[1])));
                     }
                 }
 
