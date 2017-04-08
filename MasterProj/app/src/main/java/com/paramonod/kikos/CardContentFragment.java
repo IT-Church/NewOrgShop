@@ -95,7 +95,8 @@ public class CardContentFragment extends Fragment {
                 public void onClick(View v) {
                     sPref = main.getPreferences(MODE_PRIVATE);
                     SharedPreferences.Editor ed = sPref.edit();
-                    ed.putString("q", Integer.toString(getAdapterPosition()));
+                    String savedText = sPref.getString("q","null");
+                    ed.putString("q", savedText+Integer.toString(getAdapterPosition())+" ");
                     ed.commit();
                     Toast.makeText(main, "Text saved", Toast.LENGTH_SHORT).show();
                 }

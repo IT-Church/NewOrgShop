@@ -126,18 +126,19 @@ public class MainActivity extends AppCompatActivity {
                         //AsyncTask asyncTask = new NewAsyncTask();
                         switch (item.getItemId()) {
                             case R.id.Map:
-                                Manager.beginTransaction()
-                                        .replace(R.id.fragment1, PrFr)
-                                        .commit();
+                           //     Manager.beginTransaction()
+                           //             .replace(R.id.fragment1, PrFr)
+                           //             .commit();
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, MapFr)
                                         .commit();
                                 //asyncTask.execute(R.id.Map);
                                 break;
                             case R.id.Shops:
-                                Manager.beginTransaction()
-                                        .replace(R.id.fragment1, PrFr)
-                                        .commit();
+                           //     Manager.beginTransaction()
+                            //            .replace(R.id.fragment1, PrFr)
+                            //            .commit();
+                                Listfr.flag = 0;
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, Listfr)
                                         .commit();
@@ -145,9 +146,9 @@ public class MainActivity extends AppCompatActivity {
                                 //asyncTask.execute();
                                 break;
                             case R.id.Third:
-                                Manager.beginTransaction()
-                                        .replace(R.id.fragment1, PrFr)
-                                        .commit();
+                            //    Manager.beginTransaction()
+                             //           .replace(R.id.fragment1, PrFr)
+                             //           .commit();
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, Cardfr)
                                         .commit();
@@ -186,15 +187,36 @@ public class MainActivity extends AppCompatActivity {
                         if(menuItem.getItemId() == R.id.favorite_button){
                             sPref = getPreferences(MODE_PRIVATE);
                             String savedText = sPref.getString("q","null");
+                            String[] q = savedText.split(" ");
+                            int[] a = new int[q.length];
+                            for (int i = 0; i < q.length; i++) {
+                                a[i] = Integer.parseInt(q[i]);
+                                System.out.println(a[i]);
+                            }
                             Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
+                            ListContentFragment1 l= new ListContentFragment1();
+                            l.flag = 1;
+                            l.idx = a;
+                         //  Manager.beginTransaction()
+                          //          .replace(R.id.fragment1, PrFr)
+                          //          .commit();
+                            Manager.beginTransaction()
+                                    .replace(R.id.fragment1, l)
+                                    .commit();
                         }
                         if(menuItem.getItemId() == R.id.mapButton){
-                            Manager.beginTransaction()
-                                    .replace(R.id.fragment1, PrFr)
-                                    .commit();
+                          //  Manager.beginTransaction()
+                          //          .replace(R.id.fragment1, PrFr)
+                          //          .commit();
                             Manager.beginTransaction()
                                     .replace(R.id.fragment1, MapFr)
                                     .commit();
+                        }
+                        if(menuItem.getItemId() == R.id.clear_button){
+                            sPref = main.getPreferences(MODE_PRIVATE);
+                            SharedPreferences.Editor ed = sPref.edit();
+                            ed.putString("q","");
+                            ed.commit();
                         }// Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;

@@ -37,13 +37,19 @@ import com.example.android.materialdesigncodelab.R;
  * Provides UI for the view with List.
  */
 public class ListContentFragment1 extends Fragment {
+    public static int flag = 0;
+    public static int[] idx;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        ContentAdapter adapter;
+        if(flag == 0){
+         adapter = new ContentAdapter(recyclerView.getContext());}
+        else{
+            adapter = new ContentAdapter(recyclerView.getContext(),idx);}
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -64,7 +70,10 @@ public class ListContentFragment1 extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, DetailActivity.class);
-                    intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    if(flag == 0)  intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    else{
+                        intent.putExtra(DetailActivity.EXTRA_POSITION,idx[getAdapterPosition()]);
+                    }
                     context.startActivity(intent);
                 }
             });
@@ -76,20 +85,39 @@ public class ListContentFragment1 extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final int LENGTH = 18;
+        private static  int LENGTH =6;
 
-        private final String[] mPlaces;
-        private final String[] mPlaceDesc;
-        private final Drawable[] mPlaceAvators;
+        public final String[] mPlaces;
+        public final String[] mPlaceDesc;
+        public final Drawable[] mPlaceAvators;
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
+            LENGTH =6;
             mPlaces = resources.getStringArray(R.array.places);
             mPlaceDesc = resources.getStringArray(R.array.place_desc);
             TypedArray a = resources.obtainTypedArray(R.array.place_avator);
             mPlaceAvators = new Drawable[a.length()];
             for (int i = 0; i < mPlaceAvators.length; i++) {
                 mPlaceAvators[i] = a.getDrawable(i);
+            }
+            a.recycle();
+        }
+        public ContentAdapter(Context context,int[] idx) {
+            Resources resources = context.getResources();
+            String[] temMPlaces = resources.getStringArray(R.array.places);
+            String[] temMPlaceDesc = resources.getStringArray(R.array.place_desc);
+            TypedArray a= resources.obtainTypedArray(R.array.place_avator);
+
+            LENGTH = idx.length;
+            mPlaces = new String[LENGTH];
+            mPlaceDesc = new String[LENGTH];
+            mPlaceAvators = new Drawable[LENGTH];
+
+            for (int i = 0; i <idx.length ; i++) {
+                mPlaces[i] = temMPlaces[idx[i]];
+                mPlaceDesc[i] = temMPlaceDesc[idx[i]];
+                mPlaceAvators[i] = a.getDrawable(idx[i]);
             }
             a.recycle();
         }
@@ -100,9 +128,9 @@ public class ListContentFragment1 extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.avator.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
-            holder.name.setText(mPlaces[position % mPlaces.length]);
-            holder.description.setText(mPlaceDesc[position % mPlaceDesc.length]);
+            holder.avator.setImageDrawable(mPlaceAvators[position]);
+            holder.name.setText(mPlaces[position]);
+            holder.description.setText(mPlaceDesc[position]);
         }
 
         @Override
