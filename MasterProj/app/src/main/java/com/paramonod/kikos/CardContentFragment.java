@@ -27,6 +27,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 import static com.paramonod.kikos.MainActivity.main;
 import static com.paramonod.kikos.MainActivity.sPref;
@@ -88,17 +90,40 @@ public class CardContentFragment extends Fragment {
                 }
             });
 
-            ImageButton favoriteImageButton =
+            final ImageButton favoriteImageButton =
                     (ImageButton) itemView.findViewById(R.id.favorite_button);
             favoriteImageButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
+              //      Log.e("asd","Almost there");
+                Log.e("wq","I am really here");
+                    Resources resources = main.getResources();
                     sPref = main.getPreferences(MODE_PRIVATE);
                     SharedPreferences.Editor ed = sPref.edit();
-                    String savedText = sPref.getString("q","null");
-                    ed.putString("q", savedText+Integer.toString(getAdapterPosition())+" ");
-                    ed.commit();
-                    Toast.makeText(main, "Text saved", Toast.LENGTH_SHORT).show();
+                    String savedText = sPref.getString("q", "null");
+                    System.out.println(savedText);
+                    if(savedText.contains(Integer.toString(getAdapterPosition()))) {
+                        favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                        String[] s = savedText.split(Integer.toString(getAdapterPosition()));
+                        char[] q1 = s[0].toCharArray();
+                        char[] q2 = s[1].toCharArray();
+                        String res = "";
+                        for (int i = 0; i <q1.length ; i++) {
+                            res+=q1[i];
+                        }
+                        for (int i = 1; i <q2.length; i++) {
+                            res+=q2[i];
+                        }
+                        ed.putString("q",res);
+                        Log.e("FUCK","a");
+                    }
+                    else{
+                        favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+                        ed.putString("q", savedText + Integer.toString(getAdapterPosition()) + " ");
+
+                        Log.e("FUCK","b");
+                    }
+                   ed.commit();
                 }
             });
 
@@ -147,6 +172,17 @@ public class CardContentFragment extends Fragment {
             holder.picture.setImageDrawable(mPlacePictures[position]);
             holder.name.setText(mPlaces[position]);
             holder.description.setText(mPlaceDesc[position]);
+            final ImageButton favoriteImageButton =
+                    (ImageButton) holder.itemView.findViewById(R.id.favorite_button);
+            sPref = main.getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor ed = sPref.edit();
+            String savedText = sPref.getString("q", "null");
+            if(savedText.contains(Integer.toString(holder.getAdapterPosition()))){
+                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+            }
+            else{
+                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+            }
         }
 
         @Override

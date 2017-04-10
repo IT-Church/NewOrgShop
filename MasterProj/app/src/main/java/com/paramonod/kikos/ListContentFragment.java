@@ -90,7 +90,7 @@ public class ListContentFragment extends Fragment {
         private static final String TAG_PID = "idShops";
         private static final String TAG_NAME = "ShopName";
         JSONParser jParser = new JSONParser();
-        private static String url_all_products = "http://192.168.0.111/products.php";
+        private static String url_all_products = "thtp://192.168.0.111/products.php";
         JSONArray products = null;
         private static final int LENGTH = 18;
 
