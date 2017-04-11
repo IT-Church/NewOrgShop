@@ -66,4 +66,16 @@
     <string-array name="places_coords">
         <item>55.78522 37.596921</item>
         </string-array>
+    <array name="categories_photos">
+        <item>@drawable/ovosch110</item>
+        <item>@drawable/shampoo</item>
+        <item>@drawable/fruct</item>
+        <item>@drawable/spec</item>
+    </array>
+    <string-array name="categories_names">
+        <item>Овощи</item>
+        <item>Уход за собой</item>
+        <item>Фрукты</item>
+        <item>Специи</item>
+    </string-array>
 </resources>

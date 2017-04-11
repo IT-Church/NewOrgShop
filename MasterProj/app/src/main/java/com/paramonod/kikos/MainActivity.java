@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     final public ProgressView PrFr = new ProgressView();
     final public CardContentFragment Cardfr = new CardContentFragment();
     final public ListContentFragment1 Listfr = new ListContentFragment1();
+    final public CategoryContentFragment CatFr = new CategoryContentFragment();
     public int x;
     public static Intent intent;
     public static String namme;
@@ -147,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
                            //     Manager.beginTransaction()
                             //            .replace(R.id.fragment1, PrFr)
                             //            .commit();
-                                Listfr.flag = 0;
+                              //  Listfr.flag = 0;
                                 Manager.beginTransaction()
-                                        .replace(R.id.fragment1, Listfr)
+                                        .replace(R.id.fragment1, CatFr)
                                         .commit();
                                 //x = R.id.Shops;
                                 //asyncTask.execute();

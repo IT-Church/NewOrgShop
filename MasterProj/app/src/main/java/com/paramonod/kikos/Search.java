@@ -110,7 +110,7 @@ public class Search {
                         String[] s1 = resultString.split(" ");
                         GeoPoint curG = new GeoPoint(Double.parseDouble(s1[1]), Double.parseDouble(s1[0]));
 
-                        mainActivity.makingFullStackIcon(R.drawable.orpgshop, 55, 55, curG, name, description);
+                       // mainActivity.makingFullStackIcon(R.drawable.orpgshop, 55, 55, curG, name, description);
                         if (maxL > Math.sqrt((curG.getLat() - my.getLat()) * (curG.getLat() - my.getLat()) + (curG.getLon() - my.getLon()) * (curG.getLon() - my.getLon()))) {
                             maxL = (float) Math.sqrt((curG.getLat() - my.getLat()) * (curG.getLat() - my.getLat()) + (curG.getLon() - my.getLon()) * (curG.getLon() - my.getLon()));
                         nearG =    curG;
