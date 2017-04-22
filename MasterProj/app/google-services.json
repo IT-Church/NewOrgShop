@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "358261087645",
+    "firebase_url": "https://orhshop-4a9be.firebaseio.com",
+    "project_id": "orhshop-4a9be",
+    "storage_bucket": "orhshop-4a9be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358261087645:android:1381a99104a0fbdb",
+        "android_client_info": {
+          "package_name": "com.paramonod.kikos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358261087645-pekr1i1ab8b7mp9mfodhlp1er7eirn0s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.paramonod.kikos",
+            "certificate_hash": "2f67744ca6d3e0020d846cae57e95b911f91dd73"
+          }
+        },
+        {
+          "client_id": "358261087645-b0nlkdbful1r2gs6m4jtnmfhli0uqqlj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa96ClQyzSgicU4sekZAWHlRINsdLrh6M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358261087645-b0nlkdbful1r2gs6m4jtnmfhli0uqqlj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
