@@ -50,13 +50,18 @@ import static com.paramonod.kikos.MainActivity.sPref;
  * Provides UI for the view with Cards.
  */
 public class CardContentFragment extends Fragment {
-
+    public static int flag = 0;
+    public static int[] idx;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        ContentAdapter adapter;
+        if(flag == 0){
+            adapter = new ContentAdapter(recyclerView.getContext());}
+        else{
+            adapter = new ContentAdapter(recyclerView.getContext(),idx);}
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -78,7 +83,10 @@ public class CardContentFragment extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, DetailActivity.class);
-                    intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    if(flag == 0)  intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    else{
+                        intent.putExtra(DetailActivity.EXTRA_POSITION,idx[getAdapterPosition()]);
+                    }
                     context.startActivity(intent);
                 }
             });
@@ -161,6 +169,24 @@ public class CardContentFragment extends Fragment {
             mPlacePictures = new Drawable[a.length()];
             for (int i = 0; i < mPlacePictures.length; i++) {
                 mPlacePictures[i] = a.getDrawable(i);
+            }
+            a.recycle();
+        }
+        public ContentAdapter(Context context,int[] idx) {
+            Resources resources = context.getResources();
+            String[] temMPictures = resources.getStringArray(R.array.places);
+            String[] temMNames = resources.getStringArray(R.array.place_desc);
+            TypedArray a= resources.obtainTypedArray(R.array.place_avator);
+
+            LENGTH = idx.length;
+            mPlaces = new String[LENGTH];
+            mPlaceDesc = new String[LENGTH];
+            mPlacePictures = new Drawable[LENGTH];
+
+            for (int i = 0; i <idx.length ; i++) {
+                mPlaces[i] = temMPictures[idx[i]];
+                mPlaceDesc[i] = temMNames[idx[i]];
+                mPlacePictures[i] = a.getDrawable(idx[i]);
             }
             a.recycle();
         }

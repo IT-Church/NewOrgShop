@@ -45,10 +45,7 @@ public class CategoryContentFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView a;
-        public ImageView b;
-
         public TextView aa;
-        public TextView bb;
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_category, parent, false));
@@ -56,17 +53,27 @@ public class CategoryContentFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, DetailActivity.class);
-                    if (flag == 0)
-                        intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
-                    else {
-                        intent.putExtra(DetailActivity.EXTRA_POSITION, idx[getAdapterPosition()]);
+                    int[] b;
+                    String[] s = main.getResources().getStringArray(R.array.categories_idx);
+                    String[] e = s[getAdapterPosition()].split(" ");
+                    b = new int[e.length];
+                    for (int i = 0; i <e.length ; i++) {
+                        b[i] = Integer.parseInt(e[i]);
                     }
-                    context.startActivity(intent);
+                    CardContentFragment l= new CardContentFragment();
+                    l.flag = 1;
+                    l.idx = b;
+                    //  Manager.beginTransaction()
+                    //          .replace(R.id.fragment1, PrFr)
+                    //          .commit();
+                    main.Manager.beginTransaction()
+                            .replace(R.id.fragment1, l)
+                            .commit();
                 }
             });
-            a = (ImageView) itemView.findViewById(R.id.cat1);
-            b = (ImageView) itemView.findViewById(R.id.cat2);
+            a = (ImageView) itemView.findViewById(R.id.country_photo);
+            aa = (TextView) itemView.findViewById(R.id.country_name);
+
         }
     }
 
@@ -77,29 +84,25 @@ public class CategoryContentFragment extends Fragment {
         // Set numbers of List in RecyclerView.
         private static int LENGTH = 4;
 
-        //public final String[] Atext;
+        public final String[] Atext;
        // public final String[] Btext;
         public final Drawable[] Apic;
-        public final Drawable[] Bpic;
+        //public final Drawable[] Bpic;
 
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
 
-          //  String[] q = resources.getStringArray(R.array.categories_names);
+            String[] q = resources.getStringArray(R.array.categories_names);
             TypedArray a = resources.obtainTypedArray(R.array.categories_photos);
-            Apic = new Drawable[a.length() / 2];
-            Bpic = new Drawable[a.length() / 2];
-            LENGTH = a.length()/2;
-          //  Atext = new String[q.length / 2];
+            Apic = new Drawable[a.length()];
+        //    Bpic = new Drawable[a.length() / 2];
+            LENGTH = a.length();
+            Atext = new String[a.length()];
          //   Btext = new String[q.length / 2];
             for (int i = 0; i < a.length(); i++) {
-                if (i % 2 == 0) {
-                    Apic[i / 2] = a.getDrawable(i);
-                } else {
-                    Bpic[i / 2] = a.getDrawable(i);
-
-                }
+                    Apic[i] = a.getDrawable(i);
+                    Atext[i] = q[i];
             }
 
             a.recycle();
@@ -115,20 +118,17 @@ public class CategoryContentFragment extends Fragment {
          //   holder.a.setMaxWidth(main.X/2);
          //   holder.a.setMaxHeight(main.Y/3);
          //   holder.a.setMinimumHeight(main.Y/3);
-            holder.a.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.a.setImageDrawable(Apic[position]);
-            Log.e("width",Integer.toString(holder.a.getWidth()));
+//            Log.e("width",Integer.toString(holder.a.getWidth()));
        //     holder.b.setMaxWidth(main.X/2);
-            holder.b.setScaleType(ImageView.ScaleType.CENTER_CROP);
          //   holder.b.setMaxHeight(main.Y/3);
          //   holder.b.setMinimumHeight(main.Y/3);
-            holder.b.setImageDrawable(Bpic[position]);
+          //  holder.b.setImageDrawable(Bpic[position]);
        //     Bpic[position].setBounds(main.X/2,position*main.Y/3,main.X,(position+1)*main.Y/3);
         //    Apic[position].setBounds(0,position*main.Y/3,main.X/2,(position+1)*main.Y/3);
-          //  holder.aa.setText(Atext[position]);
+            holder.aa.setText(Atext[position]);
           //  holder.bb.setText(Btext[position]);
-            Log.e("pos",holder.a.getX()+ ' '+ holder.a.getY() + " "+ holder.a.getWidth()+ " " + holder.a.getHeight());
-            Log.e("pos",holder.b.getX()+ ' '+ holder.b.getY() + " "+ holder.b.getWidth()+ " " + holder.b.getHeight());
+          //  Log.e("pos",holder.a.getX()+ ' '+ holder.a.getY() + " "+ holder.a.getWidth()+ " " + holder.a.getHeight());
 
             System.out.println("Im doing bind");
         }
