@@ -7,8 +7,10 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +39,7 @@ public class CategoryContentFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
         return recyclerView;
     }
 
@@ -65,12 +67,6 @@ public class CategoryContentFragment extends Fragment {
             });
             a = (ImageView) itemView.findViewById(R.id.cat1);
             b = (ImageView) itemView.findViewById(R.id.cat2);
-            a.setImageDrawable(main.getResources().getDrawable(R.drawable.ovosch110));
-            b.setImageDrawable(main.getResources().getDrawable(R.drawable.shampoo));
-            aa = (TextView) itemView.findViewById(R.id.twcat1);
-            bb = (TextView) itemView.findViewById(R.id.twcat2);
-            aa.setText("aa");
-            bb.setText("bb");
         }
     }
 
@@ -81,8 +77,8 @@ public class CategoryContentFragment extends Fragment {
         // Set numbers of List in RecyclerView.
         private static int LENGTH = 4;
 
-        public final String[] Atext;
-        public final String[] Btext;
+        //public final String[] Atext;
+       // public final String[] Btext;
         public final Drawable[] Apic;
         public final Drawable[] Bpic;
 
@@ -90,25 +86,20 @@ public class CategoryContentFragment extends Fragment {
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
 
-            String[] q = resources.getStringArray(R.array.categories_names);
+          //  String[] q = resources.getStringArray(R.array.categories_names);
             TypedArray a = resources.obtainTypedArray(R.array.categories_photos);
             Apic = new Drawable[a.length() / 2];
             Bpic = new Drawable[a.length() / 2];
             LENGTH = a.length()/2;
-            Atext = new String[q.length / 2];
-            Btext = new String[q.length / 2];
+          //  Atext = new String[q.length / 2];
+         //   Btext = new String[q.length / 2];
             for (int i = 0; i < a.length(); i++) {
                 if (i % 2 == 0) {
                     Apic[i / 2] = a.getDrawable(i);
                 } else {
                     Bpic[i / 2] = a.getDrawable(i);
+
                 }
-            }
-            for (int i = 0; i < q.length; i++) {
-                if (i % 2 == 0) {
-                    Atext[i / 2] =q[i];
-                } else {
-                    Btext[i / 2] =q[i];                }
             }
 
             a.recycle();
@@ -121,10 +112,25 @@ public class CategoryContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+         //   holder.a.setMaxWidth(main.X/2);
+         //   holder.a.setMaxHeight(main.Y/3);
+         //   holder.a.setMinimumHeight(main.Y/3);
+            holder.a.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.a.setImageDrawable(Apic[position]);
+            Log.e("width",Integer.toString(holder.a.getWidth()));
+       //     holder.b.setMaxWidth(main.X/2);
+            holder.b.setScaleType(ImageView.ScaleType.CENTER_CROP);
+         //   holder.b.setMaxHeight(main.Y/3);
+         //   holder.b.setMinimumHeight(main.Y/3);
             holder.b.setImageDrawable(Bpic[position]);
-            holder.aa.setText(Atext[position]);
-            holder.bb.setText(Btext[position]);
+       //     Bpic[position].setBounds(main.X/2,position*main.Y/3,main.X,(position+1)*main.Y/3);
+        //    Apic[position].setBounds(0,position*main.Y/3,main.X/2,(position+1)*main.Y/3);
+          //  holder.aa.setText(Atext[position]);
+          //  holder.bb.setText(Btext[position]);
+            Log.e("pos",holder.a.getX()+ ' '+ holder.a.getY() + " "+ holder.a.getWidth()+ " " + holder.a.getHeight());
+            Log.e("pos",holder.b.getX()+ ' '+ holder.b.getY() + " "+ holder.b.getWidth()+ " " + holder.b.getHeight());
+
+            System.out.println("Im doing bind");
         }
 
         @Override

@@ -48,7 +48,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -81,6 +83,7 @@ import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
 import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
+import ru.yandex.yandexmapkit.utils.Point;
 
 
 /**
@@ -111,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
     public static android.widget.SearchView searchView;
     final static float STANDART_ZOOM = 20.0f;
     public static String name;
+    public int X;
+    public int Y;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +124,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("OrgShop");
-       ;
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        Display display = getWindowManager().getDefaultDisplay();
+        android.graphics.Point size = new android.graphics.Point();
+        display.getSize(size);
+        X= size.x;
+        Y = size.y;
+       //  Y = displaymetrics.heightPixels;
+       //  X = displaymetrics.widthPixels;
+        System.out.println(X+ " " + Y);
         // Adding Toolbar to Main screen
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigation);
