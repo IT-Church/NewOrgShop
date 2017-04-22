@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
     final public MapViewFragment MapFr = new MapViewFragment();
     final public ProgressView PrFr = new ProgressView();
     final public CardContentFragment Cardfr = new CardContentFragment();
-    final public ListContentFragment1 Listfr = new ListContentFragment1();
+    final public ListContentFragment Listfr = new ListContentFragment();
+
     final public CategoryContentFragment CatFr = new CategoryContentFragment();
     public int x;
     public static Intent intent;
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                              //           .replace(R.id.fragment1, PrFr)
                              //           .commit();
                                 Manager.beginTransaction()
-                                        .replace(R.id.fragment1, Cardfr)
+                                        .replace(R.id.fragment1, Listfr)
                                         .commit();
 
                                 // asyncTask.execute(R.id.Third);

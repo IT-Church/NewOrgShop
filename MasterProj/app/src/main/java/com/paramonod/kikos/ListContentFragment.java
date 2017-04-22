@@ -30,28 +30,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.database.DatabaseReference;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.FirebaseDatabase;
 
 import com.example.android.materialdesigncodelab.R;
-
-import org.apache.http.NameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Provides UI for the view with List.
  */
 public class ListContentFragment extends Fragment {
+    public static int flag = 0;
+    public static int[] idx;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        ContentAdapter adapter;
+
+        if(flag == 0){
+            adapter = new ContentAdapter(recyclerView.getContext());}
+        else{
+            adapter = new ContentAdapter(recyclerView.getContext(),idx);}
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -62,7 +65,6 @@ public class ListContentFragment extends Fragment {
         public ImageView avator;
         public TextView name;
         public TextView description;
-
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_list, parent, false));
             avator = (ImageView) itemView.findViewById(R.id.list_avatar);
@@ -73,7 +75,10 @@ public class ListContentFragment extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, DetailActivity.class);
-                    intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    if(flag == 0)  intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    else{
+                        intent.putExtra(DetailActivity.EXTRA_POSITION,idx[getAdapterPosition()]);
+                    }
                     context.startActivity(intent);
                 }
             });
@@ -85,95 +90,17 @@ public class ListContentFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static final String TAG_SUCCESS = "success";
-        private static final String TAG_PRODUCTS = "Shops";
-        private static final String TAG_PID = "idShops";
-        private static final String TAG_NAME = "ShopName";
-        JSONParser jParser = new JSONParser();
-        private static String url_all_products = "thtp://192.168.0.111/products.php";
-        JSONArray products = null;
-        private static final int LENGTH = 18;
+        private static  int LENGTH =6;
 
-        private final String[] mPlaces;
-        private final String[] mPlaceDesc;
-        private final Drawable[] mPlaceAvators;
-        private ArrayList<String> Places = new ArrayList<>();
-        private ArrayList<String> PlaceDesc = new ArrayList<>();
-        private ArrayList<String> Ava = new ArrayList<>();
-
-        class LoadAllProducts /* extends AsyncTask<String, String, String> */{
-
-
-            /**
-             * Получаем все продукт из url
-             */
-            protected String Load() /*String doInBackground(String... args)*/ {
-                // Будет хранить параметры
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                // получаем JSON строк с URL
-                JSONObject json = jParser.makeHttpRequest(url_all_products, "GET", params);
-
-                //Log.d("All Products: ", json.toString());
-
-                try {
-                    // Получаем SUCCESS тег для проверки статуса ответа сервера
-                    int success = 1/*json.getInt(TAG_SUCCESS)*/;
-
-                    if (success == 1) {
-                        // продукт найден
-                        // Получаем масив из Продуктов
-                        products = json.getJSONArray(TAG_PRODUCTS);
-
-                        // перебор всех продуктов
-                        for (int i = 0; i < products.length(); i++) {
-                            JSONObject c = products.getJSONObject(i);
-
-                            // Сохраняем каждый json елемент в переменную
-                            String id = c.getString(TAG_PID);
-                            String name = c.getString(TAG_NAME);
-
-                            // Создаем новый HashMap
-                            //HashMap<String, String> map = new HashMap<String, String>();
-
-                            // добавляем каждый елемент в HashMap ключ => значение
-                            // map.put(TAG_PID, id);
-                            //map.put(TAG_NAME, name);
-                            Places.add(id);
-                            PlaceDesc.add(name);
-
-
-                            // добавляем HashList в ArrayList
-                            //productsList.add(map);
-                        }
-                    }/* else {
-                        // продукт не найден
-                        // Запускаем Add New Product Activity
-                        Intent i = new Intent(getApplicationContext(),
-                                NewProductActivity.class);
-                        // Закрытие всех предыдущие activities
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-                    }*/
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-        }
-
+        public final String[] mPlaces;
+        public final String[] mPlaceDesc;
+        public final Drawable[] mPlaceAvators;
 
         public ContentAdapter(Context context) {
             Resources resources = context.getResources();
-            /*mPlaces = resources.getStringArray(R.array.places);
-            mPlaceDesc = resources.getStringArray(R.array.place_desc);*/
-            new LoadAllProducts().Load();
-            mPlaces = new String[Places.size()];
-            mPlaceDesc = new String[PlaceDesc.size()];
-            for (int i = 0; i < Places.size(); i++) {
-                mPlaces[i] = Places.get(i);
-                mPlaceDesc[i] = PlaceDesc.get(i);
-            }
+            LENGTH =6;
+            mPlaces = resources.getStringArray(R.array.places);
+            mPlaceDesc = resources.getStringArray(R.array.place_desc);
             TypedArray a = resources.obtainTypedArray(R.array.place_avator);
             mPlaceAvators = new Drawable[a.length()];
             for (int i = 0; i < mPlaceAvators.length; i++) {
@@ -181,8 +108,24 @@ public class ListContentFragment extends Fragment {
             }
             a.recycle();
         }
+        public ContentAdapter(Context context,int[] idx) {
+            Resources resources = context.getResources();
+            String[] temMPlaces = resources.getStringArray(R.array.places);
+            String[] temMPlaceDesc = resources.getStringArray(R.array.place_desc);
+            TypedArray a= resources.obtainTypedArray(R.array.place_avator);
 
+            LENGTH = idx.length;
+            mPlaces = new String[LENGTH];
+            mPlaceDesc = new String[LENGTH];
+            mPlaceAvators = new Drawable[LENGTH];
 
+            for (int i = 0; i <idx.length ; i++) {
+                mPlaces[i] = temMPlaces[idx[i]];
+                mPlaceDesc[i] = temMPlaceDesc[idx[i]];
+                mPlaceAvators[i] = a.getDrawable(idx[i]);
+            }
+            a.recycle();
+        }
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
@@ -190,9 +133,9 @@ public class ListContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.avator.setImageDrawable(mPlaceAvators[position % mPlaceAvators.length]);
-            holder.name.setText(mPlaces[position % mPlaces.length]);
-            holder.description.setText(mPlaceDesc[position % mPlaceDesc.length]);
+            holder.avator.setImageDrawable(mPlaceAvators[position]);
+            holder.name.setText(mPlaces[position]);
+            holder.description.setText(mPlaceDesc[position]);
         }
 
         @Override
