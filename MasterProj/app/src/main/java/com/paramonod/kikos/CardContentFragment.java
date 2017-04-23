@@ -130,7 +130,7 @@ public class CardContentFragment extends Fragment {
                     }
                     else{
                         favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
-                        ed.putString("q", savedText + Integer.toString(getAdapterPosition()) + " ");
+                        ed.putString("q", savedText + Integer.toString(idx[getAdapterPosition()]) + " ");
 
                         Log.e("FUCK","b");
                     }
@@ -176,7 +176,7 @@ public class CardContentFragment extends Fragment {
             Resources resources = context.getResources();
             String[] temMPictures = resources.getStringArray(R.array.places);
             String[] temMNames = resources.getStringArray(R.array.place_desc);
-            TypedArray a= resources.obtainTypedArray(R.array.place_avator);
+            TypedArray a= resources.obtainTypedArray(R.array.places_picture);
 
             LENGTH = idx.length;
             mPlaces = new String[LENGTH];

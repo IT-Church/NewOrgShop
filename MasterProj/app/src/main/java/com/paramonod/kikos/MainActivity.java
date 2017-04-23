@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     final public CategoryContentFragment CatFr = new CategoryContentFragment();
     public int x;
+    public static BottomNavigationView bottomNavigationView;
     public static Intent intent;
     public static String namme;
     public static SharedPreferences sPref;
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     public static Drawable shop;
     public static Drawable itkerk;
     public static android.widget.SearchView searchView;
+    public static NavigationView navigationView;
     final static float STANDART_ZOOM = 20.0f;
     public static String name;
     public int X;
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
        //  X = displaymetrics.widthPixels;
         System.out.println(X+ " " + Y);
         // Adding Toolbar to Main screen
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+        bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigation);
 
         Manager.findFragmentById(R.id.fragment1);
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set Tabs inside Toolbar
         // Create Navigation drawer and inlfate layout
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -332,10 +334,23 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(searchView);
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
            @Override
            public boolean onQueryTextSubmit(String query) {
-               main.searchListener(query);
+               Menu menu = bottomNavigationView.getMenu();
+               Menu mm = navigationView.getMenu();
+               if(mm.getItem(1).isChecked()){
+                   main.searchListener(query,3);
+               }
+               else
+               for (int i=0;i<bottomNavigationView.getMenu().size();i++){
+                   MenuItem menuItem = menu.getItem(i);
+                   if (menuItem.isChecked()){
+                       main.searchListener(query,i);
+                   }
+               }
+
                return false;
            }
 
@@ -581,8 +596,8 @@ public class MainActivity extends AppCompatActivity {
         o.addOverlayItem(oi);
 
     }
-    public  void searchListener(String a) {
-        try {
+    public  void searchListener(String a,int x) {
+        if(x==0)try {
             Search s = new Search();
             o.clearOverlayItems();
 
@@ -591,11 +606,124 @@ public class MainActivity extends AppCompatActivity {
         } catch (MalformedURLException q) {
             q.printStackTrace();
         }
+        if(x==1){
+            String[] q = main.getResources().getStringArray(R.array.categories_names);
+            ArrayList<Integer> www = new ArrayList<>();
+            String[] e = a.split(" ");
+            for (int i = 0;i<q.length;i++) {
+                String aa = q[i];
+                String r[] = aa.split(" ");
+                boolean w = false;
+                for (int j = 0; j <e.length ; j++) {
+                    for (int l = 0; l <r.length ; l++) {
+                        if (e[j].equalsIgnoreCase(r[l])) {
+                            w = true;
+                        }
+                    }
+                }
+                if (w) {
+                    www.add(i);
+                }
+            }
+            int[] idx = new int[www.size()];
 
+            for (int i = 0; i <www.size() ; i++) {
+                idx[i] = www.get(i);
+            }
+            CategoryContentFragment l= new CategoryContentFragment();
+            l.flag = 1;
+            l.idx = idx;
+            //  Manager.beginTransaction()
+            //          .replace(R.id.fragment1, PrFr)
+            //          .commit();
+            Manager.beginTransaction()
+                    .replace(R.id.fragment1, l)
+                    .commit();
+
+        }if(x==2){
+            String[] q = main.getResources().getStringArray(R.array.place_details);
+            ArrayList<Integer> www = new ArrayList<>();
+            String[] e = a.split(" ");
+            for (int i = 0;i<q.length;i++) {
+                String aa = q[i];
+                String r[] = aa.split(" ");
+                boolean w = false;
+                for (int j = 0; j <e.length ; j++) {
+                    for (int l = 0; l <r.length ; l++) {
+                        if (e[j].equalsIgnoreCase(r[l])) {
+                            w = true;
+                        }
+                    }
+                }
+                if (w) {
+                    www.add(i);
+                }
+            }
+            int[] idx = new int[www.size()];
+
+            for (int i = 0; i <www.size() ; i++) {
+                idx[i] = www.get(i);
+            }
+            CardContentFragment l= new CardContentFragment();
+            l.flag = 1;
+            l.idx = idx;
+            //  Manager.beginTransaction()
+            //          .replace(R.id.fragment1, PrFr)
+            //          .commit();
+            Manager.beginTransaction()
+                    .replace(R.id.fragment1, l)
+                    .commit();
+        }
+        if(x==3){
+            sPref = getPreferences(MODE_PRIVATE);
+            String savedText = sPref.getString("q","null");
+            String[] qqq = savedText.split(" ");
+            int[] xx = new int[qqq.length];
+            for (int i = 0; i < qqq.length; i++) {
+                xx[i] = Integer.parseInt(qqq[i]);
+            }
+            String[] qq = main.getResources().getStringArray(R.array.place_details);
+            String[] q = new String[xx.length];
+            for (int i = 0; i <q.length ; i++) {
+                q[i] = qq[xx[i]];
+            }
+            ArrayList<Integer> www = new ArrayList<>();
+            String[] e = a.split(" ");
+            for (int i = 0;i<q.length;i++) {
+                String aa = q[i];
+                String r[] = aa.split(" ");
+                boolean w = false;
+                for (int j = 0; j <e.length ; j++) {
+                    for (int l = 0; l <r.length ; l++) {
+                        if (e[j].equalsIgnoreCase(r[l])) {
+                            w = true;
+                        }
+                    }
+                }
+                if (w) {
+                    www.add(xx[i]);
+                }
+            }
+            int[] idx = new int[www.size()];
+
+            for (int i = 0; i <www.size() ; i++) {
+                idx[i] = www.get(i);
+            }
+            CardContentFragment l= new CardContentFragment();
+            l.flag = 1;
+            l.idx = idx;
+            //  Manager.beginTransaction()
+            //          .replace(R.id.fragment1, PrFr)
+            //          .commit();
+            Manager.beginTransaction()
+                    .replace(R.id.fragment1, l)
+                    .commit();
+        }
+        else Toast.makeText(main,Integer.toString(x),Toast.LENGTH_LONG).show();
     }
 
     public static Drawable createScaledIcon(Drawable id, int width, int height, Resources res){
-        Bitmap bitmap = ((BitmapDrawable)id ).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable)id ). getBitmap();
         // Scale it to 50 x 50
         shop = new BitmapDrawable(res, Bitmap.createScaledBitmap(bitmap, width, height, true));
         return shop;
@@ -615,7 +743,7 @@ public class MainActivity extends AppCompatActivity {
             }}
         o.setVisible(true);
 
-        //  om.addOverlay(o);
+        //  om.addOverlay(o);n
     }
 
     void selectName(){

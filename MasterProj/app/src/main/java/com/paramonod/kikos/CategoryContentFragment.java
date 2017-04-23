@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.materialdesigncodelab.R;
+import com.google.android.gms.common.api.Api;
 import com.paramonod.kikos.pack.Image;
 
 import static com.paramonod.kikos.MainActivity.main;
@@ -35,7 +36,11 @@ public class CategoryContentFragment extends Fragment {
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
+        ContentAdapter adapter;
+        if(flag == 0){
+            adapter = new ContentAdapter(recyclerView.getContext());}
+        else{
+            adapter = new ContentAdapter(recyclerView.getContext(),idx);}
 
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -105,6 +110,23 @@ public class CategoryContentFragment extends Fragment {
                     Atext[i] = q[i];
             }
 
+            a.recycle();
+        }
+        public ContentAdapter(Context context,int[] idx) {
+            Resources resources = context.getResources();
+
+            String[] q = resources.getStringArray(R.array.categories_names);
+            TypedArray a = resources.obtainTypedArray(R.array.categories_photos);
+            //    Bpic = new Drawable[a.length() / 2];
+
+            LENGTH = idx.length;
+            Atext= new String[LENGTH];
+            Apic = new Drawable[LENGTH];
+
+            for (int i = 0; i <idx.length ; i++) {
+                Apic[i] = a.getDrawable(idx[i]);
+                Atext[i] = q[idx[i]];
+            }
             a.recycle();
         }
 

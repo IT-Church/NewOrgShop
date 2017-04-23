@@ -33,9 +33,9 @@
     </string-array>
     <string-array name="place_details">
         <item>Макдональдс 228</item>
-        <item>Detail2</item>
+        <item>Detail 2</item>
         <item>Detail3</item>
-        <item>Detail4</item>
+        <item>Detail 4</item>
         <item>Detail5</item>
         <item>Detail6</item>
     </string-array>
@@ -75,7 +75,7 @@
     <string-array name="categories_names">
         <item>Овощи</item>
         <item>Уход за собой</item>
-        <item>Фрукты</item>
+        <item>Фрукты за 500р</item>
         <item>Специи</item>
     </string-array>
     <string-array name="categories_idx">

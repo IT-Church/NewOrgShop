@@ -134,8 +134,6 @@ public class Search {
                     boolean w = false;
                     for (int j = 0; j <e.length ; j++) {
                         for (int l = 0; l <r.length ; l++) {
-
-
                             if (e[j].equalsIgnoreCase(r[l])) {
                                 w = true;
                             }
