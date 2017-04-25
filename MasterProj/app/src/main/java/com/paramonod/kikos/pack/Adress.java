@@ -6,16 +6,18 @@ package com.paramonod.kikos.pack;
 public class Adress {
     private String street;
     private int house;
-    private double[] coords;
+    private double CoordX;
+    private double CoordY;
     public Adress(){
         this.street = "Novslobodskaya";
         this.house = 38;
-        this.coords= new double[]{0,0};
+        this.CoordX = 0;
+        this.CoordY = 0;
     }
 
-    public double[] getCoords() {
-        return this.coords;
-    }
+    public double getCoordX(){return this.CoordX;}
+
+    public double getCoordY(){return this.CoordY;}
 
     public int getHouse() {
         return this.house;
@@ -25,9 +27,10 @@ public class Adress {
         return this.street;
     }
 
-    public void setCoords(double[] coords) {
-        this.coords = coords;
-    }
+    public void setCoordX(double CoordX) {this.CoordX = CoordX;}
+
+    public void setCoordY(double CoordY) {this.CoordY = CoordY;}
+
 
     public void setHouse(int house) {
         this.house = house;
@@ -37,8 +40,6 @@ public class Adress {
         this.street = street;
     }
 
-    public double getP(){return this.coords[0];}
-    public double getM(){ return this.coords[1];}
     @Override
     public String toString() {
         return street+ Integer.toString(house);

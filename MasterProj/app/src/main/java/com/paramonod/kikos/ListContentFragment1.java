@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.util.SortedListAdapterCallback;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.materialdesigncodelab.R;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+import com.paramonod.kikos.pack.ShopInterface;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.StringTokenizer;
 
 /**
  * Provides UI for the view with List.
@@ -39,17 +56,17 @@ import com.example.android.materialdesigncodelab.R;
 public class ListContentFragment1 extends Fragment {
     public static int flag = 0;
     public static int[] idx;
+    //private static FirebaseAuth mAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
+        DatabaseReference myReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         ContentAdapter adapter;
-        if(flag == 0){
-         adapter = new ContentAdapter(recyclerView.getContext());}
-        else{
-            adapter = new ContentAdapter(recyclerView.getContext(),idx);}
+            adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -60,6 +77,7 @@ public class ListContentFragment1 extends Fragment {
         public ImageView avator;
         public TextView name;
         public TextView description;
+
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_list, parent, false));
             avator = (ImageView) itemView.findViewById(R.id.list_avatar);
@@ -70,9 +88,10 @@ public class ListContentFragment1 extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, DetailActivity.class);
-                    if(flag == 0)  intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
-                    else{
-                        intent.putExtra(DetailActivity.EXTRA_POSITION,idx[getAdapterPosition()]);
+                    if (flag == 0)
+                        intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    else {
+                        intent.putExtra(DetailActivity.EXTRA_POSITION, idx[getAdapterPosition()]);
                     }
                     context.startActivity(intent);
                 }
@@ -83,44 +102,47 @@ public class ListContentFragment1 extends Fragment {
     /**
      * Adapter to display recycler view.
      */
+
+
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of List in RecyclerView.
-        private static  int LENGTH =6;
+        private static int LENGTH = 6;
 
         public final String[] mPlaces;
         public final String[] mPlaceDesc;
         public final Drawable[] mPlaceAvators;
 
+        /* public ContentAdapter(Context context) {
+             Resources resources = context.getResources();
+             LENGTH =6;
+             mPlaces = resources.getStringArray(R.array.places);
+             mPlaceDesc = resources.getStringArray(R.array.place_desc);
+             TypedArray a = resources.obtainTypedArray(R.array.place_avator);
+             mPlaceAvators = new Drawable[a.length()];
+             for (int i = 0; i < mPlaceAvators.length; i++) {
+                 mPlaceAvators[i] = a.getDrawable(i);
+             }
+             a.recycle();
+         }*/
+
         public ContentAdapter(Context context) {
-            Resources resources = context.getResources();
-            LENGTH =6;
-            mPlaces = resources.getStringArray(R.array.places);
-            mPlaceDesc = resources.getStringArray(R.array.place_desc);
-            TypedArray a = resources.obtainTypedArray(R.array.place_avator);
-            mPlaceAvators = new Drawable[a.length()];
-            for (int i = 0; i < mPlaceAvators.length; i++) {
-                mPlaceAvators[i] = a.getDrawable(i);
-            }
-            a.recycle();
-        }
-        public ContentAdapter(Context context,int[] idx) {
+            //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
+            //myReference.setValue(shopInterface);
             Resources resources = context.getResources();
             String[] temMPlaces = resources.getStringArray(R.array.places);
             String[] temMPlaceDesc = resources.getStringArray(R.array.place_desc);
-            TypedArray a= resources.obtainTypedArray(R.array.place_avator);
-
-            LENGTH = idx.length;
+            TypedArray a = resources.obtainTypedArray(R.array.place_avator);
+           LENGTH = MainActivity.shopInterfaces.size();
             mPlaces = new String[LENGTH];
-            mPlaceDesc = new String[LENGTH];
+            mPlaceDesc = resources.getStringArray(R.array.place_desc);
             mPlaceAvators = new Drawable[LENGTH];
-
-            for (int i = 0; i <idx.length ; i++) {
-                mPlaces[i] = temMPlaces[idx[i]];
-                mPlaceDesc[i] = temMPlaceDesc[idx[i]];
-                mPlaceAvators[i] = a.getDrawable(idx[i]);
+            for (int i = 0; i < MainActivity.shopInterfaces.size(); i++) {
+                mPlaces[i] = MainActivity.shopInterfaces.get(i).getName();
+                mPlaceDesc[i] = MainActivity.shopInterfaces.get(i).getDescription();
             }
             a.recycle();
         }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);

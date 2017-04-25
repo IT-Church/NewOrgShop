@@ -70,7 +70,7 @@ public class MapActivity extends AppCompatActivity {
         mp = (MapView) findViewById(R.id.map);
         mp.showBuiltInScreenButtons(true);
         mc = mp.getMapController();
-        mc.setPositionAnimationTo(new GeoPoint(new Adress().getP(), new Adress().getM()));
+        mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
         mc.setZoomCurrent(STANDART_ZOOM);
         FloatingActionButton plus = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         FloatingActionButton minus = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
@@ -96,7 +96,7 @@ public class MapActivity extends AppCompatActivity {
 
         o.setVisible(true);
         om.addOverlay(o);
-        OverlayItem oi = new OverlayItem(new GeoPoint(new Adress().getP(), new Adress().getM()),
+        OverlayItem oi = new OverlayItem(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()),
                 getResources().getDrawable(R.drawable.shop));
 
         mc.getDownloader().getGeoCode(new GeoCodeListener() {
@@ -113,7 +113,7 @@ public class MapActivity extends AppCompatActivity {
             }
         },oi.getGeoPoint());
         this.makingFullStackIcon(R.drawable.orpgshop,50,50,oi.getGeoPoint());
-        OverlayItem oi2 = new OverlayItem(new GeoPoint(new Adress().getP() + 0.0001, new Adress().getM() + 0.0001), getResources().getDrawable(R.drawable.shop));
+        OverlayItem oi2 = new OverlayItem(new GeoPoint(new Adress().getCoordX() + 0.0001, new Adress().getCoordY() + 0.0001), getResources().getDrawable(R.drawable.shop));
         o.addOverlayItem(oi);
         o.addOverlayItem(oi2);
     }

@@ -1,27 +1,32 @@
 package com.paramonod.kikos.pack;
 
 import java.util.ArrayList;
+import java.util.concurrent.SynchronousQueue;
 
-
-/**
- * Created by Vadim on 09.09.2016.
- */
 public class ShopInterface {
-    private String name;
-    private Adress adress;
-    private ArrayList<Item> products;
-    private ArrayList<Sale> sales;
-    private Certificate certificate;
-    private Image photo;
+    private String Name;
+    private String Description;
+    private String street;
+    private int house;
+    private double CoordX;
+    private double CoordY;
+    //private ArrayList<Item> products;
+    //private ArrayList<Sale> sales;
+    //private Certificate certificate;
+    //private Image photo;
 
     public ShopInterface() {
-        products = new ArrayList<Item>();
-        sales = new ArrayList<Sale>();
-        name = "helloOrgShop";
-        adress = new Adress();
+    }
+    public ShopInterface(String Name, String Description, String street, String house, String CoordX, String CoordY){
+        this.Name = Name;
+        this. Description = Description;
+        this.street = street;
+        this.house = Integer.parseInt(house);
+        this.CoordX = Double.parseDouble(CoordX);
+        this.CoordY = Double.parseDouble(CoordY);
     }
 
-    private void pop(ArrayList<?> arrayList, Object whatToDelete) {
+   /* private void pop(ArrayList<?> arrayList, Object whatToDelete) {
         arrayList.remove(whatToDelete);
     }
 
@@ -48,10 +53,10 @@ public class ShopInterface {
     }
 
     public Adress getAdress() {
-        return adress;
+        return Adress;
     }
 
-    public ArrayList<Item> getProducts() {
+    /*public ArrayList<Item> getProducts() {
         return products;
     }
 
@@ -66,25 +71,54 @@ public class ShopInterface {
 
     public Image getPhoto() {
         return photo;
-    }
+    }*/
 
     public String getName() {
-        return name;
+        return Name;
+    }
+    public String getDescription() {
+        return Description;
     }
 
-    public void setAdress(Adress adress) {
-        this.adress = adress;
+    /*public void setAdress(Adress adress) {
+        this.Adress = adress;
     }
 
-    public void setCertificate(Certificate certificate) {
+    /*public void setCertificate(Certificate certificate) {
         this.certificate = certificate;
-    }
-
+    }*/
     public void setName(String name) {
-        this.name = name;
+        this.Name = name;
+    }
+    public void setDescription(String description) {
+        this.Description = description;
+    }
+    public double getCoordX(){return this.CoordX;}
+
+    public double getCoordY(){return this.CoordY;}
+
+    public int getHouse() {
+        return this.house;
     }
 
-    public void setPhoto(Image photo) {
+    public String getStreet() {
+        return this.street;
+    }
+
+    public void setCoordX(double CoordX) {this.CoordX = CoordX;}
+
+    public void setCoordY(double CoordY) {this.CoordY = CoordY;}
+
+
+    public void setHouse(int house) {
+        this.house = house;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+   /* public void setPhoto(Image photo) {
         this.photo = photo;
     }
     public Item searchItemByName(String name){
@@ -95,5 +129,5 @@ public class ShopInterface {
             }
         }
         return null;
-    }
+    }*/
 }

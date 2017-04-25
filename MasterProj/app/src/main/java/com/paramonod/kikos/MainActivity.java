@@ -27,7 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import 	android.support.v4.*;
+import android.support.v4.*;
 import android.app.SearchableInfo;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -58,13 +58,29 @@ import android.view.View;
 import android.widget.*;
 
 import com.example.android.materialdesigncodelab.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.paramonod.kikos.pack.Adress;
 import com.paramonod.kikos.pack.Image;
+import com.paramonod.kikos.pack.ShopInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -96,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     final public MapViewFragment MapFr = new MapViewFragment();
     final public ProgressView PrFr = new ProgressView();
     final public CardContentFragment Cardfr = new CardContentFragment();
-    final public ListContentFragment Listfr = new ListContentFragment();
+    final public ListContentFragment1 Listfr = new ListContentFragment1();
 
     final public CategoryContentFragment CatFr = new CategoryContentFragment();
     public int x;
@@ -119,9 +135,47 @@ public class MainActivity extends AppCompatActivity {
     public static String name;
     public int X;
     public int Y;
+    private DatabaseReference myRef;
+    public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        myRef = FirebaseDatabase.getInstance().getReference("Shops");
+        //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
+        //myRef.child("Shops").child("1").setValue(shopInterface);
+        myRef.keepSynced(true);
+
+        myRef.orderByValue().limitToLast(2).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue(ShopInterface.class));
+                shopInterfaces.add(snapshot.getValue(ShopInterface.class));
+                System.out.println(shopInterfaces);
+                //System.out.println(shopInterfaces.get(1).getCoordX());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         main = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -132,11 +186,11 @@ public class MainActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         android.graphics.Point size = new android.graphics.Point();
         display.getSize(size);
-        X= size.x;
+        X = size.x;
         Y = size.y;
-       //  Y = displaymetrics.heightPixels;
-       //  X = displaymetrics.widthPixels;
-        System.out.println(X+ " " + Y);
+        //  Y = displaymetrics.heightPixels;
+        //  X = displaymetrics.widthPixels;
+        System.out.println(X + " " + Y);
         // Adding Toolbar to Main screen
         bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigation);
@@ -153,20 +207,20 @@ public class MainActivity extends AppCompatActivity {
                         //AsyncTask asyncTask = new NewAsyncTask();
                         switch (item.getItemId()) {
                             case R.id.Map:
-                           //     Manager.beginTransaction()
-                           //             .replace(R.id.fragment1, PrFr)
-                           //             .commit();
+                                //     Manager.beginTransaction()
+                                //             .replace(R.id.fragment1, PrFr)
+                                //             .commit();
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, MapFr)
                                         .commit();
                                 //asyncTask.execute(R.id.Map);
                                 break;
                             case R.id.Shops:
-                           //     Manager.beginTransaction()
-                            //            .replace(R.id.fragment1, PrFr)
-                            //            .commit();
+                                //     Manager.beginTransaction()
+                                //            .replace(R.id.fragment1, PrFr)
+                                //            .commit();
 
-                              //  Listfr.flag = 0;
+                                //  Listfr.flag = 0;
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, CatFr)
                                         .commit();
@@ -174,11 +228,11 @@ public class MainActivity extends AppCompatActivity {
                                 //asyncTask.execute();
                                 break;
                             case R.id.Third:
-                            //    Manager.beginTransaction()
-                             //           .replace(R.id.fragment1, PrFr)
-                             //           .commit();
+                                //    Manager.beginTransaction()
+                                //           .replace(R.id.fragment1, PrFr)
+                                //           .commit();
                                 Manager.beginTransaction()
-                                        .replace(R.id.fragment1, Cardfr)
+                                        .replace(R.id.fragment1, Listfr)
                                         .commit();
 
                                 // asyncTask.execute(R.id.Third);
@@ -191,6 +245,39 @@ public class MainActivity extends AppCompatActivity {
 
         // Set Tabs inside Toolbar
         // Create Navigation drawer and inlfate layout
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        StorageReference avatorRef = storageRef.child("a_avator.png");
+
+        File localFile = null;
+        try {
+            localFile = File.createTempFile("a_avator", "png", getExternalCacheDir());
+            final File finalLocalFile = localFile;
+            avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    System.out.println("aaaaaaaaaa");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("aaaaaaaaaa");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+            }
+        });
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         // Adding menu icon to Toolbar
@@ -204,17 +291,17 @@ public class MainActivity extends AppCompatActivity {
         }
         //Set behavior of Navigation drawer
         navigationView.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-        // This method will trigger on item Click of navigation menu
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    // This method will trigger on item Click of navigation menu
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // Set item in checked state
                         menuItem.setChecked(true);
 
                         // TODO: handle navigation
-                        if(menuItem.getItemId() == R.id.favorite_button){
+                        if (menuItem.getItemId() == R.id.favorite_button) {
                             sPref = getPreferences(MODE_PRIVATE);
-                            String savedText = sPref.getString("q","null");
+                            String savedText = sPref.getString("q", "null");
                             String[] q = savedText.split(" ");
                             int[] a = new int[q.length];
                             for (int i = 0; i < q.length; i++) {
@@ -222,28 +309,28 @@ public class MainActivity extends AppCompatActivity {
                                 System.out.println(a[i]);
                             }
                             Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
-                            ListContentFragment1 l= new ListContentFragment1();
+                            ListContentFragment1 l = new ListContentFragment1();
                             l.flag = 1;
                             l.idx = a;
-                         //  Manager.beginTransaction()
-                          //          .replace(R.id.fragment1, PrFr)
-                          //          .commit();
+                            //  Manager.beginTransaction()
+                            //          .replace(R.id.fragment1, PrFr)
+                            //          .commit();
                             Manager.beginTransaction()
                                     .replace(R.id.fragment1, l)
                                     .commit();
                         }
-                        if(menuItem.getItemId() == R.id.mapButton){
-                          //  Manager.beginTransaction()
-                          //          .replace(R.id.fragment1, PrFr)
-                          //          .commit();
+                        if (menuItem.getItemId() == R.id.mapButton) {
+                            //  Manager.beginTransaction()
+                            //          .replace(R.id.fragment1, PrFr)
+                            //          .commit();
                             Manager.beginTransaction()
                                     .replace(R.id.fragment1, MapFr)
                                     .commit();
                         }
-                        if(menuItem.getItemId() == R.id.clear_button){
+                        if (menuItem.getItemId() == R.id.clear_button) {
                             sPref = main.getPreferences(MODE_PRIVATE);
                             SharedPreferences.Editor ed = sPref.edit();
-                            ed.putString("q","");
+                            ed.putString("q", "");
                             ed.commit();
                         }// Closing drawer on item click
                         mDrawerLayout.closeDrawers();
@@ -261,33 +348,34 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
     }
- /*   public class NewAsyncTask extends AsyncTask<Void, Void, Void>{
-        FragmentTransaction ft = Manager.beginTransaction();
-        @Override
-        protected Void doInBackground(Void... params) {
-            //int x = params[0];
-            //int x = 1;
-            switch (x) {
-                case R.id.Map:
-                            ft.replace(R.id.fragment1, MapFr);
-                    break;
-                case R.id.Shops:
-                            ft.replace(R.id.fragment1, Listfr);
-                    break;
-                case R.id.Third:
-                            ft.replace(R.id.fragment1, Cardfr);
-                    break;
-            }
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(Void result) {
-            ft.commit();
-        }
+    /*   public class NewAsyncTask extends AsyncTask<Void, Void, Void>{
+           FragmentTransaction ft = Manager.beginTransaction();
+           @Override
+           protected Void doInBackground(Void... params) {
+               //int x = params[0];
+               //int x = 1;
+               switch (x) {
+                   case R.id.Map:
+                               ft.replace(R.id.fragment1, MapFr);
+                       break;
+                   case R.id.Shops:
+                               ft.replace(R.id.fragment1, Listfr);
+                       break;
+                   case R.id.Third:
+                               ft.replace(R.id.fragment1, Cardfr);
+                       break;
+               }
+               return null;
+           }
 
-    }*/ {
-     // Add Fragments to Tabs
+           @Override
+           protected void onPostExecute(Void result) {
+               ft.commit();
+           }
+
+       }*/ {
+        // Add Fragments to Tabs
    /* private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new ListContentFragment(), "Shops");
@@ -324,7 +412,8 @@ public class MainActivity extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }*/
- }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -336,33 +425,32 @@ public class MainActivity extends AppCompatActivity {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
-       searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-           @Override
-           public boolean onQueryTextSubmit(String query) {
-               Menu menu = bottomNavigationView.getMenu();
-               Menu mm = navigationView.getMenu();
-               if(mm.getItem(1).isChecked()){
-                   main.searchListener(query,3);
-               }
-               else
-               for (int i=0;i<bottomNavigationView.getMenu().size();i++){
-                   MenuItem menuItem = menu.getItem(i);
-                   if (menuItem.isChecked()){
-                       main.searchListener(query,i);
-                   }
-               }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Menu menu = bottomNavigationView.getMenu();
+                Menu mm = navigationView.getMenu();
+                if (mm.getItem(1).isChecked()) {
+                    main.searchListener(query, 3);
+                } else
+                    for (int i = 0; i < bottomNavigationView.getMenu().size(); i++) {
+                        MenuItem menuItem = menu.getItem(i);
+                        if (menuItem.isChecked()) {
+                            main.searchListener(query, i);
+                        }
+                    }
 
-               return false;
-           }
+                return false;
+            }
 
-           @Override
-           public boolean onQueryTextChange(String newText) {
-               return false;
-           }
-       });
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
 
-        return  super.onCreateOptionsMenu(menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
 
@@ -382,7 +470,8 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void setupMap(){
+
+    public void setupMap() {
       /*  searchView =(android.widget.SearchView) findViewById(R.id.search);
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -397,10 +486,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 */
-        mp = (MapView)findViewById(R.id.map);
+        mp = (MapView) findViewById(R.id.map);
         mp.showBuiltInScreenButtons(true);
         mc = mp.getMapController();
-        mc.setPositionAnimationTo(new GeoPoint(new Adress().getP(), new Adress().getM()));
+        mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
         mc.setZoomCurrent(20);
         FloatingActionButton plus = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         FloatingActionButton minus = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
@@ -472,43 +561,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
     }
-    public  void makingFullStackIcon(int id, int width, int height,GeoPoint geoPoint){
-        this.makingFullStackIcon(id,width,height,geoPoint,main.getString(R.string.itch__kerk),"");
+
+    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint) {
+        this.makingFullStackIcon(id, width, height, geoPoint, main.getString(R.string.itch__kerk), "");
     }
-    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint, final String name, final String description){
-        OverlayItem oi = new OverlayItem(geoPoint,this.createScaledIcon(main.getResources().getDrawable(id),width,height,main.getResources()));
+
+    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint, final String name, final String description) {
+        OverlayItem oi = new OverlayItem(geoPoint, this.createScaledIcon(main.getResources().getDrawable(id), width, height, main.getResources()));
         BalloonItem bi = new BalloonItem(main, oi.getGeoPoint());
-        if(id == R.drawable.shop){bi.setOnBalloonListener(
-                new OnBalloonListener() {
-                    @Override
-                    public void onBalloonViewClick(BalloonItem balloonItem, View view) {
+        if (id == R.drawable.shop) {
+            bi.setOnBalloonListener(
+                    new OnBalloonListener() {
+                        @Override
+                        public void onBalloonViewClick(BalloonItem balloonItem, View view) {
+                        }
+
+                        @Override
+                        public void onBalloonShow(BalloonItem balloonItem) {
+                            Intent intent = new Intent(main, DetailActivity.class);
+                            intent.putExtra(DetailActivity.EXTRA_POSITION, 0 + (int) Math.random() * 6);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onBalloonHide(BalloonItem balloonItem) {
+
+                        }
+
+                        @Override
+                        public void onBalloonAnimationStart(BalloonItem balloonItem) {
+
+
+                        }
+
+                        @Override
+                        public void onBalloonAnimationEnd(BalloonItem balloonItem) {
+
+                        }
                     }
-
-                    @Override
-                    public void onBalloonShow(BalloonItem balloonItem) {
-                        Intent intent = new Intent(main, DetailActivity.class);
-                        intent.putExtra(DetailActivity.EXTRA_POSITION, 0 + (int)Math.random() * 6);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onBalloonHide(BalloonItem balloonItem) {
-
-                    }
-
-                    @Override
-                    public void onBalloonAnimationStart(BalloonItem balloonItem) {
-
-
-                    }
-
-                    @Override
-                    public void onBalloonAnimationEnd(BalloonItem balloonItem) {
-
-                    }
-                }
-        );}
-        else{
+            );
+        } else {
             bi.setOnBalloonListener(
                     new OnBalloonListener() {
                         @Override
@@ -520,18 +612,18 @@ public class MainActivity extends AppCompatActivity {
                             mc.getDownloader().getGeoCode(new GeoCodeListener() {
                                 @Override
                                 public boolean onFinishGeoCode(final GeoCode geoCode) {
-                                    if(geoCode!=null){
-                                        Log.e("Not so fucking","title"+geoCode.getTitle()+"\nsubtitle"+geoCode.getSubtitle()+"\ndisplayname"+geoCode.getDisplayName()+"\nkind"+geoCode.getKind());
+                                    if (geoCode != null) {
+                                        Log.e("Not so fucking", "title" + geoCode.getTitle() + "\nsubtitle" + geoCode.getSubtitle() + "\ndisplayname" + geoCode.getDisplayName() + "\nkind" + geoCode.getKind());
                                         main.name = geoCode.getTitle();
-                                    }
-                                    else{
-                                        Log.e("OMFG","fail");
+                                    } else {
+                                        Log.e("OMFG", "fail");
                                     }
                                     AsyncTask asyncTask = new AsyncTask() {
                                         @Override
                                         protected Object doInBackground(Object[] params) {
-                                            String namme="";
-                                            try{URL url = new URL("https://search-maps.yandex.ru/v1/?text="+params[0]+"&type=biz&lang=ru_RU&apikey=245e2b86-5cfb-40c3-a064-516c37dba6b2");
+                                            String namme = "";
+                                            try {
+                                                URL url = new URL("https://search-maps.yandex.ru/v1/?text=" + params[0] + "&type=biz&lang=ru_RU&apikey=245e2b86-5cfb-40c3-a064-516c37dba6b2");
 
                                                 System.out.println(url);
                                                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -554,10 +646,11 @@ public class MainActivity extends AppCompatActivity {
                                                 for (int i = 0; i < ja1.length(); i++) {
                                                     JSONObject j0 = ja1.getJSONObject(i);
                                                     JSONObject j11 = j0.getJSONObject("properties");
-                                                    main.namme +=" " +j11.getString("name");
+                                                    main.namme += " " + j11.getString("name");
                                                 }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
-                                            catch(Exception e){e.printStackTrace();}
                                             return null;
                                         }
 
@@ -569,7 +662,7 @@ public class MainActivity extends AppCompatActivity {
                                     }.execute(main.name);
                                     return true;
                                 }
-                            },balloonItem.getGeoPoint());
+                            }, balloonItem.getGeoPoint());
                             intent = new Intent(main, DetailYandexActivity.class);
 
                         }
@@ -597,26 +690,27 @@ public class MainActivity extends AppCompatActivity {
         o.addOverlayItem(oi);
 
     }
-    public  void searchListener(String a,int x) {
-        if(x==0)try {
+
+    public void searchListener(String a, int x) {
+        if (x == 0) try {
             Search s = new Search();
             o.clearOverlayItems();
 
-            s.doSearch(a,this);
+            s.doSearch(a, this);
 
         } catch (MalformedURLException q) {
             q.printStackTrace();
         }
-        if(x==1){
+        if (x == 1) {
             String[] q = main.getResources().getStringArray(R.array.categories_names);
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
-            for (int i = 0;i<q.length;i++) {
+            for (int i = 0; i < q.length; i++) {
                 String aa = q[i];
                 String r[] = aa.split(" ");
                 boolean w = false;
-                for (int j = 0; j <e.length ; j++) {
-                    for (int l = 0; l <r.length ; l++) {
+                for (int j = 0; j < e.length; j++) {
+                    for (int l = 0; l < r.length; l++) {
                         if (e[j].equalsIgnoreCase(r[l])) {
                             w = true;
                         }
@@ -628,10 +722,10 @@ public class MainActivity extends AppCompatActivity {
             }
             int[] idx = new int[www.size()];
 
-            for (int i = 0; i <www.size() ; i++) {
+            for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
-            CategoryContentFragment l= new CategoryContentFragment();
+            CategoryContentFragment l = new CategoryContentFragment();
             l.flag = 1;
             l.idx = idx;
             //  Manager.beginTransaction()
@@ -641,16 +735,17 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment1, l)
                     .commit();
 
-        }if(x==2){
+        }
+        if (x == 2) {
             String[] q = main.getResources().getStringArray(R.array.place_details);
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
-            for (int i = 0;i<q.length;i++) {
+            for (int i = 0; i < q.length; i++) {
                 String aa = q[i];
                 String r[] = aa.split(" ");
                 boolean w = false;
-                for (int j = 0; j <e.length ; j++) {
-                    for (int l = 0; l <r.length ; l++) {
+                for (int j = 0; j < e.length; j++) {
+                    for (int l = 0; l < r.length; l++) {
                         if (e[j].equalsIgnoreCase(r[l])) {
                             w = true;
                         }
@@ -662,10 +757,10 @@ public class MainActivity extends AppCompatActivity {
             }
             int[] idx = new int[www.size()];
 
-            for (int i = 0; i <www.size() ; i++) {
+            for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
-            CardContentFragment l= new CardContentFragment();
+            CardContentFragment l = new CardContentFragment();
             l.flag = 1;
             l.idx = idx;
             //  Manager.beginTransaction()
@@ -675,9 +770,9 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment1, l)
                     .commit();
         }
-        if(x==3){
+        if (x == 3) {
             sPref = getPreferences(MODE_PRIVATE);
-            String savedText = sPref.getString("q","null");
+            String savedText = sPref.getString("q", "null");
             String[] qqq = savedText.split(" ");
             int[] xx = new int[qqq.length];
             for (int i = 0; i < qqq.length; i++) {
@@ -685,17 +780,17 @@ public class MainActivity extends AppCompatActivity {
             }
             String[] qq = main.getResources().getStringArray(R.array.place_details);
             String[] q = new String[xx.length];
-            for (int i = 0; i <q.length ; i++) {
+            for (int i = 0; i < q.length; i++) {
                 q[i] = qq[xx[i]];
             }
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
-            for (int i = 0;i<q.length;i++) {
+            for (int i = 0; i < q.length; i++) {
                 String aa = q[i];
                 String r[] = aa.split(" ");
                 boolean w = false;
-                for (int j = 0; j <e.length ; j++) {
-                    for (int l = 0; l <r.length ; l++) {
+                for (int j = 0; j < e.length; j++) {
+                    for (int l = 0; l < r.length; l++) {
                         if (e[j].equalsIgnoreCase(r[l])) {
                             w = true;
                         }
@@ -707,10 +802,10 @@ public class MainActivity extends AppCompatActivity {
             }
             int[] idx = new int[www.size()];
 
-            for (int i = 0; i <www.size() ; i++) {
+            for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
-            CardContentFragment l= new CardContentFragment();
+            CardContentFragment l = new CardContentFragment();
             l.flag = 1;
             l.idx = idx;
             //  Manager.beginTransaction()
@@ -719,12 +814,11 @@ public class MainActivity extends AppCompatActivity {
             Manager.beginTransaction()
                     .replace(R.id.fragment1, l)
                     .commit();
-        }
-        else Toast.makeText(main,Integer.toString(x),Toast.LENGTH_LONG).show();
+        } else Toast.makeText(main, Integer.toString(x), Toast.LENGTH_LONG).show();
     }
 
-    public static Drawable createScaledIcon(Drawable id, int width, int height, Resources res){
-        Bitmap bitmap = ((BitmapDrawable)id ). getBitmap();
+    public static Drawable createScaledIcon(Drawable id, int width, int height, Resources res) {
+        Bitmap bitmap = ((BitmapDrawable) id).getBitmap();
         // Scale it to 50 x 50
         shop = new BitmapDrawable(res, Bitmap.createScaledBitmap(bitmap, width, height, true));
         return shop;
@@ -738,19 +832,20 @@ public class MainActivity extends AppCompatActivity {
 
         //o = new Overlay(mc);
         o.clearOverlayItems();
-        if(overlayItems != null){
+        if (overlayItems != null) {
             for (int i = 0; i < overlayItems.length; i++) {
-                this.makingFullStackIcon(R.drawable.orpgshop,55,55,overlayItems[i]);
-            }}
+                this.makingFullStackIcon(R.drawable.orpgshop, 55, 55, overlayItems[i]);
+            }
+        }
         o.setVisible(true);
 
         //  om.addOverlay(o);n
     }
 
-    void selectName(){
-        System.out.println(main.namme+ " " + main.name);
-        intent.putExtra(DetailYandexActivity.DESC,main.namme);
-        intent.putExtra("loc",main.name);
+    void selectName() {
+        System.out.println(main.namme + " " + main.name);
+        intent.putExtra(DetailYandexActivity.DESC, main.namme);
+        intent.putExtra("loc", main.name);
         startActivity(intent);
     }
 }
