@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                            //     Manager.beginTransaction()
                             //            .replace(R.id.fragment1, PrFr)
                             //            .commit();
+
                               //  Listfr.flag = 0;
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, CatFr)
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                              //           .replace(R.id.fragment1, PrFr)
                              //           .commit();
                                 Manager.beginTransaction()
-                                        .replace(R.id.fragment1, Listfr)
+                                        .replace(R.id.fragment1, Cardfr)
                                         .commit();
 
                                 // asyncTask.execute(R.id.Third);

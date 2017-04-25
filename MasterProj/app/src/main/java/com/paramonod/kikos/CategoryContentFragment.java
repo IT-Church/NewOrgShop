@@ -57,7 +57,6 @@ public class CategoryContentFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
                     int[] b;
                     String[] s = main.getResources().getStringArray(R.array.categories_idx);
                     String[] e = s[getAdapterPosition()].split(" ");

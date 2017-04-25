@@ -43,6 +43,7 @@ import com.example.android.materialdesigncodelab.R;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
+import static com.paramonod.kikos.MainActivity.jsonObject;
 import static com.paramonod.kikos.MainActivity.main;
 import static com.paramonod.kikos.MainActivity.sPref;
 
@@ -52,16 +53,18 @@ import static com.paramonod.kikos.MainActivity.sPref;
 public class CardContentFragment extends Fragment {
     public static int flag = 0;
     public static int[] idx;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         ContentAdapter adapter;
-        if(flag == 0){
-            adapter = new ContentAdapter(recyclerView.getContext());}
-        else{
-            adapter = new ContentAdapter(recyclerView.getContext(),idx);}
+        if (flag == 0) {
+            adapter = new ContentAdapter(recyclerView.getContext());
+        } else {
+            adapter = new ContentAdapter(recyclerView.getContext(), idx);
+        }
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -72,6 +75,7 @@ public class CardContentFragment extends Fragment {
         public ImageView picture;
         public TextView name;
         public TextView description;
+
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_card, parent, false));
             System.out.println(super.getItemViewType());
@@ -83,17 +87,18 @@ public class CardContentFragment extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, DetailActivity.class);
-                    if(flag == 0)  intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
-                    else{
-                        intent.putExtra(DetailActivity.EXTRA_POSITION,idx[getAdapterPosition()]);
+                    if (flag == 0)
+                        intent.putExtra(DetailActivity.EXTRA_POSITION, getAdapterPosition());
+                    else {
+                        intent.putExtra(DetailActivity.EXTRA_POSITION, idx[getAdapterPosition()]);
                     }
                     context.startActivity(intent);
                 }
             });
 
             // Adding Snackbar to Action Button inside card
-            Button button = (Button)itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener(){
+            Button button = (Button) itemView.findViewById(R.id.action_button);
+            button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Snackbar.make(v, "Action is pressed",
@@ -103,49 +108,82 @@ public class CardContentFragment extends Fragment {
 
             final ImageButton favoriteImageButton =
                     (ImageButton) itemView.findViewById(R.id.favorite_button);
-            favoriteImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-              //      Log.e("asd","Almost there");
-                Log.e("wq","I am really here");
-                    Resources resources = main.getResources();
-                    sPref = main.getPreferences(MODE_PRIVATE);
-                    SharedPreferences.Editor ed = sPref.edit();
-                    String savedText = sPref.getString("q", "null");
-                    System.out.println(savedText);
-                    if(savedText.contains(Integer.toString(getAdapterPosition()))) {
-                        favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-                        String[] s = savedText.split(Integer.toString(getAdapterPosition()));
-                        char[] q1 = s[0].toCharArray();
-                        char[] q2 = s[1].toCharArray();
-                        String res = "";
-                        for (int i = 0; i <q1.length ; i++) {
-                            res+=q1[i];
-                        }
-                        for (int i = 1; i <q2.length; i++) {
-                            res+=q2[i];
-                        }
-                        ed.putString("q",res);
-                        Log.e("FUCK","a");
-                    }
-                    else{
-                        favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
-                        ed.putString("q", savedText + Integer.toString(idx[getAdapterPosition()]) + " ");
-
-                        Log.e("FUCK","b");
-                    }
-                   ed.commit();
+            sPref = main.getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor ed = sPref.edit();
+            String savedText = sPref.getString("q", "null");
+            System.out.println(savedText);
+            if (flag == 0) {
+                if (savedText.contains(Integer.toString(getAdapterPosition()))) {
+                    favoriteImageButton.setImageDrawable(main.getDrawable(R.drawable.ic_favorite_black_24dp));
+                } else {
+                    favoriteImageButton.setImageDrawable(main.getDrawable(R.drawable.ic_favorite_border_black_24dp));
                 }
-            });
+            } else if (getAdapterPosition() != -1) {
+                favoriteImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //      Log.e("asd","Almost there");
+                        Log.e("wq", "I am really here");
+                        sPref = main.getPreferences(MODE_PRIVATE);
+                        SharedPreferences.Editor ed = sPref.edit();
+                        String savedText = sPref.getString("q", "null");
+                        System.out.println(savedText);
+                        if (flag == 0) {
+                            if (savedText.contains(Integer.toString(getAdapterPosition()))) {
+                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                                String[] s = savedText.split(Integer.toString(getAdapterPosition()));
+                                char[] q1 = s[0].toCharArray();
+                                char[] q2 = s[1].toCharArray();
+                                String res = "";
+                                for (int i = 0; i < q1.length; i++) {
+                                    res += q1[i];
+                                }
+                                for (int i = 1; i < q2.length; i++) {
+                                    res += q2[i];
+                                }
+                                ed.putString("q", res);
+                                Log.e("FUCK", "a");
+                            } else {
+                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+                                ed.putString("q", savedText + Integer.toString(getAdapterPosition()) + " ");
 
-            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-            shareImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Share article",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
+                                Log.e("FUCK", "b");
+                            }
+                        } else {
+                            if (savedText.contains(Integer.toString(idx[getAdapterPosition()]))) {
+                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                                String[] s = savedText.split(Integer.toString(idx[getAdapterPosition()]));
+                                char[] q1 = s[0].toCharArray();
+                                char[] q2 = s[1].toCharArray();
+                                String res = "";
+                                for (int i = 0; i < q1.length; i++) {
+                                    res += q1[i];
+                                }
+                                for (int i = 1; i < q2.length; i++) {
+                                    res += q2[i];
+                                }
+                                ed.putString("q", res);
+                                Log.e("FUCK", "a");
+                            } else {
+                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+                                ed.putString("q", savedText + Integer.toString(idx[getAdapterPosition()]) + " ");
+                                Log.e("FUCK", "b");
+                            }
+                        }
+                        ed.commit();
+                    }
+                });
+
+                ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
+                shareImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Snackbar.make(v, "Share article",
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+
         }
     }
 
@@ -172,51 +210,62 @@ public class CardContentFragment extends Fragment {
             }
             a.recycle();
         }
-        public ContentAdapter(Context context,int[] idx) {
-            Resources resources = context.getResources();
-            String[] temMPictures = resources.getStringArray(R.array.places);
-            String[] temMNames = resources.getStringArray(R.array.place_desc);
-            TypedArray a= resources.obtainTypedArray(R.array.places_picture);
 
-            LENGTH = idx.length;
-            mPlaces = new String[LENGTH];
-            mPlaceDesc = new String[LENGTH];
-            mPlacePictures = new Drawable[LENGTH];
 
-            for (int i = 0; i <idx.length ; i++) {
-                mPlaces[i] = temMPictures[idx[i]];
-                mPlaceDesc[i] = temMNames[idx[i]];
-                mPlacePictures[i] = a.getDrawable(idx[i]);
-            }
-            a.recycle();
+    public ContentAdapter(Context context, int[] idx) {
+        Resources resources = context.getResources();
+        String[] temMPictures = resources.getStringArray(R.array.places);
+        String[] temMNames = resources.getStringArray(R.array.place_desc);
+        TypedArray a = resources.obtainTypedArray(R.array.places_picture);
+
+        LENGTH = idx.length;
+        mPlaces = new String[LENGTH];
+        mPlaceDesc = new String[LENGTH];
+        mPlacePictures = new Drawable[LENGTH];
+
+        for (int i = 0; i < idx.length; i++) {
+            mPlaces[i] = temMPictures[idx[i]];
+            mPlaceDesc[i] = temMNames[idx[i]];
+            mPlacePictures[i] = a.getDrawable(idx[i]);
         }
+        a.recycle();
+    }
 
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
-        }
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+    }
 
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.picture.setImageDrawable(mPlacePictures[position]);
-            holder.name.setText(mPlaces[position]);
-            holder.description.setText(mPlaceDesc[position]);
-            final ImageButton favoriteImageButton =
-                    (ImageButton) holder.itemView.findViewById(R.id.favorite_button);
-            sPref = main.getPreferences(MODE_PRIVATE);
-            SharedPreferences.Editor ed = sPref.edit();
-            String savedText = sPref.getString("q", "null");
-            if(savedText.contains(Integer.toString(holder.getAdapterPosition()))){
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.picture.setImageDrawable(mPlacePictures[position]);
+        holder.name.setText(mPlaces[position]);
+        holder.description.setText(mPlaceDesc[position]);
+        final ImageButton favoriteImageButton =
+                (ImageButton) holder.itemView.findViewById(R.id.favorite_button);
+        sPref = main.getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        String savedText = sPref.getString("q", "null");
+        if (flag == 0) {
+            if (savedText.contains(Integer.toString(holder.getAdapterPosition()))) {
                 favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
-            }
-            else{
+            } else {
                 favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
             }
-        }
+        } else {
+            if (savedText.contains(Integer.toString(idx[holder.getAdapterPosition()]))) {
+                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+            } else {
+                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+            }
 
-        @Override
-        public int getItemCount() {
-            return LENGTH;
         }
     }
+
+    @Override
+    public int getItemCount() {
+        return LENGTH;
+    }
+}
+
 }
