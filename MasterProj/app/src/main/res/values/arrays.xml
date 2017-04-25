@@ -48,20 +48,20 @@
         <item>Address6</item>
     </string-array>
     <array name="place_avator">
-        <item>@drawable/a_avator</item>
-        <item>@drawable/b_avator</item>
-        <item>@drawable/c_avator</item>
-        <item>@drawable/d_avator</item>
-        <item>@drawable/e_avator</item>
-        <item>@drawable/f_avator</item>
+        <item>@drawable/a1_avator</item>
+        <item>@drawable/a2_avator</item>
+        <item>@drawable/a3_avator</item>
+        <item>@drawable/a4_avator</item>
+        <item>@drawable/a5_avator</item>
+        <item>@drawable/a6_avator</item>
     </array>
     <array name="places_picture">
-        <item>@drawable/a</item>
-        <item>@drawable/b</item>
-        <item>@drawable/c</item>
-        <item>@drawable/d</item>
-        <item>@drawable/e</item>
-        <item>@drawable/f</item>
+        <item>@drawable/a1</item>
+        <item>@drawable/a2 </item>
+        <item>@drawable/a3</item>
+        <item>@drawable/a4</item>
+        <item>@drawable/a5</item>
+        <item>@drawable/a6</item>
     </array>
     <string-array name="places_coords">
         <item>55.78522 37.596921</item>
