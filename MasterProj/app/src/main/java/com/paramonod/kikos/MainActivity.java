@@ -226,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
                                 //             .commit();
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, MapFr)
+                                        .addToBackStack(null)
                                         .commit();
                                 //asyncTask.execute(R.id.Map);
                                 break;
@@ -237,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
                                 //  Listfr.flag = 0;
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, CatFr)
+                                        .addToBackStack(null)
                                         .commit();
                                 //x = R.id.Shops;
                                 //asyncTask.execute();
@@ -252,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 Manager.beginTransaction()
                                             .replace(R.id.fragment1, Listfr)
+                                        .addToBackStack(null)
                                             .commit();
                                 //new ImageLoad().execute();
                                 //while (AsyncTest == 0){}
@@ -312,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
                             //          .commit();
                             Manager.beginTransaction()
                                     .replace(R.id.fragment1, l)
+                                    .addToBackStack(null)
                                     .commit();
                         }
                         if (menuItem.getItemId() == R.id.mapButton) {
@@ -320,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
                             //          .commit();
                             Manager.beginTransaction()
                                     .replace(R.id.fragment1, MapFr)
+                                    .addToBackStack(null)
                                     .commit();
                         }
                         if (menuItem.getItemId() == R.id.clear_button) {
@@ -357,29 +362,29 @@ public class MainActivity extends AppCompatActivity {
                     StorageReference avatorRef = storageRef.child(avatorPath + ".png");
                     System.out.println(avatorPath);
                     File temp = new File(avatorPath);
-                    File localFile = null;
-                    try {
-                        localFile = File.createTempFile(avatorPath,"png",ctx.getExternalCacheDir());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("FFFUCK1");
-                    }
+              //      File localFile = null;
+               //     try {
+          //   //           localFile = File.createTempFile(avatorPath,"png",ctx.getExternalCacheDir());
+                //    } catch (IOException e) {
+             ////           e.printStackTrace();
+             //           System.out.println("FFFUCK1");
+              //      }
                     if (!temp.isFile()) {
                         //localFile = new File(Environment.getExternalStorageDirectory().toString()+ avatorPath,"png");
                         //final File finalLocalFile = localFile;
-                        avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                q[0] = true;
-                                System.out.println("Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ");
-                                //Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                System.out.println("FFFUCK0");
-                            }
-                        });
+                      //  avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                     //       @Override
+                    //        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    //            q[0] = true;
+                    //            System.out.println("Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ");
+                   //             //Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
+                    //        }
+                   //     }).addOnFailureListener(new OnFailureListener() {
+                   //         @Override
+                  //          public void onFailure(@NonNull Exception exception) {
+                 //  //             System.out.println("FFFUCK0");
+                   //         }
+                  //      });
                     }
                 }
             }
@@ -572,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupMap() {
-      /*  searchView =(android.widget.SearchView) findViewById(R.id.search);
+        /*searchView =(android.widget.SearchView) findViewById(R.id.search);
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -585,14 +590,14 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-*/
-        mp = (MapView) findViewById(R.id.map);
+ */       mp = (MapView) findViewById(R.id.map);
         mp.showBuiltInScreenButtons(true);
         mc = mp.getMapController();
         mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
         mc.setZoomCurrent(20);
         FloatingActionButton plus = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         FloatingActionButton minus = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
+
 
         plus.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -602,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        minus.setOnTouchListener(new View.OnTouchListener() {
+         minus.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mc.setZoomCurrent(mc.getZoomCurrent() - 0.1f);
@@ -833,6 +838,7 @@ public class MainActivity extends AppCompatActivity {
             //          .commit();
             Manager.beginTransaction()
                     .replace(R.id.fragment1, l)
+                    .addToBackStack(null)
                     .commit();
 
         }
