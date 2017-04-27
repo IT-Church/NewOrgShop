@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Picturesq(ctx);
+
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         myRef = FirebaseDatabase.getInstance().getReference("Shops");
         //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth.signInAnonymously();
         myRef.keepSynced(true);
 
-        myRef.orderByValue().limitToLast(2).addChildEventListener(new ChildEventListener() {
+        myRef.orderByValue().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
                 System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue(ShopInterface.class));
@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mAuth.signOut();
+        Picturesq(ctx);
         main = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -354,11 +355,18 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 1; i < 7; i++) {
                     String avatorPath = "a" + Integer.toString(i) + "_avator";
                     StorageReference avatorRef = storageRef.child(avatorPath + ".png");
+                    System.out.println(avatorPath);
                     File temp = new File(avatorPath);
                     File localFile = null;
+                    try {
+                        localFile = File.createTempFile(avatorPath,"png",ctx.getExternalCacheDir());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("FFFUCK1");
+                    }
                     if (!temp.isFile()) {
-                        localFile = new File(Environment.getExternalStorageDirectory().toString()+ avatorPath+"png");
-                        final File finalLocalFile = localFile;
+                        //localFile = new File(Environment.getExternalStorageDirectory().toString()+ avatorPath,"png");
+                        //final File finalLocalFile = localFile;
                         avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -369,12 +377,19 @@ public class MainActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
+                                System.out.println("FFFUCK0");
                             }
                         });
                     }
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("FFFUCK");
+            }
         });
+
         mAuth.signOut();
     }
 
