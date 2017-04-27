@@ -26,6 +26,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.*;
 import android.app.SearchableInfo;
@@ -141,15 +142,19 @@ public class MainActivity extends AppCompatActivity {
     public int X;
     public int Y;
     private DatabaseReference myRef;
+    private FirebaseAuth mAuth;
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Picturesq(ctx);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         myRef = FirebaseDatabase.getInstance().getReference("Shops");
         //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
         //myRef.child("Shops").child("1").setValue(shopInterface);
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signInAnonymously();
         myRef.keepSynced(true);
 
         myRef.orderByValue().limitToLast(2).addChildEventListener(new ChildEventListener() {
@@ -183,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        mAuth.signOut();
         main = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -241,18 +247,16 @@ public class MainActivity extends AppCompatActivity {
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, PrFr)
                                         .commit();
-                                ImageLoad load = new ImageLoad();
                                 System.out.println(0);
-                                load.execute();
-                                try {
-                                    Thread.sleep(5);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                while (AsyncTest == 0){}
-                                System.out.println(1);
-                                AsyncTest = -1;
-                                /*Manager.beginTransaction()
+
+                                Manager.beginTransaction()
+                                            .replace(R.id.fragment1, Listfr)
+                                            .commit();
+                                //new ImageLoad().execute();
+                                //while (AsyncTest == 0){}
+                                //System.out.println(1);
+                                //AsyncTest = -1;
+                               /* Manager.beginTransaction()
                                         .replace(R.id.fragment1, Listfr)
                                         .commit();*/
 
@@ -262,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 });
+
         // Setting ViewPager for each Tabs
 
         // Set Tabs inside Toolbar
@@ -338,6 +343,95 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
     }
+    public static void Picturesq(final Context context){
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference storageRef = storage.getReference();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final boolean[] q = new boolean[1];
+        mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                for (int i = 1; i < 7; i++) {
+                    String avatorPath = "a" + Integer.toString(i) + "_avator";
+                    StorageReference avatorRef = storageRef.child(avatorPath + ".png");
+                    File temp = new File(avatorPath);
+                    File localFile = null;
+                    if (!temp.isFile()) {
+                        localFile = new File(Environment.getExternalStorageDirectory().toString()+ avatorPath+"png");
+                        final File finalLocalFile = localFile;
+                        avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                q[0] = true;
+                                System.out.println("Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ");
+                                //Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        mAuth.signOut();
+    }
+
+    /*class ImageLoad extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            AsyncTest = 0;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            final StorageReference storageRef = storage.getReference();
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    for (int i = 1; i < 7; i++) {
+                        String avatorPath = "a" + Integer.toString(i) + "_avator";
+                        StorageReference avatorRef = storageRef.child(avatorPath + ".png");
+                        File temp = new File(avatorPath);
+                        File localFile = null;
+                        if (!temp.isFile()) {
+                            try {
+                                localFile = File.createTempFile(avatorPath, "png", getExternalCacheDir());
+                                final File finalLocalFile = localFile;
+                                avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                        System.out.println("Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ");
+                                        Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                    }
+                                });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            });
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            System.out.println("Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ");
+            Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
+            AsyncTest = 1;
+        }
+    }*/
 
     /*   public class NewAsyncTask extends AsyncTask<Void, Void, Void>{
            FragmentTransaction ft = Manager.beginTransaction();
@@ -403,60 +497,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
     }
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    class ImageLoad extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            AsyncTest = 0;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            final StorageReference storageRef = storage.getReference();
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    for (int i = 1; i < 7; i++) {
-                        String avatorPath = "a" + Integer.toString(i) + "_avator";
-                        StorageReference avatorRef = storageRef.child(avatorPath + ".png");
-                        File temp = new File(avatorPath);
-                        File localFile = null;
-                        if (!temp.isFile()) {
-                            try {
-                                localFile = File.createTempFile(avatorPath, "png", getExternalCacheDir());
-                                final File finalLocalFile = localFile;
-                                avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                        System.out.println("Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ");
-                                        Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                    }
-                                });
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
-            AsyncTest = 1;
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

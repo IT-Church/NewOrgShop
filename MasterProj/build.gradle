@@ -22,6 +22,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url 'https://github.com/yandexmobile/yandexmapkit-android/raw/maven/' }
+        maven { url "http://dl.bintray.com/android/android-tools" }
 
     }
 }

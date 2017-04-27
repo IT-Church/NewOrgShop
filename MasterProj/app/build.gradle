@@ -36,7 +36,7 @@ android {
 }
 dependencies {
     apply plugin: 'com.google.gms.google-services'
-    'com.google.android.gms:play-services-auth:10.2.0'
+    compile 'com.google.android.gms:play-services-auth:8.4.0'
     compile 'com.google.firebase:firebase-config:10.2.0'
     compile 'com.google.firebase:firebase-database:10.2.0'
     compile 'com.google.firebase:firebase-storage:10.2.0'
@@ -55,6 +55,7 @@ dependencies {
     compile 'ru.yandex:yandexmapkit:2.5.0@aar'
     testCompile 'junit:junit:4.12'
 }
+
 android {
     useLibrary 'org.apache.http.legacy'
 }

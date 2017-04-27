@@ -20,8 +20,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,8 +66,6 @@ public class ListContentFragment1 extends Fragment {
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        DatabaseReference myReference = FirebaseDatabase.getInstance().getReference();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         ContentAdapter adapter;
             adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
@@ -134,11 +135,15 @@ public class ListContentFragment1 extends Fragment {
             TypedArray a = resources.obtainTypedArray(R.array.place_avator);
            LENGTH = MainActivity.shopInterfaces.size();
             mPlaces = new String[LENGTH];
-            mPlaceDesc = resources.getStringArray(R.array.place_desc);
+            mPlaceDesc = new String[LENGTH];
             mPlaceAvators = new Drawable[LENGTH];
+            String PictureStore = context.getCacheDir().toString();
+            PictureStore += "/";
+            System.out.println(PictureStore);
             for (int i = 0; i < MainActivity.shopInterfaces.size(); i++) {
                 mPlaces[i] = MainActivity.shopInterfaces.get(i).getName();
                 mPlaceDesc[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                mPlaceAvators[i] =(Drawable) new BitmapDrawable(BitmapFactory.decodeFile(PictureStore+MainActivity.shopInterfaces.get(i).getPictureName()));
             }
             a.recycle();
         }
