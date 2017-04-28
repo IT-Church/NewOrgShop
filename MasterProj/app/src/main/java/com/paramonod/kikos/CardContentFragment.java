@@ -60,7 +60,7 @@ public class CardContentFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         ContentAdapter adapter;
-        if(flag==1&&idx.length == 0) flag = 0;
+        if (flag == 1 && idx.length == 0) flag = 0;
         if (flag == 0) {
             adapter = new ContentAdapter(recyclerView.getContext());
         } else {
@@ -114,80 +114,80 @@ public class CardContentFragment extends Fragment {
             SharedPreferences.Editor ed = sPref.edit();
             String savedText = sPref.getString("q", "null");
             System.out.println(savedText);
-            if (flag == 0) {
-                if (savedText.contains(Integer.toString(getAdapterPosition()))) {
-                    favoriteImageButton.setImageDrawable(main.getDrawable(R.drawable.ic_favorite_black_24dp));
-                } else {
-                    favoriteImageButton.setImageDrawable(main.getDrawable(R.drawable.ic_favorite_border_black_24dp));
-                }
-            } else if (getAdapterPosition() != -1) {
-                favoriteImageButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //      Log.e("asd","Almost there");
-                        Log.e("wq", "I am really here");
-                        sPref = main.getPreferences(MODE_PRIVATE);
-                        SharedPreferences.Editor ed = sPref.edit();
-                        String savedText = sPref.getString("q", "null");
-                        System.out.println(savedText);
-                        if (flag == 0) {
-                            if (savedText.contains(Integer.toString(getAdapterPosition()))) {
-                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-                                String[] s = savedText.split(Integer.toString(getAdapterPosition()));
-                                char[] q1 = s[0].toCharArray();
-                                char[] q2 = s[1].toCharArray();
-                                String res = "";
-                                for (int i = 0; i < q1.length; i++) {
-                                    res += q1[i];
-                                }
-                                for (int i = 1; i < q2.length; i++) {
-                                    res += q2[i];
-                                }
-                                ed.putString("q", res);
-                                Log.e("FUCK", "a");
-                            } else {
-                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
-                                ed.putString("q", savedText + Integer.toString(getAdapterPosition()) + " ");
-
-                                Log.e("FUCK", "b");
-                            }
-                        } else {
-                            if (savedText.contains(Integer.toString(idx[getAdapterPosition()]))) {
-                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-                                String[] s = savedText.split(Integer.toString(idx[getAdapterPosition()]));
-                                char[] q1 = s[0].toCharArray();
-                                char[] q2 = s[1].toCharArray();
-                                String res = "";
-                                for (int i = 0; i < q1.length; i++) {
-                                    res += q1[i];
-                                }
-                                for (int i = 1; i < q2.length; i++) {
-                                    res += q2[i];
-                                }
-                                ed.putString("q", res);
-                                Log.e("FUCK", "a");
-                            } else {
-                                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
-                                ed.putString("q", savedText + Integer.toString(idx[getAdapterPosition()]) + " ");
-                                Log.e("FUCK", "b");
-                            }
-                        }
-                        ed.commit();
-                    }
-                });
-
-                ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-                shareImageButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Snackbar.make(v, "Share article",
-                                Snackbar.LENGTH_LONG).show();
-                    }
-                });
+            Log.e("card", favoriteImageButton.toString() + favoriteImageButton.getDrawable().toString());
+            Log.e("card_text", savedText);
+            Log.e("card_flag", Integer.toString(flag));
+            if (savedText.contains(Integer.toString(getAdapterPosition()))) {
+                favoriteImageButton.setImageDrawable(main.getDrawable(R.drawable.ic_favorite_black_24dp));
+            } else {
+                favoriteImageButton.setImageDrawable(main.getDrawable(R.drawable.ic_favorite_border_black_24dp));
             }
+            favoriteImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //      Log.e("asd","Almost there");
+                    Log.e("card", "I am really here");
+                    sPref = main.getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor ed = sPref.edit();
+                    String savedText = sPref.getString("q", "null");
+                    System.out.println(savedText);
+                    if (flag == 0) {
+                        if (savedText.contains(Integer.toString(getAdapterPosition()))) {
+                            favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                            String[] s = savedText.split(Integer.toString(getAdapterPosition()));
+                            char[] q1 = s[0].toCharArray();
+                            char[] q2 = s[1].toCharArray();
+                            String res = "";
+                            for (int i = 0; i < q1.length; i++) {
+                                res += q1[i];
+                            }
+                            for (int i = 1; i < q2.length; i++) {
+                                res += q2[i];
+                            }
+                            ed.putString("q", res);
+                            Log.e("FUCK", "a");
+                        } else {
+                            favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+                            ed.putString("q", savedText + Integer.toString(getAdapterPosition()) + " ");
 
+                            Log.e("FUCK", "b");
+                        }
+                    } else {
+                        if (savedText.contains(Integer.toString(idx[getAdapterPosition()]))) {
+                            favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                            String[] s = savedText.split(Integer.toString(idx[getAdapterPosition()]));
+                            char[] q1 = s[0].toCharArray();
+                            char[] q2 = s[1].toCharArray();
+                            String res = "";
+                            for (int i = 0; i < q1.length; i++) {
+                                res += q1[i];
+                            }
+                            for (int i = 1; i < q2.length; i++) {
+                                res += q2[i];
+                            }
+                            ed.putString("q", res);
+                            Log.e("FUCK", "a");
+                        } else {
+                            favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+                            ed.putString("q", savedText + Integer.toString(idx[getAdapterPosition()]) + " ");
+                            Log.e("FUCK", "b");
+                        }
+                    }
+                    ed.commit();
+                }
+            });
+
+            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
+            shareImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(v, "Share article",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            });
         }
     }
+
 
     /**
      * Adapter to display recycler view.
@@ -214,60 +214,62 @@ public class CardContentFragment extends Fragment {
         }
 
 
-    public ContentAdapter(Context context, int[] idx) {
-        Resources resources = context.getResources();
-        String[] temMPictures = resources.getStringArray(R.array.places);
-        String[] temMNames = resources.getStringArray(R.array.place_desc);
-        TypedArray a = resources.obtainTypedArray(R.array.places_picture);
+        public ContentAdapter(Context context, int[] idx) {
+            Resources resources = context.getResources();
+            String[] temMPictures = resources.getStringArray(R.array.places);
+            String[] temMNames = resources.getStringArray(R.array.place_desc);
+            TypedArray a = resources.obtainTypedArray(R.array.places_picture);
 
-        LENGTH = idx.length;
-        mPlaces = new String[LENGTH];
-        mPlaceDesc = new String[LENGTH];
-        mPlacePictures = new Drawable[LENGTH];
+            LENGTH = idx.length;
+            mPlaces = new String[LENGTH];
+            mPlaceDesc = new String[LENGTH];
+            mPlacePictures = new Drawable[LENGTH];
 
-        for (int i = 0; i < idx.length; i++) {
-            mPlaces[i] = temMPictures[idx[i]];
-            mPlaceDesc[i] = temMNames[idx[i]];
-            mPlacePictures[i] = a.getDrawable(idx[i]);
-        }
-        a.recycle();
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.picture.setImageDrawable(mPlacePictures[position]);
-        holder.name.setText(mPlaces[position]);
-        holder.description.setText(mPlaceDesc[position]);
-        final ImageButton favoriteImageButton =
-                (ImageButton) holder.itemView.findViewById(R.id.favorite_button);
-        sPref = main.getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor ed = sPref.edit();
-        String savedText = sPref.getString("q", "null");
-        if (flag == 0) {
-            if (savedText.contains(Integer.toString(holder.getAdapterPosition()))) {
-                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
-            } else {
-                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+            for (int i = 0; i < idx.length; i++) {
+                mPlaces[i] = temMPictures[idx[i]];
+                mPlaceDesc[i] = temMNames[idx[i]];
+                mPlacePictures[i] = a.getDrawable(idx[i]);
             }
-        } else {
-            if (savedText.contains(Integer.toString(idx[holder.getAdapterPosition()]))) {
-                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
-            } else {
-                favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-            }
+            a.recycle();
+        }
 
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.picture.setImageDrawable(mPlacePictures[position]);
+            holder.name.setText(mPlaces[position]);
+            holder.description.setText(mPlaceDesc[position]);
+            final ImageButton favoriteImageButton =
+                    (ImageButton) holder.itemView.findViewById(R.id.favorite_button);
+            sPref = main.getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor ed = sPref.edit();
+            String savedText = sPref.getString("q", "null");
+            Log.e("card_bind", favoriteImageButton.toString() + favoriteImageButton.getDrawable().toString());
+            Log.e("card_text", savedText);
+            if (flag == 0) {
+                if (savedText.contains(Integer.toString(holder.getAdapterPosition()))) {
+                    favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+                } else {
+                    favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                }
+            } else {
+                if (savedText.contains(Integer.toString(idx[holder.getAdapterPosition()]))) {
+                    favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
+                } else {
+                    favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                }
+
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return LENGTH;
         }
     }
-
-    @Override
-    public int getItemCount() {
-        return LENGTH;
-    }
-}
 
 }

@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println(a[i]);
                                 }
                                 Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
-                                ListContentFragment1 l = new ListContentFragment1();
+                                ListContentFragment l = new ListContentFragment();
                                 l.flag = 1;
                                 l.idx = a;
                                 //  Manager.beginTransaction()
