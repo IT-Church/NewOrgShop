@@ -15,6 +15,9 @@ import java.io.StreamCorruptedException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import ru.yandex.yandexmapkit.overlay.location.MyLocationItem;
 import ru.yandex.yandexmapkit.overlay.location.OnMyLocationListener;
@@ -32,13 +35,17 @@ public class Search {
     final static String NEW_STANDART_URL = "https://search-maps.yandex.ru/v1/?apikey=245e2b86-5cfb-40c3-a064-516c37dba6b2&lang=ru_RU&text=";
     public static URL url = null;
     public static MainActivity mainActivity = null;
-
+    public static ArrayList<GeoPoint> points;
+    public static ArrayList<GeoPoint> geoPoints;
+    public static GeoPoint my;
     public void doSearch(final String obj, MainActivity m) throws MalformedURLException {
         //this.url = new URL(STANDART_URL +obj);
         String k = "\"";
         this.url = new URL(NEW_STANDART_URL + k + obj+k+"&"+"results=500");
         System.out.println(url.toString());
         mainActivity = m;
+        points = new ArrayList<>();
+        geoPoints = new ArrayList<>();
         AsyncTask asyncTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] params) {
@@ -87,10 +94,7 @@ public class Search {
                     */
                     JSONArray ja1 = MapActivity.jsonObject.getJSONArray("features");
                     System.out.println(mc);
-                    GeoPoint my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
-                    System.out.println(my.getLat()+" " +my.getLon());
-                    float maxL = Float.MAX_VALUE;
-                    int maxI = 0;
+                    my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
                     for (int i = 0; i < ja1.length(); i++) {
                         JSONObject j0 = ja1.getJSONObject(i);
                         JSONObject j11 = j0.getJSONObject("properties");
@@ -109,20 +113,14 @@ public class Search {
                         System.out.println(resultString);
                         String[] s1 = resultString.split(" ");
                         GeoPoint curG = new GeoPoint(Double.parseDouble(s1[1]), Double.parseDouble(s1[0]));
+                        points.add(curG);
 
-                       // mainActivity.makingFullStackIcon(R.drawable.orpgshop, 55, 55, curG, name, description);
-                        if (maxL > Math.sqrt((curG.getLat() - my.getLat()) * (curG.getLat() - my.getLat()) + (curG.getLon() - my.getLon()) * (curG.getLon() - my.getLon()))) {
-                            maxL = (float) Math.sqrt((curG.getLat() - my.getLat()) * (curG.getLat() - my.getLat()) + (curG.getLon() - my.getLon()) * (curG.getLon() - my.getLon()));
-                        nearG =    curG;
-                        }
                     }
-
-                    Log.e("FUCKUP",nearG.toString());
-                    mc.setPositionAnimationTo(nearG);
                 } catch (JSONException js) {
                     System.err.println("F.U.C.K");
                     js.printStackTrace();
                 }
+
 
                 System.out.println("hi");
                 String[] geos = mainActivity.getResources().getStringArray(R.array.places_coords);
@@ -142,10 +140,47 @@ public class Search {
 
                     if (w) {
                         String[] q = geos[i].split(" ");
-                        mainActivity.makingFullStackIcon(R.drawable.shop, 55, 55, new GeoPoint(Double.parseDouble(q[0]), Double.parseDouble(q[1])));
+                        GeoPoint curG = new GeoPoint(Double.parseDouble(q[0]), Double.parseDouble(q[1]));
+                        geoPoints.add(curG);
                     }
                 }
 
+                Collections.sort(points, new Comparator<GeoPoint>() {
+                    @Override
+                    public int compare(GeoPoint o1, GeoPoint o2) {
+                        if ( Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon()))> Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
+                                return 1;
+                        }
+                        else{
+                            return -1;
+                        }
+                    }
+                });
+                Collections.sort(geoPoints,new Comparator<GeoPoint>() {
+                    @Override
+                    public int compare(GeoPoint o1, GeoPoint o2) {
+                        if ( Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon()))> Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
+                            return 1;
+                        }
+                        else{
+                            return -1;
+                        }
+                    }
+                });
+                if ( Math.sqrt((points.get(0).getLat() - my.getLat()) * (points.get(0).getLat() - my.getLat()) + (points.get(0).getLon() - my.getLon()) * (points.get(0).getLon() - my.getLon()))> Math.sqrt((geoPoints.get(0).getLat() - my.getLat()) * (geoPoints.get(0).getLat() - my.getLat()) + (geoPoints.get(0).getLon() - my.getLon()) * (geoPoints.get(0).getLon() - my.getLon()))) {
+                    mc.setPositionAnimationTo(geoPoints.get(0));
+                    System.out.println(1);
+                }
+                else{
+                    mc.setPositionAnimationTo(points.get(0));
+                    System.out.println(-1);
+                }
+                for (GeoPoint g:points) {
+                    mainActivity.makingFullStackIcon(R.drawable.orpgshop, 55, 55, g);
+                }
+                for (GeoPoint g:geoPoints) {
+                    mainActivity.makingFullStackIcon(R.drawable.shop, 55, 55, g);
+                }
             }
         }.execute();
 

@@ -682,11 +682,8 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
-    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint) {
-        this.makingFullStackIcon(id, width, height, geoPoint, main.getString(R.string.itch__kerk), "");
-    }
 
-    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint, final String name, final String description) {
+    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint) {
         OverlayItem oi = new OverlayItem(geoPoint, this.createScaledIcon(main.getResources().getDrawable(id), width, height, main.getResources()));
         BalloonItem bi = new BalloonItem(main, oi.getGeoPoint());
         if (id == R.drawable.shop) {
