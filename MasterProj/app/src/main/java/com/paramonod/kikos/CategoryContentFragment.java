@@ -37,6 +37,8 @@ public class CategoryContentFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         ContentAdapter adapter;
+        if(flag==1&&idx.length == 0) flag = 0;
+
         if(flag == 0){
             adapter = new ContentAdapter(recyclerView.getContext());}
         else{

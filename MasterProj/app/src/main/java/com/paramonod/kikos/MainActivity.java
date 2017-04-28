@@ -955,7 +955,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-       
+
             Manager.popBackStack();
 
            // Log.e("Viewq",bottomNavigationView.findFocus().toString());
