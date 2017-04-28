@@ -144,11 +144,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     private FirebaseAuth mAuth;
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         myRef = FirebaseDatabase.getInstance().getReference("Shops");
         //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
@@ -156,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInAnonymously();
         myRef.keepSynced(true);
-
         myRef.orderByValue().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
@@ -226,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                                 //             .commit();
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, MapFr)
-                                        .addToBackStack(null)
+                                        .addToBackStack("Map")
                                         .commit();
                                 //asyncTask.execute(R.id.Map);
                                 break;
@@ -238,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                                 //  Listfr.flag = 0;
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, CatFr)
-                                        .addToBackStack(null)
+                                        .addToBackStack("Categories")
                                         .commit();
                                 //x = R.id.Shops;
                                 //asyncTask.execute();
@@ -247,14 +244,14 @@ public class MainActivity extends AppCompatActivity {
                                 //    Manager.beginTransaction()
                                 //           .replace(R.id.fragment1, PrFr)
                                 //           .commit();
-                                Manager.beginTransaction()
-                                        .replace(R.id.fragment1, PrFr)
-                                        .commit();
-                                System.out.println(0);
-
+                           //     Manager.beginTransaction()
+                           //             .replace(R.id.fragment1, PrFr)
+                           //             .commit();
+                          //      System.out.println(0);
+//
                                 Manager.beginTransaction()
                                             .replace(R.id.fragment1, Listfr)
-                                        .addToBackStack(null)
+                                        .addToBackStack("List")
                                             .commit();
                                 //new ImageLoad().execute();
                                 //while (AsyncTest == 0){}
@@ -315,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                             //          .commit();
                             Manager.beginTransaction()
                                     .replace(R.id.fragment1, l)
-                                    .addToBackStack(null)
+                                    .addToBackStack("favorite")
                                     .commit();
                         }
                         if (menuItem.getItemId() == R.id.mapButton) {
@@ -324,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                             //          .commit();
                             Manager.beginTransaction()
                                     .replace(R.id.fragment1, MapFr)
-                                    .addToBackStack(null)
+                                    .addToBackStack("map")
                                     .commit();
                         }
                         if (menuItem.getItemId() == R.id.clear_button) {
@@ -838,7 +835,7 @@ public class MainActivity extends AppCompatActivity {
             //          .commit();
             Manager.beginTransaction()
                     .replace(R.id.fragment1, l)
-                    .addToBackStack(null)
+                    .addToBackStack("card")
                     .commit();
 
         }
@@ -874,6 +871,7 @@ public class MainActivity extends AppCompatActivity {
             //          .commit();
             Manager.beginTransaction()
                     .replace(R.id.fragment1, l)
+                    .addToBackStack("Card")
                     .commit();
         }
         if (x == 3) {
@@ -953,5 +951,13 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(DetailYandexActivity.DESC, main.namme);
         intent.putExtra("loc", main.name);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+       
+            Manager.popBackStack();
+
+           // Log.e("Viewq",bottomNavigationView.findFocus().toString());
     }
 }
