@@ -17,6 +17,7 @@
 package com.paramonod.kikos;
 
 import android.app.SearchManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ObbInfo;
@@ -45,6 +46,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.*;
 import android.support.v7.widget.SearchView;
@@ -331,10 +333,20 @@ public class MainActivity extends AppCompatActivity {
                                     .commit();
                         }
                         if (menuItem.getItemId() == R.id.clear_button) {
-                            sPref = main.getPreferences(MODE_PRIVATE);
-                            SharedPreferences.Editor ed = sPref.edit();
-                            ed.putString("q", "");
-                            ed.commit();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setTitle("Разрабы")
+                                    .setMessage("Для вас старались Амеличев К. aka KiKoS, Парамонов Дмитрий aka paramomnod")
+                                    .setIcon(R.drawable.itkerk)
+                                    .setCancelable(false)
+                                    .setNegativeButton("Я вам оч благодарен :)",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+
                         }// Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
