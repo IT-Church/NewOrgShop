@@ -86,6 +86,7 @@ public class CardContentFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     Context context = v.getContext();
                     Intent intent = new Intent(context, DetailActivity.class);
                     if (flag == 0)

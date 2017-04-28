@@ -147,9 +147,8 @@ public class MainActivity extends AppCompatActivity {
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         super.onCreate(savedInstanceState);
-
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         myRef = FirebaseDatabase.getInstance().getReference("Shops");
         //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
         //myRef.child("Shops").child("1").setValue(shopInterface);
@@ -252,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                           //      System.out.println(0);
 //
                                 Manager.beginTransaction()
-                                            .replace(R.id.fragment1, Listfr)
+                                            .replace(R.id.fragment1, Cardfr)
                                         .addToBackStack("List")
                                             .commit();
                                 //new ImageLoad().execute();
