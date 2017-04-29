@@ -54,6 +54,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import static com.paramonod.kikos.MainActivity.main;
+
 /**
  * Provides UI for the view with List.
  */
@@ -159,10 +161,8 @@ public class ListContentFragment1 extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Picasso.with(ctx)
+            Picasso.with(main)
                     .load(MainActivity.shopInterfaces.get(position).getPictureName())
-                    .error(R.drawable.ymk_zoom_minus)
-                    .placeholder(R.drawable.fruct)
                     .into(holder.avator);
 
             // holder.avator.setImageDrawable(mPlaceAvators[position]);
