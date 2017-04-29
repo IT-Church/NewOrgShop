@@ -10,6 +10,7 @@ public class ShopInterface {
     private int house;
     private double CoordX;
     private double CoordY;
+    private String PictureAvatorName;
     private String PictureName;
     //private ArrayList<Item> products;
     //private ArrayList<Sale> sales;
@@ -18,14 +19,16 @@ public class ShopInterface {
 
     public ShopInterface() {
     }
-    public ShopInterface(String Name, String Description, String street, String house, String CoordX, String CoordY, String PictureName){
+
+    public ShopInterface(String Name, String PictureAvatorName, String Description, String street, String house, String CoordX, String CoordY, String PictureName) {
         this.Name = Name;
-        this. Description = Description;
+        this.Description = Description;
         this.street = street;
         this.house = Integer.parseInt(house);
         this.CoordX = Double.parseDouble(CoordX);
         this.CoordY = Double.parseDouble(CoordY);
         this.PictureName = PictureName;
+        this.PictureAvatorName = PictureAvatorName;
     }
 
    /* private void pop(ArrayList<?> arrayList, Object whatToDelete) {
@@ -78,9 +81,15 @@ public class ShopInterface {
     public String getName() {
         return Name;
     }
+
+    public String getPictureAvatorName() {
+        return PictureAvatorName;
+    }
+
     public String getPictureName() {
         return PictureName;
     }
+
     public String getDescription() {
         return Description;
     }
@@ -92,18 +101,27 @@ public class ShopInterface {
     /*public void setCertificate(Certificate certificate) {
         this.certificate = certificate;
     }*/
+    public void setPictureAvatorName(String PictureAvatorName) {this.PictureAvatorName = PictureAvatorName;}
+
     public void setName(String name) {
         this.Name = name;
     }
+
     public void setPictureName(String PictureName) {
         this.PictureName = PictureName;
     }
+
     public void setDescription(String description) {
         this.Description = description;
     }
-    public double getCoordX(){return this.CoordX;}
 
-    public double getCoordY(){return this.CoordY;}
+    public double getCoordX() {
+        return this.CoordX;
+    }
+
+    public double getCoordY() {
+        return this.CoordY;
+    }
 
     public int getHouse() {
         return this.house;
@@ -113,9 +131,13 @@ public class ShopInterface {
         return this.street;
     }
 
-    public void setCoordX(double CoordX) {this.CoordX = CoordX;}
+    public void setCoordX(double CoordX) {
+        this.CoordX = CoordX;
+    }
 
-    public void setCoordY(double CoordY) {this.CoordY = CoordY;}
+    public void setCoordY(double CoordY) {
+        this.CoordY = CoordY;
+    }
 
 
     public void setHouse(int house) {
