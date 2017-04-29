@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.content.res.ObbInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -87,8 +88,11 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -141,15 +145,20 @@ public class MainActivity extends AppCompatActivity {
     public static NavigationView navigationView;
     final static float STANDART_ZOOM = 20.0f;
     public static String name;
+    public static Drawable[] bitmap;
+    public static String names[];
+    public static String urls[];
     public int X;
     public int Y;
     private DatabaseReference myRef;
     private FirebaseAuth mAuth;
 
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         myRef = FirebaseDatabase.getInstance().getReference("Shops");
         //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
@@ -164,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Q: What do dinosaurs have that no other animals have?\n A: Baby Dinosaurs. ");
                 Toast.makeText(getApplicationContext(), "Q: What do dinosaurs have that no other animals have?\n A: Baby Dinosaurs. ", Toast.LENGTH_SHORT);
                 shopInterfaces.add(snapshot.getValue(ShopInterface.class));
-                System.out.println(shopInterfaces);
+                System.out.println(shopInterfaces.get(0).getPictureName());
                 //System.out.println(shopInterfaces.get(1).getCoordX());
             }
 
@@ -189,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mAuth.signOut();
-        Picturesq(ctx);
         main = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -247,23 +255,24 @@ public class MainActivity extends AppCompatActivity {
                                 //    Manager.beginTransaction()
                                 //           .replace(R.id.fragment1, PrFr)
                                 //           .commit();
-                           //     Manager.beginTransaction()
-                           //             .replace(R.id.fragment1, PrFr)
-                           //             .commit();
-                          //      System.out.println(0);
+                                //     Manager.beginTransaction()
+                                //             .replace(R.id.fragment1, PrFr)
+                                //             .commit();
+                                //      System.out.println(0);
 //
                                 Manager.beginTransaction()
-                                            .replace(R.id.fragment1, Cardfr)
+                                        .replace(R.id.fragment1, Listfr)
                                         .addToBackStack("List")
-                                            .commit();
+                                        .commit();
                                 //new ImageLoad().execute();
                                 //while (AsyncTest == 0){}
                                 //System.out.println(1);
+                                //Picturex();
                                 //AsyncTest = -1;
-                               /* Manager.beginTransaction()
+                              /* Manager.beginTransaction()
                                         .replace(R.id.fragment1, Listfr)
-                                        .commit();*/
-
+                                        .commit();
+*/
                                 // asyncTask.execute(R.id.Third);
                                 break;
                         }
@@ -300,9 +309,9 @@ public class MainActivity extends AppCompatActivity {
                         if (menuItem.getItemId() == R.id.favorite_button) {
                             sPref = getPreferences(MODE_PRIVATE);
                             String savedText = sPref.getString("q", "null");
-                            if(savedText.equals(""))
+                            if (savedText.equals(""))
 
-                           Toast.makeText(main,"У вас пока что нет любимых магазинов", Toast.LENGTH_LONG).show();
+                                Toast.makeText(main, "У вас пока что нет любимых магазинов", Toast.LENGTH_LONG).show();
                             else {
                                 String[] q = savedText.split(" ");
                                 int[] a = new int[q.length];
@@ -364,54 +373,7 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
     }
-    public static void Picturesq(final Context context){
-        final FirebaseStorage storage = FirebaseStorage.getInstance();
-        final StorageReference storageRef = storage.getReference();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        final boolean[] q = new boolean[1];
-        mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                for (int i = 1; i < 7; i++) {
-                    String avatorPath = "a" + Integer.toString(i) + "_avator";
-                    StorageReference avatorRef = storageRef.child(avatorPath + ".png");
-                    System.out.println(avatorPath);
-                    File temp = new File(avatorPath);
-              //      File localFile = null;
-               //     try {
-          //   //           localFile = File.createTempFile(avatorPath,"png",ctx.getExternalCacheDir());
-                //    } catch (IOException e) {
-             ////           e.printStackTrace();
-             //           System.out.println("FFFUCK1");
-              //      }
-                    if (!temp.isFile()) {
-                        //localFile = new File(Environment.getExternalStorageDirectory().toString()+ avatorPath,"png");
-                        //final File finalLocalFile = localFile;
-                      //  avatorRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                     //       @Override
-                    //        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    //            q[0] = true;
-                    //            System.out.println("Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ");
-                   //             //Toast.makeText(getApplicationContext(), "Q: What do you call it when a dinosaur gets in a car accident? \nA: Tyrannasaurus wreck! ", Toast.LENGTH_SHORT);
-                    //        }
-                   //     }).addOnFailureListener(new OnFailureListener() {
-                   //         @Override
-                  //          public void onFailure(@NonNull Exception exception) {
-                 //  //             System.out.println("FFFUCK0");
-                   //         }
-                  //      });
-                    }
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("FFFUCK");
-            }
-        });
 
-        mAuth.signOut();
-    }
 
     /*class ImageLoad extends AsyncTask<Void, Void, Void> {
 
@@ -605,7 +567,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
- */       mp = (MapView) findViewById(R.id.map);
+ */
+        mp = (MapView) findViewById(R.id.map);
         mp.showBuiltInScreenButtons(true);
         mc = mp.getMapController();
         mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
@@ -622,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-         minus.setOnTouchListener(new View.OnTouchListener() {
+        minus.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mc.setZoomCurrent(mc.getZoomCurrent() - 0.1f);
@@ -971,8 +934,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-            Manager.popBackStack();
+        Manager.popBackStack();
 
-           // Log.e("Viewq",bottomNavigationView.findFocus().toString());
+        // Log.e("Viewq",bottomNavigationView.findFocus().toString());
     }
 }

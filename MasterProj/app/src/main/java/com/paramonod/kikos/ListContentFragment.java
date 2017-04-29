@@ -30,12 +30,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.materialdesigncodelab.Manifest;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.database.DatabaseReference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.example.android.materialdesigncodelab.R;
+import com.squareup.picasso.Picasso;
 
 /**
  * Provides UI for the view with List.

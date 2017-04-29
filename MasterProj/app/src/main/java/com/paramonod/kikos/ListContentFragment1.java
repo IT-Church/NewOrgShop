@@ -48,6 +48,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.paramonod.kikos.pack.ShopInterface;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Objects;
@@ -56,9 +57,12 @@ import java.util.StringTokenizer;
 /**
  * Provides UI for the view with List.
  */
+
 public class ListContentFragment1 extends Fragment {
     public static int flag = 0;
     public static int[] idx;
+    public static Context ctx;
+
     //private static FirebaseAuth mAuth;
 
     @Override
@@ -67,7 +71,7 @@ public class ListContentFragment1 extends Fragment {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         ContentAdapter adapter;
-            adapter = new ContentAdapter(recyclerView.getContext());
+        adapter = new ContentAdapter(recyclerView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -133,17 +137,17 @@ public class ListContentFragment1 extends Fragment {
             String[] temMPlaces = resources.getStringArray(R.array.places);
             String[] temMPlaceDesc = resources.getStringArray(R.array.place_desc);
             TypedArray a = resources.obtainTypedArray(R.array.place_avator);
-           LENGTH = MainActivity.shopInterfaces.size();
+            LENGTH = MainActivity.shopInterfaces.size();
             mPlaces = new String[LENGTH];
             mPlaceDesc = new String[LENGTH];
             mPlaceAvators = new Drawable[LENGTH];
             String PictureStore = context.getCacheDir().toString();
-            PictureStore += "/";
+            PictureStore += "";
             System.out.println(PictureStore);
             for (int i = 0; i < MainActivity.shopInterfaces.size(); i++) {
                 mPlaces[i] = MainActivity.shopInterfaces.get(i).getName();
                 mPlaceDesc[i] = MainActivity.shopInterfaces.get(i).getDescription();
-                mPlaceAvators[i] =(Drawable) new BitmapDrawable(BitmapFactory.decodeFile(PictureStore+MainActivity.shopInterfaces.get(i).getPictureName()));
+//                mPlaceAvators[i] = MainActivity.bitmap[i];
             }
             a.recycle();
         }
@@ -155,7 +159,13 @@ public class ListContentFragment1 extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.avator.setImageDrawable(mPlaceAvators[position]);
+            Picasso.with(ctx)
+                    .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                    .error(R.drawable.ymk_zoom_minus)
+                    .placeholder(R.drawable.fruct)
+                    .into(holder.avator);
+
+            // holder.avator.setImageDrawable(mPlaceAvators[position]);
             holder.name.setText(mPlaces[position]);
             holder.description.setText(mPlaceDesc[position]);
         }
