@@ -62,9 +62,6 @@ public class DetailActivity extends AppCompatActivity {
 
 TextView placeLocation =  (TextView) findViewById(R.id.place_location);
         placeLocation.setText(MainActivity.shopInterfaces.get(postion).getStreet() + " " +MainActivity.shopInterfaces.get(postion).getHouse());
-        String[] placeLocations = resources.getStringArray(R.array.place_locations);
-        TextView placeLocation = (TextView) findViewById(R.id.place_location);
-        placeLocation.setText(MainActivity.shopInterfaces.get(postion).getStreet() + ", " + MainActivity.shopInterfaces.get(postion).getHouse());
 
         ImageView placePicutre = (ImageView) findViewById(R.id.image);
             Picasso.with(main)
