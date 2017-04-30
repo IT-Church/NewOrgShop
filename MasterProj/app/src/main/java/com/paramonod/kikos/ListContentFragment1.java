@@ -162,7 +162,8 @@ public class ListContentFragment1 extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             Picasso.with(main)
-                    .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                    .load(MainActivity.shopInterfaces.get(position).getPictureAvatorName())
+                    .placeholder(R.drawable.ic_wallpaper_black_24dp)
                     .into(holder.avator);
 
             // holder.avator.setImageDrawable(mPlaceAvators[position]);

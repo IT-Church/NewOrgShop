@@ -52,6 +52,9 @@ public class DetailActivity extends AppCompatActivity {
         int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
         Resources resources = getResources();
 
+        String[] places = resources.getStringArray(R.array.places);
+        collapsingToolbar.setTitle(MainActivity.shopInterfaces.get(postion).getName());
+
         collapsingToolbar.setTitle(MainActivity.shopInterfaces.get(postion).getName());
 
         TextView placeDetail = (TextView) findViewById(R.id.place_detail);
@@ -59,16 +62,26 @@ public class DetailActivity extends AppCompatActivity {
 
 TextView placeLocation =  (TextView) findViewById(R.id.place_location);
         placeLocation.setText(MainActivity.shopInterfaces.get(postion).getStreet() + " " +MainActivity.shopInterfaces.get(postion).getHouse());
+        String[] placeLocations = resources.getStringArray(R.array.place_locations);
+        TextView placeLocation = (TextView) findViewById(R.id.place_location);
+        placeLocation.setText(MainActivity.shopInterfaces.get(postion).getStreet() + ", " + MainActivity.shopInterfaces.get(postion).getHouse());
 
         ImageView placePicutre = (ImageView) findViewById(R.id.image);
             Picasso.with(main)
                     .load(MainActivity.shopInterfaces.get(postion).getPictureName())
                     .into(placePicutre);
 
+        //placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
+        Picasso.with(main)
+                .load(MainActivity.shopInterfaces.get(postion).getPictureName())
+                .placeholder(R.drawable.ic_wallpaper_black_24dp)
+                .into(placePicutre);
+        //placePictures.recycle();
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-    onBackPressed();
-    return true;}
+        onBackPressed();
+        return true;
+    }
 }
