@@ -52,7 +52,6 @@ public class DetailActivity extends AppCompatActivity {
         int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
         Resources resources = getResources();
 
-        String[] places = resources.getStringArray(R.array.places);
         collapsingToolbar.setTitle(MainActivity.shopInterfaces.get(postion).getName());
 
         collapsingToolbar.setTitle(MainActivity.shopInterfaces.get(postion).getName());
@@ -71,7 +70,6 @@ TextView placeLocation =  (TextView) findViewById(R.id.place_location);
         //placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
         Picasso.with(main)
                 .load(MainActivity.shopInterfaces.get(postion).getPictureName())
-                .placeholder(R.drawable.ic_wallpaper_black_24dp)
                 .into(placePicutre);
         //placePictures.recycle();
     }

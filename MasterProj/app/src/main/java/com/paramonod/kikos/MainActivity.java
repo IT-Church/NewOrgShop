@@ -96,7 +96,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.DoubleBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -152,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     public int Y;
     private DatabaseReference myRef;
     private FirebaseAuth mAuth;
-
+    public static GeoPoint my;
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
 
     @Override
@@ -259,7 +263,13 @@ public class MainActivity extends AppCompatActivity {
                                 //             .replace(R.id.fragment1, PrFr)
                                 //             .commit();
                                 //      System.out.println(0);
-//
+                                int idx[] = new int[shopInterfaces.size()];
+                                for (int i = 0; i < idx.length; i++) {
+                                    idx[i] = i;
+                                }
+                                idx = sortArraywithGeo(idx);
+                                CardContentFragment.flag = 1;
+                                CardContentFragment.idx = idx;
                                 Manager.beginTransaction()
                                         .replace(R.id.fragment1, Cardfr)
                                         .addToBackStack(null)
@@ -319,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
                                     a[i] = Integer.parseInt(q[i]);
                                     System.out.println(a[i]);
                                 }
+                                a = sortArraywithGeo(a);
                                 Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
                                 ListContentFragment l = new ListContentFragment();
                                 l.flag = 1;
@@ -344,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                         if (menuItem.getItemId() == R.id.clear_button) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                             builder.setTitle("Разрабы")
-                                    .setMessage("Для вас старались Амеличев К. aka KiKoS, Парамонов Дмитрий aka paramomnod")
+                                    .setMessage("Для вас старались Амеличев Константин aka KiKoS, Парамонов Дмитрий aka paramomnod")
                                     .setIcon(R.drawable.itkerk)
                                     .setCancelable(false)
                                     .setNegativeButton("Я вам оч благодарен :)",
@@ -659,7 +670,15 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onBalloonShow(BalloonItem balloonItem) {
                             Intent intent = new Intent(main, DetailActivity.class);
-                            intent.putExtra(DetailActivity.EXTRA_POSITION, 0 + (int) Math.random() * 6);
+                            int m = 0;
+                            for (int i = 0; i < shopInterfaces.size(); i++) {
+                                GeoPoint g = new GeoPoint(shopInterfaces.get(i).getCoordX(),shopInterfaces.get(i).getCoordY());
+                                if(g.equals(balloonItem.getGeoPoint())){
+                                    m = i;
+                                    Log.e("Search","got here" + Integer.toString(m));
+                                }
+                            }
+                            intent.putExtra(DetailActivity.EXTRA_POSITION, m);
                             startActivity(intent);
                         }
 
@@ -782,19 +801,20 @@ public class MainActivity extends AppCompatActivity {
             q.printStackTrace();
         }
         if (x == 1) {
-            String[] q = main.getResources().getStringArray(R.array.categories_names);
+            String[] q = new String[MainActivity.shopInterfaces.size()];
+            for (int i = 0; i < q.length; i++) {
+                q[i] = MainActivity.shopInterfaces.get(i).getDescription();
+            }
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
             for (int i = 0; i < q.length; i++) {
-                String aa = q[i];
-                String r[] = aa.split(" ");
+
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    for (int l = 0; l < r.length; l++) {
-                        if (e[j].equalsIgnoreCase(r[l])) {
-                            w = true;
-                        }
+                    if (q[i].contains(e[j])) {
+                        w = true;
                     }
+
                 }
                 if (w) {
                     www.add(i);
@@ -805,6 +825,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
+            idx = sortArraywithGeo(idx);
             CategoryContentFragment l = new CategoryContentFragment();
             l.flag = 1;
             l.idx = idx;
@@ -829,11 +850,10 @@ public class MainActivity extends AppCompatActivity {
                 String r[] = aa.split(" ");
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    for (int l = 0; l < r.length; l++) {
-                        if (e[j].equalsIgnoreCase(r[l])) {
-                            w = true;
-                        }
+                    if (q[i].contains(e[j])) {
+                        w = true;
                     }
+
                 }
                 if (w) {
                     www.add(i);
@@ -844,6 +864,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
+            idx = sortArraywithGeo(idx);
             CardContentFragment l = new CardContentFragment();
             l.flag = 1;
             l.idx = idx;
@@ -878,11 +899,10 @@ public class MainActivity extends AppCompatActivity {
                 String r[] = aa.split(" ");
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    for (int l = 0; l < r.length; l++) {
-                        if (e[j].equalsIgnoreCase(r[l])) {
-                            w = true;
-                        }
+                    if (q[i].contains(e[j])) {
+                        w = true;
                     }
+
                 }
                 if (w) {
                     www.add(xx[i]);
@@ -893,6 +913,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
+            idx = sortArraywithGeo(idx);
             ListContentFragment l = new ListContentFragment();
             l.flag = 1;
             l.idx = idx;
@@ -902,8 +923,9 @@ public class MainActivity extends AppCompatActivity {
             Manager.beginTransaction()
                     .replace(R.id.fragment1, l)
                     .commit();
-        } else Toast.makeText(main, Integer.toString(x), Toast.LENGTH_LONG).show();
+        }
     }
+
     public static Drawable createScaledIcon(Drawable id, int width, int height, Resources res) {
         Bitmap bitmap = ((BitmapDrawable) id).getBitmap();
         // Scale it to 50 x 50
@@ -942,5 +964,36 @@ public class MainActivity extends AppCompatActivity {
         Manager.popBackStack();
 
         // Log.e("Viewq",bottomNavigationView.findFocus().toString());
+    }
+
+    public static int[] sortArraywithGeo(int[] idx) {
+        my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
+/*        Collections.sort(shopInterfaces, new Comparator<ShopInterface>() {
+            @Override
+            public int compare(ShopInterface o1, ShopInterface o2) {
+                GeoPoint g1 = new GeoPoint(o1.getCoordX(),o1.getCoordY());
+                GeoPoint g2 = new GeoPoint(o2.getCoordX(),o2.getCoordY());
+                if (Math.sqrt((g1.getLat() - my.getLat()) * (g1.getLat() - my.getLat()) + (g1.getLon() - my.getLon()) * (g1.getLon() - my.getLon())) > Math.sqrt((g2.getLat() - my.getLat()) * (g2.getLat() - my.getLat()) + (g2.getLon() - my.getLon()) * (g2.getLon() - my.getLon()))) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
+    */
+        for (int i = 0; i < idx.length; i++) {
+            for (int j = idx.length - 1; j > i; j--) {
+                ShopInterface o1 = shopInterfaces.get(idx[j - 1]);
+                ShopInterface o2 = shopInterfaces.get(idx[j]);
+                GeoPoint g1 = new GeoPoint(o1.getCoordX(), o1.getCoordY());
+                GeoPoint g2 = new GeoPoint(o2.getCoordX(), o2.getCoordY());
+                if (Math.sqrt((g1.getLat() - my.getLat()) * (g1.getLat() - my.getLat()) + (g1.getLon() - my.getLon()) * (g1.getLon() - my.getLon())) > Math.sqrt((g2.getLat() - my.getLat()) * (g2.getLat() - my.getLat()) + (g2.getLon() - my.getLon()) * (g2.getLon() - my.getLon()))) {
+                    int temp = idx[j - 1];
+                    idx[j - 1] = idx[j];
+                    idx[j] = temp;
+                }
+            }
+        }
+        return idx;
     }
 }

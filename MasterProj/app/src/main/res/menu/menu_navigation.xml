@@ -18,17 +18,17 @@
         <item
             android:icon="@drawable/ic_home_black_24dp"
             android:tint="@color/button_grey"
-            android:title="One"
+            android:title="Shops"
             android:id="@+id/mapButton"/>
         <item
             android:icon="@drawable/ic_favorite_black_24dp"
             android:tint="@color/button_grey"
-            android:title="Two"
+            android:title="Favorite"
             android:id="@+id/favorite_button"/>
         <item
-            android:icon="@drawable/ic_bookmark_border_black_24dp"
+            android:icon="@drawable/ic_group_black_24dp"
             android:tint="@color/button_grey"
-            android:title="Three"
+            android:title="About us"
             android:id="@+id/clear_button"/>
     </group>
 </menu>
