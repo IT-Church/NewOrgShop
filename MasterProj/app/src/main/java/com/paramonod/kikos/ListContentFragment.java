@@ -40,6 +40,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.example.android.materialdesigncodelab.R;
 import com.squareup.picasso.Picasso;
 
+import static com.paramonod.kikos.MainActivity.main;
+
 /**
  * Provides UI for the view with List.
  */
@@ -97,37 +99,31 @@ public class ListContentFragment extends Fragment {
 
         public final String[] mPlaces;
         public final String[] mPlaceDesc;
-        public final Drawable[] mPlaceAvators;
+        public final String[] mPlaceAvators;
 
         public ContentAdapter(Context context) {
-            Resources resources = context.getResources();
-            LENGTH =6;
-            mPlaces = resources.getStringArray(R.array.places);
-            mPlaceDesc = resources.getStringArray(R.array.place_desc);
-            TypedArray a = resources.obtainTypedArray(R.array.place_avator);
-            mPlaceAvators = new Drawable[a.length()];
+            LENGTH =MainActivity.shopInterfaces.size();
+            mPlaces = new String[LENGTH];
+            mPlaceDesc =new String[LENGTH];
+            mPlaceAvators = new String[LENGTH];
             for (int i = 0; i < mPlaceAvators.length; i++) {
-                mPlaceAvators[i] = a.getDrawable(i);
+                mPlaces[i] = MainActivity.shopInterfaces.get(i).getName();
+                mPlaceDesc[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                mPlaceAvators[i] = MainActivity.shopInterfaces.get(i).getPictureName();
             }
-            a.recycle();
         }
         public ContentAdapter(Context context,int[] idx) {
-            Resources resources = context.getResources();
-            String[] temMPlaces = resources.getStringArray(R.array.places);
-            String[] temMPlaceDesc = resources.getStringArray(R.array.place_desc);
-            TypedArray a= resources.obtainTypedArray(R.array.place_avator);
 
             LENGTH = idx.length;
             mPlaces = new String[LENGTH];
             mPlaceDesc = new String[LENGTH];
-            mPlaceAvators = new Drawable[LENGTH];
+            mPlaceAvators = new String [LENGTH];
 
             for (int i = 0; i <idx.length ; i++) {
-                mPlaces[i] = temMPlaces[idx[i]];
-                mPlaceDesc[i] = temMPlaceDesc[idx[i]];
-                mPlaceAvators[i] = a.getDrawable(idx[i]);
+                mPlaces[i] = MainActivity.shopInterfaces.get(idx[i]).getName();
+                mPlaceDesc[i] = MainActivity.shopInterfaces.get(idx[i]).getDescription();
+                mPlaceAvators[i] = MainActivity.shopInterfaces.get(idx[i]).getPictureName();
             }
-            a.recycle();
         }
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -136,7 +132,16 @@ public class ListContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.avator.setImageDrawable(mPlaceAvators[position]);
+            if(flag==0) {
+                Picasso.with(main)
+                        .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                        .into(holder.avator);
+            }
+            else{
+                Picasso.with(main)
+                        .load(MainActivity.shopInterfaces.get(idx[position]).getPictureName())
+                        .into(holder.avator);
+            }
             holder.name.setText(mPlaces[position]);
             holder.description.setText(mPlaceDesc[position]);
         }

@@ -38,10 +38,11 @@ public class Search {
     public static ArrayList<GeoPoint> points;
     public static ArrayList<GeoPoint> geoPoints;
     public static GeoPoint my;
+
     public void doSearch(final String obj, MainActivity m) throws MalformedURLException {
         //this.url = new URL(STANDART_URL +obj);
         String k = "\"";
-        this.url = new URL(NEW_STANDART_URL + k + obj+k+"&"+"results=500");
+        this.url = new URL(NEW_STANDART_URL + k + obj + k + "&" + "results=500");
         System.out.println(url.toString());
         mainActivity = m;
         points = new ArrayList<>();
@@ -123,15 +124,17 @@ public class Search {
 
 
                 System.out.println("hi");
-                String[] geos = mainActivity.getResources().getStringArray(R.array.places_coords);
-                String[] strings = mainActivity.getResources().getStringArray(R.array.place_details);
+                String[] strings = new String[MainActivity.shopInterfaces.size()];
+                for (int i = 0; i < strings.length; i++) {
+                    strings[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                }
                 String[] r = obj.split(" ");
-                for (int i = 0;i<strings.length;i++) {
+                for (int i = 0; i < strings.length; i++) {
                     String a = strings[i];
                     String e[] = a.split(" ");
                     boolean w = false;
-                    for (int j = 0; j <e.length ; j++) {
-                        for (int l = 0; l <r.length ; l++) {
+                    for (int j = 0; j < e.length; j++) {
+                        for (int l = 0; l < r.length; l++) {
                             if (e[j].equalsIgnoreCase(r[l])) {
                                 w = true;
                             }
@@ -139,46 +142,53 @@ public class Search {
                     }
 
                     if (w) {
-                        String[] q = geos[i].split(" ");
-                        GeoPoint curG = new GeoPoint(Double.parseDouble(q[0]), Double.parseDouble(q[1]));
+                        GeoPoint curG = new GeoPoint(MainActivity.shopInterfaces.get(i).getCoordX(), MainActivity.shopInterfaces.get(i).getCoordY());
                         geoPoints.add(curG);
                     }
                 }
 
+                Log.e("q", points.size() + "_" + geoPoints.size());
                 Collections.sort(points, new Comparator<GeoPoint>() {
                     @Override
                     public int compare(GeoPoint o1, GeoPoint o2) {
-                        if ( Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon()))> Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
-                                return 1;
-                        }
-                        else{
+                        if (Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon())) > Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
+                            return 1;
+                        } else {
                             return -1;
                         }
                     }
                 });
-                Collections.sort(geoPoints,new Comparator<GeoPoint>() {
+                Collections.sort(geoPoints, new Comparator<GeoPoint>() {
                     @Override
                     public int compare(GeoPoint o1, GeoPoint o2) {
-                        if ( Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon()))> Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
+                        if (Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon())) > Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
                             return 1;
-                        }
-                        else{
+                        } else {
                             return -1;
                         }
                     }
                 });
-                if ( Math.sqrt((points.get(0).getLat() - my.getLat()) * (points.get(0).getLat() - my.getLat()) + (points.get(0).getLon() - my.getLon()) * (points.get(0).getLon() - my.getLon()))> Math.sqrt((geoPoints.get(0).getLat() - my.getLat()) * (geoPoints.get(0).getLat() - my.getLat()) + (geoPoints.get(0).getLon() - my.getLon()) * (geoPoints.get(0).getLon() - my.getLon()))) {
-                    mc.setPositionAnimationTo(geoPoints.get(0));
-                    System.out.println(1);
+                if (points.size() != 0 && geoPoints.size() != 0) {
+                    if (Math.sqrt((points.get(0).getLat() - my.getLat()) * (points.get(0).getLat() - my.getLat()) + (points.get(0).getLon() - my.getLon()) * (points.get(0).getLon() - my.getLon())) > Math.sqrt((geoPoints.get(0).getLat() - my.getLat()) * (geoPoints.get(0).getLat() - my.getLat()) + (geoPoints.get(0).getLon() - my.getLon()) * (geoPoints.get(0).getLon() - my.getLon()))) {
+                        mc.setPositionAnimationTo(geoPoints.get(0));
+                        System.out.println(1);
+                    } else {
+                        mc.setPositionAnimationTo(points.get(0));
+                        System.out.println(-1);
+                    }
+                } else {
+                    if (points.size() == 0 && geoPoints.size() != 0) {
+                        mc.setPositionAnimationTo(geoPoints.get(0));
+                    }
+                    if (geoPoints.size() == 0 && points.size() != 0) {
+                        mc.setPositionAnimationTo(points.get(0));
+
+                    }
                 }
-                else{
-                    mc.setPositionAnimationTo(points.get(0));
-                    System.out.println(-1);
-                }
-                for (GeoPoint g:points) {
+                for (GeoPoint g : points) {
                     mainActivity.makingFullStackIcon(R.drawable.orpgshop, 55, 55, g);
                 }
-                for (GeoPoint g:geoPoints) {
+                for (GeoPoint g : geoPoints) {
                     mainActivity.makingFullStackIcon(R.drawable.shop, 55, 55, g);
                 }
             }

@@ -261,8 +261,8 @@ public class MainActivity extends AppCompatActivity {
                                 //      System.out.println(0);
 //
                                 Manager.beginTransaction()
-                                        .replace(R.id.fragment1, Listfr)
-                                        .addToBackStack("List")
+                                        .replace(R.id.fragment1, Cardfr)
+                                        .addToBackStack(null)
                                         .commit();
                                 //new ImageLoad().execute();
                                 //while (AsyncTest == 0){}
@@ -818,7 +818,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if (x == 2) {
-            String[] q = main.getResources().getStringArray(R.array.place_details);
+            String[] q = new String[MainActivity.shopInterfaces.size()];
+            for (int i = 0; i < q.length; i++) {
+                q[i] = MainActivity.shopInterfaces.get(i).getDescription();
+            }
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
             for (int i = 0; i < q.length; i++) {
@@ -860,7 +863,10 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < qqq.length; i++) {
                 xx[i] = Integer.parseInt(qqq[i]);
             }
-            String[] qq = main.getResources().getStringArray(R.array.place_details);
+            String[] qq = new String[MainActivity.shopInterfaces.size()];
+            for (int i = 0; i < qq.length; i++) {
+                qq[i] = MainActivity.shopInterfaces.get(i).getDescription();
+            }
             String[] q = new String[xx.length];
             for (int i = 0; i < q.length; i++) {
                 q[i] = qq[xx[i]];
@@ -887,7 +893,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
-            CardContentFragment l = new CardContentFragment();
+            ListContentFragment l = new ListContentFragment();
             l.flag = 1;
             l.idx = idx;
             //  Manager.beginTransaction()
@@ -898,7 +904,6 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         } else Toast.makeText(main, Integer.toString(x), Toast.LENGTH_LONG).show();
     }
-
     public static Drawable createScaledIcon(Drawable id, int width, int height, Resources res) {
         Bitmap bitmap = ((BitmapDrawable) id).getBitmap();
         // Scale it to 50 x 50

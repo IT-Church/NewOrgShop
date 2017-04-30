@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
+import com.squareup.picasso.Picasso;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
@@ -198,39 +199,34 @@ public class CardContentFragment extends Fragment {
 
         private final String[] mPlaces;
         private final String[] mPlaceDesc;
-        private final Drawable[] mPlacePictures;
+        private final String[] mPlacePictures;
 
         public ContentAdapter(Context context) {
-            LENGTH = 6;
-            Resources resources = context.getResources();
-            mPlaces = resources.getStringArray(R.array.places);
-            mPlaceDesc = resources.getStringArray(R.array.place_desc);
-            TypedArray a = resources.obtainTypedArray(R.array.places_picture);
-            mPlacePictures = new Drawable[a.length()];
+            LENGTH = MainActivity.shopInterfaces.size();
+            mPlaces = new String[LENGTH];
+            mPlaceDesc = new String[LENGTH];
+            mPlacePictures = new String[LENGTH];
             for (int i = 0; i < mPlacePictures.length; i++) {
-                mPlacePictures[i] = a.getDrawable(i);
+                mPlaces[i] = MainActivity.shopInterfaces.get(i).getName();
+                mPlaceDesc[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                mPlacePictures[i] = MainActivity.shopInterfaces.get(i).getPictureName();
             }
-            a.recycle();
         }
 
 
         public ContentAdapter(Context context, int[] idx) {
-            Resources resources = context.getResources();
-            String[] temMPictures = resources.getStringArray(R.array.places);
-            String[] temMNames = resources.getStringArray(R.array.place_desc);
-            TypedArray a = resources.obtainTypedArray(R.array.places_picture);
+
 
             LENGTH = idx.length;
             mPlaces = new String[LENGTH];
             mPlaceDesc = new String[LENGTH];
-            mPlacePictures = new Drawable[LENGTH];
+            mPlacePictures = new String[LENGTH];
 
             for (int i = 0; i < idx.length; i++) {
-                mPlaces[i] = temMPictures[idx[i]];
-                mPlaceDesc[i] = temMNames[idx[i]];
-                mPlacePictures[i] = a.getDrawable(idx[i]);
+                mPlaces[i] = MainActivity.shopInterfaces.get(idx[i]).getName();
+                mPlaceDesc[i] = MainActivity.shopInterfaces.get(idx[i]).getDescription();
+                mPlacePictures[i] = MainActivity.shopInterfaces.get(idx[i]).getPictureName();
             }
-            a.recycle();
         }
 
         @Override
@@ -240,7 +236,16 @@ public class CardContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.picture.setImageDrawable(mPlacePictures[position]);
+            if(flag==0) {
+                Picasso.with(main)
+                        .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                        .into(holder.picture);
+            }
+            else{
+                Picasso.with(main)
+                        .load(MainActivity.shopInterfaces.get(idx[position]).getPictureName())
+                        .into(holder.picture);
+            }
             holder.name.setText(mPlaces[position]);
             holder.description.setText(mPlaceDesc[position]);
             final ImageButton favoriteImageButton =
