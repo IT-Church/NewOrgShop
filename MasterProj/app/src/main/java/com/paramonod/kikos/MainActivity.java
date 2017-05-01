@@ -20,6 +20,7 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ObbInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -173,11 +174,8 @@ public class MainActivity extends AppCompatActivity {
         myRef.orderByValue().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue(ShopInterface.class));
-                System.out.println("Q: What do dinosaurs have that no other animals have?\n A: Baby Dinosaurs. ");
-                Toast.makeText(getApplicationContext(), "Q: What do dinosaurs have that no other animals have?\n A: Baby Dinosaurs. ", Toast.LENGTH_SHORT);
-                shopInterfaces.add(snapshot.getValue(ShopInterface.class));
-                System.out.println(shopInterfaces.get(0).getPictureName());
+                    shopInterfaces.add(snapshot.getValue(ShopInterface.class));
+                main.setupMap();
                 //System.out.println(shopInterfaces.get(1).getCoordX());
             }
 
@@ -222,9 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.navigation);
 
         Manager.findFragmentById(R.id.fragment1);
-        Manager.beginTransaction()
-                .replace(R.id.fragment1, MapFr)
-                .commit();
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -382,7 +378,9 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });*/
-
+        Manager.beginTransaction()
+                .replace(R.id.fragment1, MapFr)
+                .commit();
     }
 
 
@@ -582,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
         mp = (MapView) findViewById(R.id.map);
         mp.showBuiltInScreenButtons(true);
         mc = mp.getMapController();
-        mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
+       // mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
         mc.setZoomCurrent(20);
         FloatingActionButton plus = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         FloatingActionButton minus = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
@@ -654,6 +652,20 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });*/
+        //   Log.e("points","here");
+        //     Log.e("points",Integer.toString(shopInterfaces.size()));
+        GeoPoint[] g = new GeoPoint[shopInterfaces.size()];
+        for (int i = 0; i < g.length; i++) {
+            g[i] = new GeoPoint(shopInterfaces.get(i).getCoordX(), shopInterfaces.get(i).getCoordY());
+            Log.e("points", g[i].toString());
+        }
+        updatePins(g);
+      //  try {
+        //   my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
+      //      mc.setPositionAnimationTo(my);
+     //   } catch (NullPointerException e) {
+     //       System.out.println("КМС по ловле NPE");
+     //   }
     }
 
 
@@ -672,10 +684,10 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(main, DetailActivity.class);
                             int m = 0;
                             for (int i = 0; i < shopInterfaces.size(); i++) {
-                                GeoPoint g = new GeoPoint(shopInterfaces.get(i).getCoordX(),shopInterfaces.get(i).getCoordY());
-                                if(g.equals(balloonItem.getGeoPoint())){
+                                GeoPoint g = new GeoPoint(shopInterfaces.get(i).getCoordX(), shopInterfaces.get(i).getCoordY());
+                                if (g.equals(balloonItem.getGeoPoint())) {
                                     m = i;
-                                    Log.e("Search","got here" + Integer.toString(m));
+                                    Log.e("Search", "got here" + Integer.toString(m));
                                 }
                             }
                             intent.putExtra(DetailActivity.EXTRA_POSITION, m);
@@ -943,7 +955,7 @@ public class MainActivity extends AppCompatActivity {
         o.clearOverlayItems();
         if (overlayItems != null) {
             for (int i = 0; i < overlayItems.length; i++) {
-                this.makingFullStackIcon(R.drawable.orpgshop, 55, 55, overlayItems[i]);
+                this.makingFullStackIcon(R.drawable.shop, 55, 55, overlayItems[i]);
             }
         }
         o.setVisible(true);
@@ -968,6 +980,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static int[] sortArraywithGeo(int[] idx) {
         my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
+        mc.setPositionAnimationTo(my);
 /*        Collections.sort(shopInterfaces, new Comparator<ShopInterface>() {
             @Override
             public int compare(ShopInterface o1, ShopInterface o2) {

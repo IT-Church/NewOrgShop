@@ -12,6 +12,7 @@ public class ShopInterface {
     private double CoordY;
     private String PictureAvatorName;
     private String PictureName;
+    private String Categories;
     //private ArrayList<Item> products;
     //private ArrayList<Sale> sales;
     //private Certificate certificate;
@@ -20,7 +21,7 @@ public class ShopInterface {
     public ShopInterface() {
     }
 
-    public ShopInterface(String Name, String PictureAvatorName, String Description, String street, String house, String CoordX, String CoordY, String PictureName) {
+    public ShopInterface(String Name, String PictureAvatorName, String Description, String street, String house, String CoordX, String CoordY, String PictureName,String categories) {
         this.Name = Name;
         this.Description = Description;
         this.street = street;
@@ -29,6 +30,7 @@ public class ShopInterface {
         this.CoordY = Double.parseDouble(CoordY);
         this.PictureName = PictureName;
         this.PictureAvatorName = PictureAvatorName;
+        this.Categories = categories;
     }
 
    /* private void pop(ArrayList<?> arrayList, Object whatToDelete) {
@@ -77,6 +79,14 @@ public class ShopInterface {
     public Image getPhoto() {
         return photo;
     }*/
+
+    public String getCategories() {
+        return Categories;
+    }
+
+    public void setCategories(String categories) {
+        Categories = categories;
+    }
 
     public String getName() {
         return Name;

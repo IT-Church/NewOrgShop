@@ -21,7 +21,11 @@ import com.example.android.materialdesigncodelab.R;
 import com.google.android.gms.common.api.Api;
 import com.paramonod.kikos.pack.Image;
 
+import java.util.ArrayList;
+
 import static com.paramonod.kikos.MainActivity.main;
+import static com.paramonod.kikos.MainActivity.shopInterfaces;
+import static com.paramonod.kikos.MainActivity.sortArraywithGeo;
 
 /**
  * Created by KiKoS on 11.04.2017.
@@ -59,13 +63,20 @@ public class CategoryContentFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ArrayList<Integer> ar = new ArrayList<Integer>();
                     int[] b;
-                    String[] s = main.getResources().getStringArray(R.array.categories_idx);
-                    String[] e = s[getAdapterPosition()].split(" ");
-                    b = new int[e.length];
-                    for (int i = 0; i <e.length ; i++) {
-                        b[i] = Integer.parseInt(e[i]);
+                    int len = 0;
+                    for (int i = 0; i <shopInterfaces.size() ; i++) {
+                        if(shopInterfaces.get(i).getCategories().contains(Integer.toString(getAdapterPosition() + 1))){
+                            len++;
+                            ar.add(i);
+                        }
                     }
+                    b = new int[len];
+                    for (int i = 0; i < b.length; i++) {
+                        b[i] = ar.get(i);
+                    }
+                    b = sortArraywithGeo(b);
                     CardContentFragment l= new CardContentFragment();
                     l.flag = 1;
                     l.idx = b;

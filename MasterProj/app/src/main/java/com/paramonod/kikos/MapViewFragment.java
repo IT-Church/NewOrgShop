@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import com.example.android.materialdesigncodelab.R;
 
 import static com.paramonod.kikos.MainActivity.main;
+import static com.paramonod.kikos.MainActivity.mc;
+import static com.paramonod.kikos.MainActivity.my;
 
 /**
  * Created by Dmitry Paramonov on 12/29/2016.
@@ -21,11 +23,10 @@ public class MapViewFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       // View map = inflater.inflate(R.layout.map,container);
+        // View map = inflater.inflate(R.layout.map,container);
 
         return inflater.inflate(R.layout.map, container, false);
     }
-
     @Override
     public void onStart() {
         super.onStart();
