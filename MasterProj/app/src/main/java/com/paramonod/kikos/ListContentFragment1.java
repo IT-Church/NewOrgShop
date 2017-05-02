@@ -36,7 +36,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.*;
 import com.google.firebase.auth.FirebaseAuth;

@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 
 /**
  * Created by KiKoS on 08.04.2017.

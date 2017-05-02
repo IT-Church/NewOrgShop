@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 
 /**
  * Created by Dmitry Paramonov on 12/29/2016.

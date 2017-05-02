@@ -30,5 +30,11 @@
             android:tint="@color/button_grey"
             android:title="About us"
             android:id="@+id/clear_button"/>
+        <item
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:tint="@color/button_grey"
+            android:title="Acoount"
+            android:id="@+id/login_button"
+            />
     </group>
 </menu>

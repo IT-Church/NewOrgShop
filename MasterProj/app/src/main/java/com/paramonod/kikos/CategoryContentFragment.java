@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 import com.google.android.gms.common.api.Api;
 import com.paramonod.kikos.pack.Image;
 

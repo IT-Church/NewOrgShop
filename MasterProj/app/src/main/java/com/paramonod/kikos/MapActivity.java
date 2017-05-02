@@ -14,7 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.SearchView;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 import com.paramonod.kikos.pack.Adress;
 
 import org.json.JSONObject;

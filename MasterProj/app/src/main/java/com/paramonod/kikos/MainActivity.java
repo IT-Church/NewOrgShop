@@ -17,93 +17,59 @@
 package com.paramonod.kikos;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.res.ObbInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.*;
-import android.app.SearchableInfo;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.*;
-import android.content.Context;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.MenuItem;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.*;
+import android.widget.Toast;
 
-import com.example.android.materialdesigncodelab.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.paramonod.kikos.pack.Adress;
-import com.paramonod.kikos.pack.Image;
 import com.paramonod.kikos.pack.ShopInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.DoubleBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import ru.yandex.yandexmapkit.MapController;
 import ru.yandex.yandexmapkit.MapView;
@@ -115,9 +81,6 @@ import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
 import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
-import ru.yandex.yandexmapkit.utils.Point;
-
-import static ru.yandex.core.CoreApplication.getActivity;
 
 
 /**
@@ -265,7 +228,11 @@ public class MainActivity extends AppCompatActivity {
                                 for (int i = 0; i < idx.length; i++) {
                                     idx[i] = i;
                                 }
-                                idx = sortArraywithGeo(idx);
+                                try {
+                                    idx = sortArraywithGeo(idx);
+                                } catch (RuntimeException e){
+                                    e.printStackTrace();
+                                }
                                 CardContentFragment.flag = 1;
                                 CardContentFragment.idx = idx;
                                 Manager.beginTransaction()
@@ -293,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         // Set Tabs inside Toolbar
         // Create Navigation drawer and inlfate layout
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -305,71 +272,83 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
         //Set behavior of Navigation drawer
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
+            navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(
+                    new NavigationView.OnNavigationItemSelectedListener() {
+                        // This method will trigger on item Click of navigation menu
+                        @Override
+                        public boolean onNavigationItemSelected(MenuItem menuItem) {
+                            // Set item in checked state
+                            menuItem.setChecked(true);
+                            if (menuItem.getItemId() == R.id.favorite_button) {
+                                sPref = getPreferences(MODE_PRIVATE);
+                                String savedText = sPref.getString("q", "null");
+                                if (savedText.equals(""))
 
-                        // TODO: handle navigation
-                        if (menuItem.getItemId() == R.id.favorite_button) {
-                            sPref = getPreferences(MODE_PRIVATE);
-                            String savedText = sPref.getString("q", "null");
-                            if (savedText.equals(""))
-
-                                Toast.makeText(main, "У вас пока что нет любимых магазинов", Toast.LENGTH_LONG).show();
-                            else {
-                                String[] q = savedText.split(" ");
-                                int[] a = new int[q.length];
-                                for (int i = 0; i < q.length; i++) {
-                                    a[i] = Integer.parseInt(q[i]);
-                                    System.out.println(a[i]);
+                                    Toast.makeText(main, "У вас пока что нет любимых магазинов", Toast.LENGTH_LONG).show();
+                                else {
+                                    String[] q = savedText.split(" ");
+                                    int[] a = new int[q.length];
+                                    for (int i = 0; i < q.length; i++) {
+                                        a[i] = Integer.parseInt(q[i]);
+                                        System.out.println(a[i]);
+                                    }
+                                    try {
+                                        a = sortArraywithGeo(a);
+                                    } catch (RuntimeException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
+                                    ListContentFragment l = new ListContentFragment();
+                                    l.flag = 1;
+                                    l.idx = a;
+                                    //  Manager.beginTransaction()
+                                    //          .replace(R.id.fragment1, PrFr)
+                                    //          .commit();
+                                    Manager.beginTransaction()
+                                            .replace(R.id.fragment1, l)
+                                            .addToBackStack("favorite")
+                                            .commit();
                                 }
-                                a = sortArraywithGeo(a);
-                                Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
-                                ListContentFragment l = new ListContentFragment();
-                                l.flag = 1;
-                                l.idx = a;
+                            }
+                            if (menuItem.getItemId() == R.id.mapButton) {
                                 //  Manager.beginTransaction()
                                 //          .replace(R.id.fragment1, PrFr)
                                 //          .commit();
                                 Manager.beginTransaction()
-                                        .replace(R.id.fragment1, l)
-                                        .addToBackStack("favorite")
+                                        .replace(R.id.fragment1, MapFr)
+                                        .addToBackStack("map")
                                         .commit();
                             }
-                        }
-                        if (menuItem.getItemId() == R.id.mapButton) {
-                            //  Manager.beginTransaction()
-                            //          .replace(R.id.fragment1, PrFr)
-                            //          .commit();
-                            Manager.beginTransaction()
-                                    .replace(R.id.fragment1, MapFr)
-                                    .addToBackStack("map")
-                                    .commit();
-                        }
-                        if (menuItem.getItemId() == R.id.clear_button) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setTitle("Разрабы")
-                                    .setMessage("Для вас старались Амеличев Константин aka KiKoS, Парамонов Дмитрий aka paramomnod")
-                                    .setIcon(R.drawable.itkerk)
-                                    .setCancelable(false)
-                                    .setNegativeButton("Я вам оч благодарен :)",
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                }
-                                            });
-                            AlertDialog alert = builder.create();
-                            alert.show();
+                            if (menuItem.getItemId() == R.id.clear_button) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle("Разрабы")
+                                        .setMessage("Для вас старались Амеличев Константин aka KiKoS, Парамонов Дмитрий aka paramomnod")
+                                        .setIcon(R.drawable.itkerk)
+                                        .setCancelable(false)
+                                        .setNegativeButton("Я вам оч благодарен :)",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                    }
+                                                });
+                                AlertDialog alert = builder.create();
+                                alert.show();
 
-                        }// Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
+                            }
+                            if (menuItem.getItemId() == R.id.login_button) {
+                                if (mAuth.getCurrentUser() == null) {
+                                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                } else {
+                                    startActivity(new Intent(MainActivity.this,AccountActivity.class));
+                                }
+
+                            }
+                            // Closing drawer on item click
+                            mDrawerLayout.closeDrawers();
+                            return true;
+                        }
+                    });
 
         // Adding Floating Action Button to bottom right of main view
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

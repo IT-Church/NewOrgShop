@@ -44,7 +44,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 import com.paramonod.kikos.pack.Image;
 import com.squareup.picasso.Picasso;
 

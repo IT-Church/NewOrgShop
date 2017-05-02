@@ -31,13 +31,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.Manifest;
+import com.paramonod.kikos.Manifest;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.database.DatabaseReference;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.FirebaseDatabase;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 import com.squareup.picasso.Picasso;
 
 import static com.paramonod.kikos.MainActivity.main;

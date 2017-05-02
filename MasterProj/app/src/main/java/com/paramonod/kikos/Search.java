@@ -3,7 +3,7 @@ package com.paramonod.kikos;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
