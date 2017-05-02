@@ -117,6 +117,8 @@ import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
 import ru.yandex.yandexmapkit.utils.Point;
 
+import static ru.yandex.core.CoreApplication.getActivity;
+
 
 /**
  * Provides UI for the main screen.
@@ -521,16 +523,32 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 Menu menu = bottomNavigationView.getMenu();
                 Menu mm = navigationView.getMenu();
-                if (mm.getItem(1).isChecked()) {
-                    main.searchListener(query, 3);
-                } else
-                    for (int i = 0; i < bottomNavigationView.getMenu().size(); i++) {
-                        MenuItem menuItem = menu.getItem(i);
-                        if (menuItem.isChecked()) {
-                            main.searchListener(query, i);
-                        }
-                    }
+                FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+                List<Fragment> fragments = fragmentManager.getFragments();
+                Fragment f = null;
+                System.out.println(fragments);
+                if(fragments != null){
+                    for(Fragment fragment : fragments){
+                        if(fragment != null && fragment.isVisible())
+                           f = fragment;
+                        System.out.println(f);                    }
+                }
+                if(f instanceof CardContentFragment){
+                    main.searchListener(query, 2);
 
+                }
+                if(f instanceof CategoryContentFragment){
+                    main.searchListener(query, 1);
+
+                }
+                if(f instanceof MapViewFragment){
+                    main.searchListener(query, 0);
+
+                }
+                if(f instanceof ListContentFragment)
+                {
+                    main.searchListener(query,3);
+                }
                 return false;
             }
 
@@ -803,6 +821,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchListener(String a, int x) {
+        Log.e("POISK",Integer.toString(x));
         if (x == 0) try {
             Search s = new Search();
             o.clearOverlayItems();
@@ -813,10 +832,9 @@ public class MainActivity extends AppCompatActivity {
             q.printStackTrace();
         }
         if (x == 1) {
-            String[] q = new String[MainActivity.shopInterfaces.size()];
-            for (int i = 0; i < q.length; i++) {
-                q[i] = MainActivity.shopInterfaces.get(i).getDescription();
-            }
+
+            String[] q = main.getResources().getStringArray(R.array.categories_names);
+
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
             for (int i = 0; i < q.length; i++) {
@@ -837,7 +855,6 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
-            idx = sortArraywithGeo(idx);
             CategoryContentFragment l = new CategoryContentFragment();
             l.flag = 1;
             l.idx = idx;

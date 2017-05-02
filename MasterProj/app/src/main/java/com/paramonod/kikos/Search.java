@@ -129,14 +129,15 @@ public class Search {
                     strings[i] = MainActivity.shopInterfaces.get(i).getDescription();
                 }
                 String[] r = obj.split(" ");
+                System.out.println(r);
                 for (int i = 0; i < strings.length; i++) {
                     String a = strings[i];
                     String e[] = a.split(" ");
                     boolean w = false;
-                    for (int j = 0; j < e.length; j++) {
-                        if (strings[i].contains(e[j])) {
+                    for (int j = 0; j < r.length; j++) {
+                        if (strings[i].contains(r[j])) {
                             w = true;
-
+                            break;
                         }
                     }
 
