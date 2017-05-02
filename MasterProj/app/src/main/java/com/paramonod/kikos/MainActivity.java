@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
         //myRef.child("Shops").child("1").setValue(shopInterface);
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signInAnonymously();
+        //mAuth.signInAnonymously();
         myRef.keepSynced(true);
         myRef.orderByValue().addChildEventListener(new ChildEventListener() {
             @Override
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        mAuth.signOut();
+        //mAuth.signOut();
         main = this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
