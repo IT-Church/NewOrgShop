@@ -21,10 +21,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.graphics.Target;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,8 +45,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
+import com.paramonod.kikos.pack.Image;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -49,6 +58,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.paramonod.kikos.MainActivity.jsonObject;
 import static com.paramonod.kikos.MainActivity.main;
 import static com.paramonod.kikos.MainActivity.sPref;
+import static com.paramonod.kikos.MainActivity.shopInterfaces;
 
 /**
  * Provides UI for the view with Cards.
@@ -101,15 +111,6 @@ public class CardContentFragment extends Fragment {
                 }
             });
 
-            // Adding Snackbar to Action Button inside card
-            Button button = (Button) itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Action is pressed",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
 
             final ImageButton favoriteImageButton =
                     (ImageButton) itemView.findViewById(R.id.favorite_button);
@@ -180,12 +181,36 @@ public class CardContentFragment extends Fragment {
                 }
             });
 
-            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
+            final ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
             shareImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(v, "Share article",
-                            Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(main,"Loading Picture",Toast.LENGTH_LONG).show();
+                    Picasso.with(main).load(shopInterfaces.get(idx[getAdapterPosition()]).getPictureName()).into(new com.squareup.picasso.Target() {
+                        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            Intent i = new Intent(Intent.ACTION_SEND);
+                            i.setType("image/*");
+                            String shareBody = "Look what I've found in OrgShop: " + shopInterfaces.get(idx[getAdapterPosition()]).getName();
+                            i.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                            i.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap));
+                            main.startActivity(Intent.createChooser(i, "Share Image"));
+                        }
+                        @Override public void onBitmapFailed(Drawable errorDrawable) { }
+                        @Override public void onPrepareLoad(Drawable placeHolderDrawable) { }
+                        public Uri getLocalBitmapUri(Bitmap bmp) {
+                            Uri bmpUri = null;
+                            try {
+                                File file =  new File(main.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".png");
+                                FileOutputStream out = new FileOutputStream(file);
+                                bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+                                out.close();
+                                bmpUri = Uri.fromFile(file);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            return bmpUri;
+                        }
+                    });
                 }
             });
         }
