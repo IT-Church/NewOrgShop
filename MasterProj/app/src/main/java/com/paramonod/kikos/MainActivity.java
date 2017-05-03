@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                             if (mAuth.getCurrentUser() == null) {
                                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             } else {
-                                startActivity(new Intent(MainActivity.this, AccountView.class));
+                                startActivity(new Intent(MainActivity.this, AccountActivity.class));
                             }
 
                         }
