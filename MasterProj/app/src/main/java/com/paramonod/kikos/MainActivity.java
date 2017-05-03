@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         myRef.orderByValue().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-                    shopInterfaces.add(snapshot.getValue(ShopInterface.class));
+                shopInterfaces.add(snapshot.getValue(ShopInterface.class));
                 main.setupMap();
                 //System.out.println(shopInterfaces.get(1).getCoordX());
             }
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 try {
                                     idx = sortArraywithGeo(idx);
-                                } catch (RuntimeException e){
+                                } catch (RuntimeException e) {
                                     e.printStackTrace();
                                 }
                                 CardContentFragment.flag = 1;
@@ -272,83 +272,84 @@ public class MainActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
         //Set behavior of Navigation drawer
-            navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(
-                    new NavigationView.OnNavigationItemSelectedListener() {
-                        // This method will trigger on item Click of navigation menu
-                        @Override
-                        public boolean onNavigationItemSelected(MenuItem menuItem) {
-                            // Set item in checked state
-                            menuItem.setChecked(true);
-                            if (menuItem.getItemId() == R.id.favorite_button) {
-                                sPref = getPreferences(MODE_PRIVATE);
-                                String savedText = sPref.getString("q", "null");
-                                if (savedText.equals(""))
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.mapButton);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    // This method will trigger on item Click of navigation menu
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // Set item in checked state
+                        menuItem.setChecked(true);
+                        if (menuItem.getItemId() == R.id.favorite_button) {
+                            sPref = getPreferences(MODE_PRIVATE);
+                            String savedText = sPref.getString("q", "null");
+                            if (savedText.equals(""))
 
-                                    Toast.makeText(main, "У вас пока что нет любимых магазинов", Toast.LENGTH_LONG).show();
-                                else {
-                                    String[] q = savedText.split(" ");
-                                    int[] a = new int[q.length];
-                                    for (int i = 0; i < q.length; i++) {
-                                        a[i] = Integer.parseInt(q[i]);
-                                        System.out.println(a[i]);
-                                    }
-                                    try {
-                                        a = sortArraywithGeo(a);
-                                    } catch (RuntimeException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
-                                    ListContentFragment l = new ListContentFragment();
-                                    l.flag = 1;
-                                    l.idx = a;
-                                    //  Manager.beginTransaction()
-                                    //          .replace(R.id.fragment1, PrFr)
-                                    //          .commit();
-                                    Manager.beginTransaction()
-                                            .replace(R.id.fragment1, l)
-                                            .addToBackStack("favorite")
-                                            .commit();
+                                Toast.makeText(main, "У вас пока что нет любимых магазинов", Toast.LENGTH_LONG).show();
+                            else {
+                                String[] q = savedText.split(" ");
+                                int[] a = new int[q.length];
+                                for (int i = 0; i < q.length; i++) {
+                                    a[i] = Integer.parseInt(q[i]);
+                                    System.out.println(a[i]);
                                 }
-                            }
-                            if (menuItem.getItemId() == R.id.mapButton) {
+                                try {
+                                    a = sortArraywithGeo(a);
+                                } catch (RuntimeException e) {
+                                    e.printStackTrace();
+                                }
+                                Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
+                                ListContentFragment l = new ListContentFragment();
+                                l.flag = 1;
+                                l.idx = a;
                                 //  Manager.beginTransaction()
                                 //          .replace(R.id.fragment1, PrFr)
                                 //          .commit();
                                 Manager.beginTransaction()
-                                        .replace(R.id.fragment1, MapFr)
-                                        .addToBackStack("map")
+                                        .replace(R.id.fragment1, l)
+                                        .addToBackStack("favorite")
                                         .commit();
                             }
-                            if (menuItem.getItemId() == R.id.clear_button) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                builder.setTitle("Разрабы")
-                                        .setMessage("Для вас старались Амеличев Константин aka KiKoS, Парамонов Дмитрий aka paramomnod")
-                                        .setIcon(R.drawable.itkerk)
-                                        .setCancelable(false)
-                                        .setNegativeButton("Я вам оч благодарен :)",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int id) {
-                                                        dialog.cancel();
-                                                    }
-                                                });
-                                AlertDialog alert = builder.create();
-                                alert.show();
-
-                            }
-                            if (menuItem.getItemId() == R.id.login_button) {
-                                if (mAuth.getCurrentUser() == null) {
-                                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                                } else {
-                                    startActivity(new Intent(MainActivity.this,AccountActivity.class));
-                                }
-
-                            }
-                            // Closing drawer on item click
-                            mDrawerLayout.closeDrawers();
-                            return true;
                         }
-                    });
+                        if (menuItem.getItemId() == R.id.mapButton) {
+                            //  Manager.beginTransaction()
+                            //          .replace(R.id.fragment1, PrFr)
+                            //          .commit();
+                            Manager.beginTransaction()
+                                    .replace(R.id.fragment1, MapFr)
+                                    .addToBackStack("map")
+                                    .commit();
+                        }
+                        if (menuItem.getItemId() == R.id.clear_button) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setTitle("Разрабы")
+                                    .setMessage("Для вас старались Амеличев Константин aka KiKoS, Парамонов Дмитрий aka paramomnod")
+                                    .setIcon(R.drawable.itkerk)
+                                    .setCancelable(false)
+                                    .setNegativeButton("Я вам оч благодарен :)",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+
+                        }
+                        if (menuItem.getItemId() == R.id.login_button) {
+                            if (mAuth.getCurrentUser() == null) {
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            } else {
+                                startActivity(new Intent(MainActivity.this, AccountView.class));
+                            }
+
+                        }
+                        // Closing drawer on item click
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
 
         // Adding Floating Action Button to bottom right of main view
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -506,27 +507,27 @@ public class MainActivity extends AppCompatActivity {
                 List<Fragment> fragments = fragmentManager.getFragments();
                 Fragment f = null;
                 System.out.println(fragments);
-                if(fragments != null){
-                    for(Fragment fragment : fragments){
-                        if(fragment != null && fragment.isVisible())
-                           f = fragment;
-                        System.out.println(f);                    }
+                if (fragments != null) {
+                    for (Fragment fragment : fragments) {
+                        if (fragment != null && fragment.isVisible())
+                            f = fragment;
+                        System.out.println(f);
+                    }
                 }
-                if(f instanceof CardContentFragment){
+                if (f instanceof CardContentFragment) {
                     main.searchListener(query, 2);
 
                 }
-                if(f instanceof CategoryContentFragment){
+                if (f instanceof CategoryContentFragment) {
                     main.searchListener(query, 1);
 
                 }
-                if(f instanceof MapViewFragment){
+                if (f instanceof MapViewFragment) {
                     main.searchListener(query, 0);
 
                 }
-                if(f instanceof ListContentFragment)
-                {
-                    main.searchListener(query,3);
+                if (f instanceof ListContentFragment) {
+                    main.searchListener(query, 3);
                 }
                 return false;
             }
@@ -577,7 +578,7 @@ public class MainActivity extends AppCompatActivity {
         mp = (MapView) findViewById(R.id.map);
         mp.showBuiltInScreenButtons(true);
         mc = mp.getMapController();
-       // mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
+        // mc.setPositionAnimationTo(new GeoPoint(new Adress().getCoordX(), new Adress().getCoordY()));
         mc.setZoomCurrent(20);
         FloatingActionButton plus = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         FloatingActionButton minus = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
@@ -657,12 +658,12 @@ public class MainActivity extends AppCompatActivity {
             Log.e("points", g[i].toString());
         }
         updatePins(g);
-      //  try {
+        //  try {
         //   my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
-      //      mc.setPositionAnimationTo(my);
-     //   } catch (NullPointerException e) {
-     //       System.out.println("КМС по ловле NPE");
-     //   }
+        //      mc.setPositionAnimationTo(my);
+        //   } catch (NullPointerException e) {
+        //       System.out.println("КМС по ловле NPE");
+        //   }
     }
 
 
@@ -800,7 +801,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchListener(String a, int x) {
-        Log.e("POISK",Integer.toString(x));
+        Log.e("POISK", Integer.toString(x));
         if (x == 0) try {
             Search s = new Search();
             o.clearOverlayItems();

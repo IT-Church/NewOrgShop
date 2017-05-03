@@ -13,7 +13,13 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
-        MainActivity.navigationView.setCheckedItem(0);
+        MainActivity.navigationView.setCheckedItem(R.id.mapButton);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        MainActivity.navigationView.setCheckedItem(R.id.mapButton);
     }
 }
