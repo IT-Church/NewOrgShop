@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("OrgShop");
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        Display display = getWindowManager().getDefaultDisplay();
+        final Display display = getWindowManager().getDefaultDisplay();
         android.graphics.Point size = new android.graphics.Point();
         display.getSize(size);
         X = size.x;
@@ -398,6 +398,24 @@ public class MainActivity extends AppCompatActivity {
                                                         .commit();
                                             }
                                         })
+                                        .setNegativeButton("Удалить", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                                places.remove(selectedPosition);
+                                                placesIDX--;
+                                                for (int i = 0; i <placesIDX ; i++) {
+                                                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                                    String connectionsJSONString1 = new Gson().toJson(places.get(i));
+                                                    editor.putString("places" + i, connectionsJSONString1);
+                                                    editor.commit();
+                                                }
+                                                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                                editor.putString("places" + placesIDX, null);
+                                                editor.commit();
+                                            }
+                                        })
                                         .show();
                             }
                         }
@@ -538,6 +556,8 @@ public class MainActivity extends AppCompatActivity {
             return mFragmentList.size();
         }
 
+        //192.168.15.40
+`
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
@@ -729,7 +749,7 @@ public class MainActivity extends AppCompatActivity {
         GeoPoint[] g = new GeoPoint[shopInterfaces.size()];
         for (int i = 0; i < g.length; i++) {
             g[i] = new GeoPoint(shopInterfaces.get(i).getCoordX(), shopInterfaces.get(i).getCoordY());
-            Log.e("points", g[i].toString());
+          //  Log.e("points", g[i].toString());
         }
         updatePins(g);
         //  try {
@@ -759,7 +779,7 @@ public class MainActivity extends AppCompatActivity {
                                 GeoPoint g = new GeoPoint(shopInterfaces.get(i).getCoordX(), shopInterfaces.get(i).getCoordY());
                                 if (g.equals(balloonItem.getGeoPoint())) {
                                     m = i;
-                                    Log.e("Search", "got here" + Integer.toString(m));
+                                  //  Log.e("Search", "got here" + Integer.toString(m));
                                 }
                             }
                             intent.putExtra(DetailActivity.EXTRA_POSITION, m);
@@ -916,7 +936,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchListener(String a, int x) {
-        Log.e("POISK", Integer.toString(x));
+       // Log.e("POISK", Integer.toString(x));
         if (x == 0) try {
             Search s = new Search();
             o.clearOverlayItems();

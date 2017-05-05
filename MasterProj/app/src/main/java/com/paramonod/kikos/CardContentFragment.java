@@ -280,8 +280,8 @@ public class CardContentFragment extends Fragment {
             sPref = main.getPreferences(MODE_PRIVATE);
             SharedPreferences.Editor ed = sPref.edit();
             String savedText = sPref.getString("q", "null");
-            Log.e("card_bind", favoriteImageButton.toString() + favoriteImageButton.getDrawable().toString());
-            Log.e("card_text", savedText);
+           // Log.e("card_bind", favoriteImageButton.toString() + favoriteImageButton.getDrawable().toString());
+           // Log.e("card_text", savedText);
             if (flag == 0) {
                 if (savedText.contains(Integer.toString(holder.getAdapterPosition()))) {
                     favoriteImageButton.setImageDrawable(main.getResources().getDrawable(R.drawable.ic_favorite));
