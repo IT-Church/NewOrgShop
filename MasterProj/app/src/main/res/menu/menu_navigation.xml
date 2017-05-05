@@ -33,7 +33,7 @@
         <item
             android:icon="@drawable/ic_account_circle_black_24dp"
             android:tint="@color/button_grey"
-            android:title="Acoount"
+            android:title="Find near"
             android:id="@+id/login_button"
             />
     </group>

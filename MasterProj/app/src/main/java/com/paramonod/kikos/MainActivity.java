@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.service.carrier.CarrierService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -50,6 +51,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +60,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.paramonod.kikos.pack.ShopInterface;
 
 import org.json.JSONArray;
@@ -65,10 +69,12 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ru.yandex.yandexmapkit.MapController;
@@ -81,6 +87,7 @@ import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
 import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
+import ru.yandex.yandexmapkit.utils.Point;
 
 
 /**
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
     public static JSONObject jsonObject;
     public static Drawable shop;
     public static Drawable itkerk;
-    public static android.widget.SearchView searchView;
+    public static SearchView searchView;
     public static NavigationView navigationView;
     final static float STANDART_ZOOM = 20.0f;
     public static String name;
@@ -122,9 +129,10 @@ public class MainActivity extends AppCompatActivity {
     public int Y;
     private DatabaseReference myRef;
     private FirebaseAuth mAuth;
-    public static GeoPoint my;
+    public static GeoPoint myLoc;
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
-
+    public static ArrayList<Pair> places = new ArrayList<>();
+    public static int placesIDX;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,6 +189,17 @@ public class MainActivity extends AppCompatActivity {
         //  X = displaymetrics.widthPixels;
         System.out.println(X + " " + Y);
         // Adding Toolbar to Main screen
+        int ii = 0;
+        places.clear();
+        while (true) {
+            String connectionsJSONString = getPreferences(MODE_PRIVATE).getString("places" + ii, null);
+            Pair p = new Gson().fromJson(connectionsJSONString, Pair.class);
+            if (p != null)
+                places.add(p);
+            else break;
+            ii++;
+        }
+        placesIDX = ii;
         bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigation);
 
@@ -229,8 +248,9 @@ public class MainActivity extends AppCompatActivity {
                                     idx[i] = i;
                                 }
                                 try {
-                                    idx = sortArraywithGeo(idx);
-                                } catch (RuntimeException e) {
+                                    updateMyLoc();
+                                    idx = sortArraywithGeo(idx, myLoc);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 CardContentFragment.flag = 1;
@@ -295,8 +315,9 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println(a[i]);
                                 }
                                 try {
-                                    a = sortArraywithGeo(a);
-                                } catch (RuntimeException e) {
+                                    updateMyLoc();
+                                    a = sortArraywithGeo(a, myLoc);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
@@ -338,6 +359,49 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                         if (menuItem.getItemId() == R.id.login_button) {
+                            int ii = 0;
+                            places.clear();
+                            while (true) {
+                                String connectionsJSONString = getPreferences(MODE_PRIVATE).getString("places" + ii, null);
+                                Pair p = new Gson().fromJson(connectionsJSONString, Pair.class);
+                                if (p != null)
+                                    places.add(p);
+                                else break;
+                                ii++;
+                            }
+                            if (places.size() == 0) {
+                                Toast.makeText(main, "У вас нет добавленных местечек", Toast.LENGTH_LONG).show();
+                            } else {
+                                String q[] = new String[places.size()];
+                                for (int i = 0; i < q.length; i++) {
+                                    q[i] = places.get(i).first;
+                                }
+                                new AlertDialog.Builder(main)
+                                        .setSingleChoiceItems(q, 0, null)
+                                        .setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                dialog.dismiss();
+                                                int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                                Pair p = places.get(selectedPosition);
+                                                GeoPoint geo = p.second;
+                                                int[] idx = new int[shopInterfaces.size()];
+                                                for (int i = 0; i < idx.length; i++) {
+                                                    idx[i] = i;
+                                                }
+                                                idx = sortArraywithGeo(idx, geo);
+                                                CardContentFragment c = new CardContentFragment();
+                                                CardContentFragment.flag = 1;
+                                                CardContentFragment.idx = idx;
+                                                Manager.beginTransaction()
+                                                        .replace(R.id.fragment1, c)
+                                                        .addToBackStack("map")
+                                                        .commit();
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                 /*       if (menuItem.getItemId() == R.id.login_button) {
                             if (mAuth.getCurrentUser() == null) {
                                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             } else {
@@ -345,7 +409,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                         }
-                        // Closing drawer on item click
+             */           // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
                     }
@@ -493,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_settings));
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_settings));
         System.out.println(searchView);
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
@@ -529,6 +593,16 @@ public class MainActivity extends AppCompatActivity {
                 if (f instanceof ListContentFragment) {
                     main.searchListener(query, 3);
                 }
+                if (mm.getItem(1).isChecked()) {
+                    main.searchListener(query, 3);
+                } else
+                    for (int i = 0; i < bottomNavigationView.getMenu().size(); i++) {
+                        MenuItem menuItem = menu.getItem(i);
+                        if (menuItem.isChecked()) {
+                            main.searchListener(query, i);
+                        }
+                    }
+
                 return false;
             }
 
@@ -669,7 +743,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint) {
         OverlayItem oi = new OverlayItem(geoPoint, this.createScaledIcon(main.getResources().getDrawable(id), width, height, main.getResources()));
-        BalloonItem bi = new BalloonItem(main, oi.getGeoPoint());
+        final BalloonItem bi = new BalloonItem(main, oi.getGeoPoint());
         if (id == R.drawable.shop) {
             bi.setOnBalloonListener(
                     new OnBalloonListener() {
@@ -718,7 +792,45 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onBalloonShow(BalloonItem balloonItem) {
-                            mc.getDownloader().getGeoCode(new GeoCodeListener() {
+                            final AlertDialog.Builder b = new AlertDialog.Builder(main);
+                            b.setTitle("Добавление местечка");
+                            b.setMessage("Если хотите иметь возможность искать магазины рядом с этим местом, нажмите Добавить");
+                            b.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(main);
+                                    final EditText et = new EditText(main);
+                                    builder.setMessage("Запишите желаемое название места, при оставлении поля пустым место будет называться: " + searchView.getQuery());
+                                    builder.setTitle("Выбор имени");
+                                    builder.setView(et);
+                                    builder.setPositiveButton("Готово", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String s = et.getText().toString();
+                                            if (s.equals("")) s = searchView.getQuery().toString();
+                                            GeoPoint biGeo = bi.getGeoPoint();
+                                            Pair p = new Pair();
+                                            p.first = s;
+                                            p.second = biGeo;
+                                            places.add(p);
+                                            SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                            String connectionsJSONString1 = new Gson().toJson(p);
+                                            editor.putString("places" + placesIDX, connectionsJSONString1);
+                                            editor.commit();
+                                            placesIDX++;
+                                        }
+                                    });
+                                    builder.show();
+                                }
+                            });
+                            b.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                            b.show();
+                           /* mc.getDownloader().getGeoCode(new GeoCodeListener() {
                                 @Override
                                 public boolean onFinishGeoCode(final GeoCode geoCode) {
                                     if (geoCode != null) {
@@ -767,13 +879,16 @@ public class MainActivity extends AppCompatActivity {
                                         protected void onPostExecute(Object o) {
                                             super.onPostExecute(o);
                                             main.selectName();
+
+
+
                                         }
                                     }.execute(main.name);
                                     return true;
                                 }
                             }, balloonItem.getGeoPoint());
                             intent = new Intent(main, DetailYandexActivity.class);
-
+*/
                         }
 
                         @Override
@@ -812,9 +927,10 @@ public class MainActivity extends AppCompatActivity {
             q.printStackTrace();
         }
         if (x == 1) {
-
-            String[] q = main.getResources().getStringArray(R.array.categories_names);
-
+            String[] q = new String[MainActivity.shopInterfaces.size()];
+            for (int i = 0; i < q.length; i++) {
+                q[i] = MainActivity.shopInterfaces.get(i).getDescription();
+            }
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
             for (int i = 0; i < q.length; i++) {
@@ -834,6 +950,12 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
+            }
+            try {
+                updateMyLoc();
+                idx = sortArraywithGeo(idx, myLoc);
+            } catch (Exception ex) {
+
             }
             CategoryContentFragment l = new CategoryContentFragment();
             l.flag = 1;
@@ -873,7 +995,11 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
-            idx = sortArraywithGeo(idx);
+            try {
+                updateMyLoc();
+                idx = sortArraywithGeo(idx, myLoc);
+            } catch (Exception ex) {
+            }
             CardContentFragment l = new CardContentFragment();
             l.flag = 1;
             l.idx = idx;
@@ -922,7 +1048,11 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < www.size(); i++) {
                 idx[i] = www.get(i);
             }
-            idx = sortArraywithGeo(idx);
+            try {
+                updateMyLoc();
+                idx = sortArraywithGeo(idx, myLoc);
+            } catch (Exception ex) {
+            }
             ListContentFragment l = new ListContentFragment();
             l.flag = 1;
             l.idx = idx;
@@ -965,6 +1095,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(DetailYandexActivity.DESC, main.namme);
         intent.putExtra("loc", main.name);
         startActivity(intent);
+
     }
 
     @Override
@@ -975,8 +1106,7 @@ public class MainActivity extends AppCompatActivity {
         // Log.e("Viewq",bottomNavigationView.findFocus().toString());
     }
 
-    public static int[] sortArraywithGeo(int[] idx) {
-        my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
+    public static int[] sortArraywithGeo(int[] idx, GeoPoint my) {
         mc.setPositionAnimationTo(my);
 /*        Collections.sort(shopInterfaces, new Comparator<ShopInterface>() {
             @Override
@@ -1005,5 +1135,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return idx;
+    }
+
+    public static void updateMyLoc() throws NullPointerException {
+        myLoc = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
     }
 }

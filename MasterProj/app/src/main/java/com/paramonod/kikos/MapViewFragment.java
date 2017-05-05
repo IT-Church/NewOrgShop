@@ -9,7 +9,7 @@ import com.paramonod.kikos.R;
 
 import static com.paramonod.kikos.MainActivity.main;
 import static com.paramonod.kikos.MainActivity.mc;
-import static com.paramonod.kikos.MainActivity.my;
+import static com.paramonod.kikos.MainActivity.myLoc;
 
 /**
  * Created by Dmitry Paramonov on 12/29/2016.

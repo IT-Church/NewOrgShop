@@ -24,8 +24,10 @@ import com.paramonod.kikos.pack.Image;
 import java.util.ArrayList;
 
 import static com.paramonod.kikos.MainActivity.main;
+import static com.paramonod.kikos.MainActivity.myLoc;
 import static com.paramonod.kikos.MainActivity.shopInterfaces;
 import static com.paramonod.kikos.MainActivity.sortArraywithGeo;
+import static com.paramonod.kikos.MainActivity.updateMyLoc;
 
 /**
  * Created by KiKoS on 11.04.2017.
@@ -76,7 +78,10 @@ public class CategoryContentFragment extends Fragment {
                     for (int i = 0; i < b.length; i++) {
                         b[i] = ar.get(i);
                     }
-                    b = sortArraywithGeo(b);
+
+                        updateMyLoc();
+                        b = sortArraywithGeo(b,myLoc);
+
                     CardContentFragment l= new CardContentFragment();
                     l.flag = 1;
                     l.idx = b;
