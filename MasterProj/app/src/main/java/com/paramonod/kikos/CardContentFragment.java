@@ -266,11 +266,13 @@ public class CardContentFragment extends Fragment {
             if(flag==0) {
                 Picasso.with(main)
                         .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                        .placeholder(R.drawable.ymk_tlight_loading)
                         .into(holder.picture);
             }
             else{
                 Picasso.with(main)
                         .load(MainActivity.shopInterfaces.get(idx[position]).getPictureName())
+                        .placeholder(R.drawable.ymk_tlight_loading)
                         .into(holder.picture);
             }
             holder.name.setText(mPlaces[position]);

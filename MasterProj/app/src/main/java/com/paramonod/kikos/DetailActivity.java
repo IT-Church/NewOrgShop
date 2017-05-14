@@ -48,11 +48,13 @@ TextView placeLocation =  (TextView) findViewById(R.id.place_location);
         ImageView placePicutre = (ImageView) findViewById(R.id.image);
             Picasso.with(main)
                     .load(MainActivity.shopInterfaces.get(postion).getPictureName())
+                    .placeholder(R.drawable.ymk_tlight_loading)
                     .into(placePicutre);
 
         //placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
         Picasso.with(main)
                 .load(MainActivity.shopInterfaces.get(postion).getPictureName())
+                .placeholder(R.drawable.ymk_tlight_loading)
                 .into(placePicutre);
         //placePictures.recycle();
     }

@@ -135,11 +135,13 @@ public class ListContentFragment extends Fragment {
             if(flag==0) {
                 Picasso.with(main)
                         .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                        .placeholder(R.drawable.ymk_tlight_loading)
                         .into(holder.avator);
             }
             else{
                 Picasso.with(main)
                         .load(MainActivity.shopInterfaces.get(idx[position]).getPictureName())
+                        .placeholder(R.drawable.ymk_tlight_loading)
                         .into(holder.avator);
             }
             holder.name.setText(mPlaces[position]);
