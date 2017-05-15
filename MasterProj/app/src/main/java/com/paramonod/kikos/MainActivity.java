@@ -36,6 +36,7 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -47,6 +48,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
     public static String urls[];
     public int X;
     public int Y;
+    GestureDetectorCompat gt;
     private DatabaseReference myRef;
     private FirebaseAuth mAuth;
     public static GeoPoint myLoc;
@@ -148,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
                 shopInterfaces.add(snapshot.getValue(ShopInterface.class));
+                System.out.println(shopInterfaces.get(shopInterfaces.size()-1));
                 main.setupMap();
                 //System.out.println(shopInterfaces.get(1).getCoordX());
             }
@@ -204,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.navigation);
 
         Manager.findFragmentById(R.id.fragment1);
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {

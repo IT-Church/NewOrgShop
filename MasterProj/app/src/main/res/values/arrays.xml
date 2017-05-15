@@ -71,17 +71,23 @@
         <item>@drawable/shampoo</item>
         <item>@drawable/fruct</item>
         <item>@drawable/spec</item>
+        <item>@drawable/orpgshop</item>
+        <item>@drawable/orpgshop</item>
     </array>
     <string-array name="categories_names">
-        <item>Овощи</item>
-        <item>Уход за собой</item>
-        <item>Фрукты за 500р</item>
-        <item>Специи</item>
+        <item>Сезонные овощи</item>
+        <item>Молоко и молочные продукты</item>
+        <item>Мясо и мясные продукты</item>
+        <item>Бакалея</item>
+        <item>Косметика</item>
+        <item>Рестораны</item>
     </string-array>
     <string-array name="categories_idx">
         <item>0 1 2</item>
         <item>0 3 5</item>
         <item>1 2 3</item>
         <item>4</item>
+        <item>0</item>>
+        <item>0</item>
     </string-array>
 </resources>
