@@ -172,15 +172,15 @@ public class CardContentFragment extends Fragment {
             shareImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(main,"Loading Picture",Toast.LENGTH_LONG).show();
+                    Toast.makeText(main,"Загрузка картинки",Toast.LENGTH_LONG).show();
                     Picasso.with(main).load(shopInterfaces.get(idx[getAdapterPosition()]).getPictureName()).into(new com.squareup.picasso.Target() {
                         @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                             Intent i = new Intent(Intent.ACTION_SEND);
                             i.setType("image/*");
-                            String shareBody = "Look what I've found in OrgShop: " + shopInterfaces.get(idx[getAdapterPosition()]).getName();
+                            String shareBody = "Смотрите что я нашел в OrgShop: " + shopInterfaces.get(idx[getAdapterPosition()]).getName();
                             i.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                             i.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap));
-                            main.startActivity(Intent.createChooser(i, "Share Image"));
+                            main.startActivity(Intent.createChooser(i, "Поделиться"));
                         }
                         @Override public void onBitmapFailed(Drawable errorDrawable) { }
                         @Override public void onPrepareLoad(Drawable placeHolderDrawable) { }

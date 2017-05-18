@@ -18,22 +18,22 @@
         <item
             android:icon="@drawable/ic_home_black_24dp"
             android:tint="@color/button_grey"
-            android:title="Shops"
+            android:title="Магазины"
             android:id="@+id/mapButton"/>
         <item
             android:icon="@drawable/ic_favorite_black_24dp"
             android:tint="@color/button_grey"
-            android:title="Favorite"
+            android:title="Любимые"
             android:id="@+id/favorite_button"/>
         <item
             android:icon="@drawable/ic_group_black_24dp"
             android:tint="@color/button_grey"
-            android:title="About us"
+            android:title="Про нас"
             android:id="@+id/clear_button"/>
         <item
             android:icon="@drawable/ic_account_circle_black_24dp"
             android:tint="@color/button_grey"
-            android:title="Find near"
+            android:title="Искать рядом с"
             android:id="@+id/login_button"
             />
     </group>
