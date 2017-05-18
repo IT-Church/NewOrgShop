@@ -67,12 +67,12 @@
         <item>55.78522 37.596921</item>
         </string-array>
     <array name="categories_photos">
-        <item>@drawable/ovosch110</item>
-        <item>@drawable/shampoo</item>
-        <item>@drawable/fruct</item>
-        <item>@drawable/spec</item>
-        <item>@drawable/orpgshop</item>
-        <item>@drawable/orpgshop</item>
+        <item>@drawable/fruit</item>
+        <item>@drawable/milk</item>
+        <item>@drawable/meat</item>
+        <item>@drawable/ingredients</item>
+        <item>@drawable/cosmetics</item>
+        <item>@drawable/restaurants</item>
     </array>
     <string-array name="categories_names">
         <item>Сезонные овощи</item>
