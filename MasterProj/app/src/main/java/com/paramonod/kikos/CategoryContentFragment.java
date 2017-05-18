@@ -2,24 +2,17 @@ package com.paramonod.kikos;
 
 import android.support.v4.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.paramonod.kikos.R;
-import com.google.android.gms.common.api.Api;
-import com.paramonod.kikos.pack.Image;
 
 import java.util.ArrayList;
 

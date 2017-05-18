@@ -1,4 +1,4 @@
-package com.paramonod.kikos;
+package com.paramonod.kikos.pack;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;

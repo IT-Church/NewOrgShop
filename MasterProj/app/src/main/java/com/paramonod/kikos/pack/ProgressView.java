@@ -1,4 +1,4 @@
-package com.paramonod.kikos;
+package com.paramonod.kikos.pack;
 
 /**
  * Created by gamiy_000 on 27.02.2017.

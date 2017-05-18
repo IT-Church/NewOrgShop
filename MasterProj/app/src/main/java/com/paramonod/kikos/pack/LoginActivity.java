@@ -1,4 +1,4 @@
-package com.paramonod.kikos;
+package com.paramonod.kikos.pack;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,6 +35,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.paramonod.kikos.MainActivity;
+import com.paramonod.kikos.R;
 
 import java.util.ArrayList;
 import java.util.List;

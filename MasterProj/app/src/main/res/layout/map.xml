@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:apiKey="6zoAdC4i43~ek2plvJTw18mZJyKzHoc0wzgbOnc265mZXdil21czACJUbhBSxLUP1fgA3cuqquutwAWMgPpWBd5Hh6-BkMy2EGXWOCQx9Po=">
-
+        android:clickable="true"
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

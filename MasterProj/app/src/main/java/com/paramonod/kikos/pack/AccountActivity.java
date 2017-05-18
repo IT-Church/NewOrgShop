@@ -1,7 +1,10 @@
-package com.paramonod.kikos;
+package com.paramonod.kikos.pack;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.paramonod.kikos.MainActivity;
+import com.paramonod.kikos.R;
 
 public class AccountActivity extends AppCompatActivity {
 

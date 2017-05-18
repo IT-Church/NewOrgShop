@@ -23,7 +23,10 @@ import ru.yandex.yandexmapkit.overlay.location.MyLocationItem;
 import ru.yandex.yandexmapkit.overlay.location.OnMyLocationListener;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
 
+import static com.paramonod.kikos.MainActivity.combine;
+import static com.paramonod.kikos.MainActivity.main;
 import static com.paramonod.kikos.MainActivity.mc;
+import static com.paramonod.kikos.MainActivity.shopInterfaces;
 
 
 /**
@@ -36,7 +39,7 @@ public class Search {
     public static URL url = null;
     public static MainActivity mainActivity = null;
     public static ArrayList<GeoPoint> points;
-    public static ArrayList<GeoPoint> geoPoints;
+    public static ArrayList<Integer> geoPoints;
     public static GeoPoint my;
 
     public void doSearch(final String obj, MainActivity m) throws MalformedURLException {
@@ -50,7 +53,7 @@ public class Search {
         AsyncTask asyncTask = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] params) {
-                Log.e("BEFORE I FUCK", "YOU");
+
 
                 try {
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -68,10 +71,8 @@ public class Search {
                     }
                     in.close();
                     con.disconnect();
-                    MapActivity.jsonObject = new JSONObject(response);
-                    System.out.println(MapActivity.jsonObject.toString());
+                    MainActivity.jsonObject = new JSONObject(response);
                 } catch (Exception e) {
-                    Log.e("FUCK", "YOU");
                     e.printStackTrace();
 
                 }
@@ -82,10 +83,8 @@ public class Search {
             @Override
             protected void onPostExecute(Object ob) {
                 super.onPostExecute(ob);
-
+                main.updatePins(null);
                 GeoPoint nearG = null;
-                Log.e("PRINT", "IFUCKYOUR MUM");
-                mainActivity.updatePins(null);
                 String resultString = "";
                 try {
               /*      JSONObject j1 = MapActivity.jsonObject.getJSONObject("response");
@@ -93,7 +92,7 @@ public class Search {
                     JSONArray ja1 = j2.getJSONArray("featureMember");
                     items = new GeoPoint[ja1.length()];
                     */
-                    JSONArray ja1 = MapActivity.jsonObject.getJSONArray("features");
+                    JSONArray ja1 = MainActivity.jsonObject.getJSONArray("features");
                     System.out.println(mc);
                     my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
                     for (int i = 0; i < ja1.length(); i++) {
@@ -115,6 +114,7 @@ public class Search {
                         String[] s1 = resultString.split(" ");
                         GeoPoint curG = new GeoPoint(Double.parseDouble(s1[1]), Double.parseDouble(s1[0]));
                         points.add(curG);
+                        Log.e("Search_q",curG.toString());
 
                     }
                 } catch (JSONException js) {
@@ -128,24 +128,21 @@ public class Search {
                 for (int i = 0; i < strings.length; i++) {
                     strings[i] = MainActivity.shopInterfaces.get(i).getDescription();
                 }
-                String[] r = obj.split(" ");
                 for (int i = 0; i < strings.length; i++) {
                     String a = strings[i];
                     String e[] = a.split(" ");
                     boolean w = false;
                     for (int j = 0; j < e.length; j++) {
-                        if (strings[i].contains(e[j])) {
+                        if (obj.toLowerCase().contains(e[j].toLowerCase())) {
                             w = true;
-
+                            Log.e(obj,e[j]);
                         }
                     }
 
                     if (w) {
-                        GeoPoint curG = new GeoPoint(MainActivity.shopInterfaces.get(i).getCoordX(), MainActivity.shopInterfaces.get(i).getCoordY());
-                        geoPoints.add(curG);
+                        geoPoints.add(i);
                     }
                 }
-
                 Log.e("q", points.size() + "_" + geoPoints.size());
                 Collections.sort(points, new Comparator<GeoPoint>() {
                     @Override
@@ -157,10 +154,12 @@ public class Search {
                         }
                     }
                 });
-                Collections.sort(geoPoints, new Comparator<GeoPoint>() {
+                Collections.sort(geoPoints, new Comparator<Integer>() {
                     @Override
-                    public int compare(GeoPoint o1, GeoPoint o2) {
-                        if (Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon())) > Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
+                    public int compare(Integer o1, Integer o2) {
+                        GeoPoint o11 = new GeoPoint(shopInterfaces.get(o1).getCoordX(),shopInterfaces.get(o1).getCoordY());
+                        GeoPoint o22 = new GeoPoint(shopInterfaces.get(o2).getCoordX(),shopInterfaces.get(o2).getCoordY());
+                        if (Math.sqrt((o11.getLat() - my.getLat()) * (o11.getLat() - my.getLat()) + (o11.getLon() - my.getLon()) * (o11.getLon() - my.getLon())) > Math.sqrt((o22.getLat() - my.getLat()) * (o22.getLat() - my.getLat()) + (o22.getLon() - my.getLon()) * (o22.getLon() - my.getLon()))) {
                             return 1;
                         } else {
                             return -1;
@@ -168,27 +167,33 @@ public class Search {
                     }
                 });
                 if (points.size() != 0 && geoPoints.size() != 0) {
-                    if (Math.sqrt((points.get(0).getLat() - my.getLat()) * (points.get(0).getLat() - my.getLat()) + (points.get(0).getLon() - my.getLon()) * (points.get(0).getLon() - my.getLon())) > Math.sqrt((geoPoints.get(0).getLat() - my.getLat()) * (geoPoints.get(0).getLat() - my.getLat()) + (geoPoints.get(0).getLon() - my.getLon()) * (geoPoints.get(0).getLon() - my.getLon()))) {
-                        mc.setPositionAnimationTo(geoPoints.get(0));
+                    if (Math.sqrt((points.get(0).getLat() - my.getLat()) * (points.get(0).getLat() - my.getLat()) + (points.get(0).getLon() - my.getLon()) * (points.get(0).getLon() - my.getLon())) > Math.sqrt(shopInterfaces.get(geoPoints.get(0)).getCoordY() - my.getLat()) * (shopInterfaces.get(geoPoints.get(0)).getCoordY()- my.getLat()) + (shopInterfaces.get(geoPoints.get(0)).getCoordX() - my.getLon()) * (shopInterfaces.get(geoPoints.get(0)).getCoordX() - my.getLon())) {
+                        mc.setPositionAnimationTo(new GeoPoint(shopInterfaces.get(geoPoints.get(0)).getCoordX(),shopInterfaces.get(geoPoints.get(0)).getCoordY()));
                         System.out.println(1);
+                        Log.e("Search","1");
                     } else {
                         mc.setPositionAnimationTo(points.get(0));
                         System.out.println(-1);
+                        Log.e("Search","-1");
+
                     }
                 } else {
                     if (points.size() == 0 && geoPoints.size() != 0) {
-                        mc.setPositionAnimationTo(geoPoints.get(0));
+                        mc.setPositionAnimationTo(new GeoPoint(shopInterfaces.get(geoPoints.get(0)).getCoordX(),shopInterfaces.get(geoPoints.get(0)).getCoordY()));
+                        Log.e("Search","21");
+
                     }
                     if (geoPoints.size() == 0 && points.size() != 0) {
                         mc.setPositionAnimationTo(points.get(0));
+                        Log.e("Search","12");
 
                     }
                 }
                 for (GeoPoint g : points) {
-                    mainActivity.makingFullStackIcon(R.drawable.orpgshop, 55, 55, g);
+                    mainActivity.makingFullStackIcon(R.drawable.orpgshop, g);
                 }
-                for (GeoPoint g : geoPoints) {
-                    mainActivity.makingFullStackIcon(R.drawable.shop, 55, 55, g);
+                for (int q : geoPoints) {
+                    main.combine(q);
                 }
             }
         }.execute();

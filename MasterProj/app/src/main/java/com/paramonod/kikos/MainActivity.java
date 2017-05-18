@@ -25,9 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.service.carrier.CarrierService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -48,7 +46,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -63,33 +60,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.paramonod.kikos.pack.ProgressView;
 import com.paramonod.kikos.pack.ShopInterface;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import ru.yandex.yandexmapkit.MapController;
 import ru.yandex.yandexmapkit.MapView;
 import ru.yandex.yandexmapkit.OverlayManager;
-import ru.yandex.yandexmapkit.map.GeoCode;
-import ru.yandex.yandexmapkit.map.GeoCodeListener;
 import ru.yandex.yandexmapkit.overlay.Overlay;
 import ru.yandex.yandexmapkit.overlay.OverlayItem;
 import ru.yandex.yandexmapkit.overlay.balloon.BalloonItem;
 import ru.yandex.yandexmapkit.overlay.balloon.OnBalloonListener;
 import ru.yandex.yandexmapkit.utils.GeoPoint;
-import ru.yandex.yandexmapkit.utils.Point;
 
 
 /**
@@ -136,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
     public static ArrayList<Pair> places = new ArrayList<>();
     public static int placesIDX;
+
+    public static int[] cats = {R.drawable.org_0,R.drawable.org_1,R.drawable.org_2,R.drawable.org_3,R.drawable.org_4,R.drawable.org_5};
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -680,7 +670,6 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton plus = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         FloatingActionButton minus = (FloatingActionButton) findViewById(R.id.floatingActionButton2);
 
-
         plus.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -713,7 +702,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 else{
-                    Log.e("OMFG","fail");
                 }
                 return true;
             }
@@ -749,12 +737,9 @@ public class MainActivity extends AppCompatActivity {
         });*/
         //   Log.e("points","here");
         //     Log.e("points",Integer.toString(shopInterfaces.size()));
-        GeoPoint[] g = new GeoPoint[shopInterfaces.size()];
-        for (int i = 0; i < g.length; i++) {
-            g[i] = new GeoPoint(shopInterfaces.get(i).getCoordX(), shopInterfaces.get(i).getCoordY());
-          //  Log.e("points", g[i].toString());
+        for (int i = 0; i < shopInterfaces.size(); i++) {
+combine(i);          //  Log.e("points", g[i].toString());
         }
-        updatePins(g);
         //  try {
         //   my = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
         //      mc.setPositionAnimationTo(my);
@@ -764,10 +749,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void makingFullStackIcon(int id, int width, int height, GeoPoint geoPoint) {
-        OverlayItem oi = new OverlayItem(geoPoint, this.createScaledIcon(main.getResources().getDrawable(id), width, height, main.getResources()));
+    public void makingFullStackIcon(int id, GeoPoint geoPoint) {
+        OverlayItem oi = new OverlayItem(geoPoint, main.getResources().getDrawable(id));
         final BalloonItem bi = new BalloonItem(main, oi.getGeoPoint());
-        if (id == R.drawable.shop) {
+        if (id != R.drawable.orpgshop) {
             bi.setOnBalloonListener(
                     new OnBalloonListener() {
                         @Override
@@ -860,7 +845,6 @@ public class MainActivity extends AppCompatActivity {
                                         Log.e("Not so fucking", "title" + geoCode.getTitle() + "\nsubtitle" + geoCode.getSubtitle() + "\ndisplayname" + geoCode.getDisplayName() + "\nkind" + geoCode.getKind());
                                         main.name = geoCode.getTitle();
                                     } else {
-                                        Log.e("OMFG", "fail");
                                     }
                                     AsyncTask asyncTask = new AsyncTask() {
                                         @Override
@@ -960,7 +944,7 @@ public class MainActivity extends AppCompatActivity {
 
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    if (q[i].contains(e[j])) {
+                    if (q[i].toLowerCase().contains(e[j].toLowerCase())) {
                         w = true;
                     }
 
@@ -1004,7 +988,7 @@ public class MainActivity extends AppCompatActivity {
                 String r[] = aa.split(" ");
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    if (q[i].contains(e[j])) {
+                    if (q[i].toLowerCase().contains(e[j].toLowerCase())) {
                         w = true;
                     }
 
@@ -1022,13 +1006,11 @@ public class MainActivity extends AppCompatActivity {
                 updateMyLoc();
                 idx = sortArraywithGeo(idx, myLoc);
             } catch (Exception ex) {
+                Log.e("Search","without sort");
             }
             CardContentFragment l = new CardContentFragment();
             l.flag = 1;
             l.idx = idx;
-            //  Manager.beginTransaction()
-            //          .replace(R.id.fragment1, PrFr)
-            //          .commit();
             Manager.beginTransaction()
                     .replace(R.id.fragment1, l)
                     .addToBackStack("Card")
@@ -1057,7 +1039,7 @@ public class MainActivity extends AppCompatActivity {
                 String r[] = aa.split(" ");
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    if (q[i].contains(e[j])) {
+                    if (q[i].toLowerCase().contains(e[j].toLowerCase())) {
                         w = true;
                     }
 
@@ -1075,6 +1057,7 @@ public class MainActivity extends AppCompatActivity {
                 updateMyLoc();
                 idx = sortArraywithGeo(idx, myLoc);
             } catch (Exception ex) {
+                Log.e("Search","without sort");
             }
             ListContentFragment l = new ListContentFragment();
             l.flag = 1;
@@ -1105,14 +1088,14 @@ public class MainActivity extends AppCompatActivity {
         o.clearOverlayItems();
         if (overlayItems != null) {
             for (int i = 0; i < overlayItems.length; i++) {
-                this.makingFullStackIcon(R.drawable.shop, 55, 55, overlayItems[i]);
+                this.makingFullStackIcon(R.drawable.shop, overlayItems[i]);
             }
         }
         o.setVisible(true);
 
         //  om.addOverlay(o);n
     }
-
+/*
     void selectName() {
         System.out.println(main.namme + " " + main.name);
         intent.putExtra(DetailYandexActivity.DESC, main.namme);
@@ -1120,7 +1103,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
-
+*/
     @Override
     public void onBackPressed() {
 
@@ -1162,5 +1145,13 @@ public class MainActivity extends AppCompatActivity {
 
     public static void updateMyLoc() throws NullPointerException {
         myLoc = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
+
+    }
+
+    public static void combine(int q){
+        String[] s = shopInterfaces.get(q).getCategories().split(" ");
+        for (int i = 0; i <s.length ; i++) {
+            main.makingFullStackIcon(cats[Integer.parseInt(s[i])],new GeoPoint(shopInterfaces.get(q).getCoordX(),shopInterfaces.get(q).getCoordY()));
+        }
     }
 }

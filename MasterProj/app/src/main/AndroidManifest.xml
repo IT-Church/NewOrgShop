@@ -59,21 +59,21 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".AccountActivity"
+            android:name=".pack.AccountActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.paramonod.kikos.MainActivity" />
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".pack.LoginActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.paramonod.kikos.MainActivity" />
         </activity>
         <activity
-            android:name=".DetailYandexActivity"
+            android:name=".pack.DetailYandexActivity"
             android:parentActivityName=".MainActivity" />
     </application>
 

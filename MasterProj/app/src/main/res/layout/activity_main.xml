@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            tools:layout="@layout/map_view" />
+            tools:layout="@layout/map" />
 
         <android.support.design.widget.BottomNavigationView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
