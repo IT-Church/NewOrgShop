@@ -46,15 +46,11 @@ TextView placeLocation =  (TextView) findViewById(R.id.place_location);
         placeLocation.setText(MainActivity.shopInterfaces.get(postion).getStreet() + " " +MainActivity.shopInterfaces.get(postion).getHouse());
 
         ImageView placePicutre = (ImageView) findViewById(R.id.image);
-            Picasso.with(main)
-                    .load(MainActivity.shopInterfaces.get(postion).getPictureName())
-                    .placeholder(R.drawable.ymk_tlight_loading)
-                    .into(placePicutre);
 
         //placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
         Picasso.with(main)
                 .load(MainActivity.shopInterfaces.get(postion).getPictureName())
-                .placeholder(R.drawable.ymk_tlight_loading)
+                .placeholder(R.drawable.ic_autorenew_black_24dp)
                 .into(placePicutre);
         //placePictures.recycle();
     }

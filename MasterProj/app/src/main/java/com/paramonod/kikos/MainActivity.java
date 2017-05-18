@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     final public MapViewFragment MapFr = new MapViewFragment();
     final public ProgressView PrFr = new ProgressView();
     final public CardContentFragment Cardfr = new CardContentFragment();
-    final public ListContentFragment1 Listfr = new ListContentFragment1();
 
     final public CategoryContentFragment CatFr = new CategoryContentFragment();
     public int x;
@@ -1113,6 +1112,7 @@ combine(i);          //  Log.e("points", g[i].toString());
     }
 
     public static int[] sortArraywithGeo(int[] idx, GeoPoint my) {
+        if(my==null)return idx;
         mc.setPositionAnimationTo(my);
 /*        Collections.sort(shopInterfaces, new Comparator<ShopInterface>() {
             @Override
@@ -1143,9 +1143,11 @@ combine(i);          //  Log.e("points", g[i].toString());
         return idx;
     }
 
-    public static void updateMyLoc() throws NullPointerException {
-        myLoc = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
-
+    public static void updateMyLoc() {
+        try {
+            myLoc = mc.getOverlayManager().getMyLocation().getMyLocationItem().getGeoPoint();
+        }
+        catch (Exception e){}
     }
 
     public static void combine(int q){
