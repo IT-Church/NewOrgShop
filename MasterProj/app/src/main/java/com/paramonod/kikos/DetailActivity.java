@@ -43,7 +43,7 @@ public class DetailActivity extends AppCompatActivity {
         placeDetail.setText(MainActivity.shopInterfaces.get(postion).getDescription());
 
 TextView placeLocation =  (TextView) findViewById(R.id.place_location);
-        placeLocation.setText(MainActivity.shopInterfaces.get(postion).getStreet() + " " +MainActivity.shopInterfaces.get(postion).getHouse());
+        placeLocation.setText(MainActivity.shopInterfaces.get(postion).getStreet());
 
         ImageView placePicutre = (ImageView) findViewById(R.id.image);
 
