@@ -7,7 +7,7 @@ public class ShopInterface {
     private String Name;
     private String Description;
     private String street;
-    private int house;
+    private String house;
     private double CoordX;
     private double CoordY;
     private String PictureAvatorName;
@@ -25,7 +25,7 @@ public class ShopInterface {
         this.Name = Name;
         this.Description = Description;
         this.street = street;
-        this.house = Integer.parseInt(house);
+        this.house = house;
         this.CoordX = Double.parseDouble(CoordX);
         this.CoordY = Double.parseDouble(CoordY);
         this.PictureName = PictureName;
@@ -133,7 +133,7 @@ public class ShopInterface {
         return this.CoordY;
     }
 
-    public int getHouse() {
+    public String getHouse() {
         return this.house;
     }
 
@@ -150,7 +150,7 @@ public class ShopInterface {
     }
 
 
-    public void setHouse(int house) {
+    public void setHouse(String house) {
         this.house = house;
     }
 

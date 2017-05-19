@@ -139,8 +139,9 @@ public class MainActivity extends AppCompatActivity {
         myRef.orderByValue().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+                Log.e("here",Integer.toString(shopInterfaces.size()-1));
                 shopInterfaces.add(snapshot.getValue(ShopInterface.class));
-                System.out.println(shopInterfaces.get(shopInterfaces.size()-1));
+                Log.e("here",Integer.toString(shopInterfaces.size()-1));
                 main.setupMap();
                 //System.out.println(shopInterfaces.get(1).getCoordX());
             }
