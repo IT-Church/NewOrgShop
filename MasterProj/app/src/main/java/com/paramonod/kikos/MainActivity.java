@@ -935,7 +935,7 @@ combine(i);          //  Log.e("points", g[i].toString());
         if (x == 1) {
             String[] q = new String[MainActivity.shopInterfaces.size()];
             for (int i = 0; i < q.length; i++) {
-                q[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                q[i] = MainActivity.shopInterfaces.get(i).getName();
             }
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
@@ -943,7 +943,7 @@ combine(i);          //  Log.e("points", g[i].toString());
 
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    if (q[i].toLowerCase().contains(e[j].toLowerCase())) {
+                    if (e[j].toLowerCase().contains(q[i].toLowerCase())) {
                         w = true;
                     }
 
@@ -978,7 +978,7 @@ combine(i);          //  Log.e("points", g[i].toString());
         if (x == 2) {
             String[] q = new String[MainActivity.shopInterfaces.size()];
             for (int i = 0; i < q.length; i++) {
-                q[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                q[i] = MainActivity.shopInterfaces.get(i).getName();
             }
             ArrayList<Integer> www = new ArrayList<>();
             String[] e = a.split(" ");
@@ -987,7 +987,7 @@ combine(i);          //  Log.e("points", g[i].toString());
                 String r[] = aa.split(" ");
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    if (q[i].toLowerCase().contains(e[j].toLowerCase())) {
+                    if (e[j].toLowerCase().contains(q[i].toLowerCase())) {
                         w = true;
                     }
 
@@ -1025,7 +1025,7 @@ combine(i);          //  Log.e("points", g[i].toString());
             }
             String[] qq = new String[MainActivity.shopInterfaces.size()];
             for (int i = 0; i < qq.length; i++) {
-                qq[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                qq[i] = MainActivity.shopInterfaces.get(i).getName();
             }
             String[] q = new String[xx.length];
             for (int i = 0; i < q.length; i++) {
@@ -1038,7 +1038,7 @@ combine(i);          //  Log.e("points", g[i].toString());
                 String r[] = aa.split(" ");
                 boolean w = false;
                 for (int j = 0; j < e.length; j++) {
-                    if (q[i].toLowerCase().contains(e[j].toLowerCase())) {
+                    if (e[j].toLowerCase().contains(q[i].toLowerCase())) {
                         w = true;
                     }
 

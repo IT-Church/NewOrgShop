@@ -126,16 +126,14 @@ public class Search {
                 System.out.println("hi");
                 String[] strings = new String[MainActivity.shopInterfaces.size()];
                 for (int i = 0; i < strings.length; i++) {
-                    strings[i] = MainActivity.shopInterfaces.get(i).getDescription();
+                    strings[i] = MainActivity.shopInterfaces.get(i).getName();
                 }
                 for (int i = 0; i < strings.length; i++) {
                     String a = strings[i];
-                    String e[] = a.split(" ");
                     boolean w = false;
-                    for (int j = 0; j < e.length; j++) {
-                        if (obj.toLowerCase().contains(e[j].toLowerCase())) {
+                    for (int j = 0; j < strings.length; j++) {
+                        if (strings[j].toLowerCase().contains(obj.toLowerCase())) {
                             w = true;
-                            Log.e(obj,e[j]);
                         }
                     }
 
@@ -166,29 +164,17 @@ public class Search {
                         }
                     }
                 });
-                if (points.size() != 0 && geoPoints.size() != 0) {
-                    if (Math.sqrt((points.get(0).getLat() - my.getLat()) * (points.get(0).getLat() - my.getLat()) + (points.get(0).getLon() - my.getLon()) * (points.get(0).getLon() - my.getLon())) > Math.sqrt(shopInterfaces.get(geoPoints.get(0)).getCoordY() - my.getLat()) * (shopInterfaces.get(geoPoints.get(0)).getCoordY()- my.getLat()) + (shopInterfaces.get(geoPoints.get(0)).getCoordX() - my.getLon()) * (shopInterfaces.get(geoPoints.get(0)).getCoordX() - my.getLon())) {
-                        mc.setPositionAnimationTo(new GeoPoint(shopInterfaces.get(geoPoints.get(0)).getCoordX(),shopInterfaces.get(geoPoints.get(0)).getCoordY()));
-                        System.out.println(1);
-                        Log.e("Search","1");
-                    } else {
-                        mc.setPositionAnimationTo(points.get(0));
-                        System.out.println(-1);
-                        Log.e("Search","-1");
 
-                    }
-                } else {
-                    if (points.size() == 0 && geoPoints.size() != 0) {
-                        mc.setPositionAnimationTo(new GeoPoint(shopInterfaces.get(geoPoints.get(0)).getCoordX(),shopInterfaces.get(geoPoints.get(0)).getCoordY()));
-                        Log.e("Search","21");
-
-                    }
                     if (geoPoints.size() == 0 && points.size() != 0) {
                         mc.setPositionAnimationTo(points.get(0));
                         Log.e("Search","12");
 
                     }
-                }
+                    else{
+                        mc.setPositionAnimationTo(new GeoPoint(shopInterfaces.get(geoPoints.get(0)).getCoordX(),shopInterfaces.get(geoPoints.get(0)).getCoordY()));
+
+                    }
+
                 for (GeoPoint g : points) {
                     mainActivity.makingFullStackIcon(R.drawable.orpgshop, g);
                 }
