@@ -7,7 +7,6 @@ public class ShopInterface {
     private String Name;
     private String Description;
     private String street;
-    private String house;
     private double CoordX;
     private double CoordY;
     private String PictureAvatorName;
@@ -21,11 +20,10 @@ public class ShopInterface {
     public ShopInterface() {
     }
 
-    public ShopInterface(String Name, String PictureAvatorName, String Description, String street, String house, String CoordX, String CoordY, String PictureName,String categories) {
+    public ShopInterface(String Name, String PictureAvatorName, String Description, String street, String CoordX, String CoordY, String PictureName,String categories) {
         this.Name = Name;
         this.Description = Description;
         this.street = street;
-        this.house = house;
         this.CoordX = Double.parseDouble(CoordX);
         this.CoordY = Double.parseDouble(CoordY);
         this.PictureName = PictureName;
@@ -133,9 +131,6 @@ public class ShopInterface {
         return this.CoordY;
     }
 
-    public String getHouse() {
-        return this.house;
-    }
 
     public String getStreet() {
         return this.street;
@@ -149,11 +144,7 @@ public class ShopInterface {
         this.CoordY = CoordY;
     }
 
-
-    public void setHouse(String house) {
-        this.house = house;
-    }
-
+    
     public void setStreet(String street) {
         this.street = street;
     }
