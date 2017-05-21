@@ -294,10 +294,18 @@ public class MainActivity extends AppCompatActivity {
                         if (menuItem.getItemId() == R.id.favorite_button) {
                             sPref = getPreferences(MODE_PRIVATE);
                             String savedText = sPref.getString("q", "null");
-                            if (savedText.equals(""))
-
+                            boolean w = true;
+                            for (int i = 0; i <10 ; i++) {
+                                if(savedText.contains(Integer.toString(i))){
+                                    w = false;
+                                }
+                            }
+                            if (w) {
                                 Toast.makeText(main, "У вас пока что нет любимых магазинов", Toast.LENGTH_LONG).show();
-                            else {
+                                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                editor.putString("q", "");
+                                editor.commit();
+                            }else {
                                 String[] q = savedText.split(" ");
                                 int[] a = new int[q.length];
                                 for (int i = 0; i < q.length; i++) {
