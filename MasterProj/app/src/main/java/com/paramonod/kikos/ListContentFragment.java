@@ -109,7 +109,7 @@ public class ListContentFragment extends Fragment {
             for (int i = 0; i < mPlaceAvators.length; i++) {
                 mPlaces[i] = MainActivity.shopInterfaces.get(i).getName();
                 mPlaceDesc[i] = MainActivity.shopInterfaces.get(i).getDescription();
-                mPlaceAvators[i] = MainActivity.shopInterfaces.get(i).getPictureName();
+                mPlaceAvators[i] = MainActivity.shopInterfaces.get(i).getPictureAvatorName();
             }
         }
         public ContentAdapter(Context context,int[] idx) {
@@ -122,7 +122,7 @@ public class ListContentFragment extends Fragment {
             for (int i = 0; i <idx.length ; i++) {
                 mPlaces[i] = MainActivity.shopInterfaces.get(idx[i]).getName();
                 mPlaceDesc[i] = MainActivity.shopInterfaces.get(idx[i]).getDescription();
-                mPlaceAvators[i] = MainActivity.shopInterfaces.get(idx[i]).getPictureName();
+                mPlaceAvators[i] = MainActivity.shopInterfaces.get(idx[i]).getPictureAvatorName();
             }
         }
         @Override
@@ -134,12 +134,12 @@ public class ListContentFragment extends Fragment {
         public void onBindViewHolder(ViewHolder holder, int position) {
             if(flag==0) {
                 Picasso.with(main)
-                        .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                        .load(MainActivity.shopInterfaces.get(position).getPictureAvatorName())
                         .placeholder(R.drawable.ic_autorenew_black_24dp)
                         .into(holder.avator);
             }
             else{                Picasso.with(main)
-                        .load(MainActivity.shopInterfaces.get(idx[position]).getPictureName())
+                        .load(MainActivity.shopInterfaces.get(idx[position]).getPictureAvatorName())
                         .placeholder(R.drawable.ic_autorenew_black_24dp)
                         .into(holder.avator);
             }

@@ -223,7 +223,7 @@ public class CardContentFragment extends Fragment {
             for (int i = 0; i < mPlacePictures.length; i++) {
                 mPlaces[i] = MainActivity.shopInterfaces.get(i).getName();
                 mPlaceDesc[i] = MainActivity.shopInterfaces.get(i).getDescription();
-                mPlacePictures[i] = MainActivity.shopInterfaces.get(i).getPictureName();
+                mPlacePictures[i] = MainActivity.shopInterfaces.get(i).getPictureAvatorName();
             }
         }
 
@@ -239,7 +239,7 @@ public class CardContentFragment extends Fragment {
             for (int i = 0; i < idx.length; i++) {
                 mPlaces[i] = MainActivity.shopInterfaces.get(idx[i]).getName();
                 mPlaceDesc[i] = MainActivity.shopInterfaces.get(idx[i]).getDescription();
-                mPlacePictures[i] = MainActivity.shopInterfaces.get(idx[i]).getPictureName();
+                mPlacePictures[i] = MainActivity.shopInterfaces.get(idx[i]).getPictureAvatorName();
             }
         }
 
@@ -252,13 +252,13 @@ public class CardContentFragment extends Fragment {
         public void onBindViewHolder(ViewHolder holder, int position) {
             if(flag==0) {
                 Picasso.with(main)
-                        .load(MainActivity.shopInterfaces.get(position).getPictureName())
+                        .load(MainActivity.shopInterfaces.get(position).getPictureAvatorName())
                         .placeholder(R.drawable.ic_autorenew_black_24dp)
                         .into(holder.picture);
             }
             else{
                 Picasso.with(main)
-                        .load(MainActivity.shopInterfaces.get(idx[position]).getPictureName())
+                        .load(MainActivity.shopInterfaces.get(idx[position]).getPictureAvatorName())
                         .placeholder(R.drawable.ic_autorenew_black_24dp)
                         .into(holder.picture);
             }

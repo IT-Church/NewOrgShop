@@ -2,6 +2,7 @@ package com.paramonod.kikos;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.paramonod.kikos.R;
 
@@ -114,7 +115,7 @@ public class Search {
                         String[] s1 = resultString.split(" ");
                         GeoPoint curG = new GeoPoint(Double.parseDouble(s1[1]), Double.parseDouble(s1[0]));
                         points.add(curG);
-                        Log.e("Search_q",curG.toString());
+                        Log.e("Search_q", curG.toString());
 
                     }
                 } catch (JSONException js) {
@@ -122,64 +123,102 @@ public class Search {
                     js.printStackTrace();
                 }
 
+                if (points.size() == 0) {
+                    Toast.makeText(main, "Результатов нет", Toast.LENGTH_SHORT).show();
+                    String[] strings = new String[MainActivity.shopInterfaces.size()];
+                    for (int i = 0; i < strings.length; i++) {
+                        strings[i] = MainActivity.shopInterfaces.get(i).getName();
+                    }
+                    for (int i = 0; i < strings.length; i++) {
+                        String a = strings[i];
+                        boolean w = false;
+                        for (int j = 0; j < strings.length; j++) {
+                            if (strings[j].toLowerCase().contains(obj.toLowerCase())) {
+                                w = true;
+                            }
+                        }
 
-                System.out.println("hi");
-                String[] strings = new String[MainActivity.shopInterfaces.size()];
-                for (int i = 0; i < strings.length; i++) {
-                    strings[i] = MainActivity.shopInterfaces.get(i).getName();
-                }
-                for (int i = 0; i < strings.length; i++) {
-                    String a = strings[i];
-                    boolean w = false;
-                    for (int j = 0; j < strings.length; j++) {
-                        if (strings[j].toLowerCase().contains(obj.toLowerCase())) {
-                            w = true;
+                        if (w) {
+                            geoPoints.add(i);
                         }
                     }
+                    if (geoPoints.size() == 0) {
+                        Toast.makeText(main, "Результатов СОВСЕМ нет", Toast.LENGTH_LONG).show();
+                    } else {
+                        Collections.sort(geoPoints, new Comparator<Integer>() {
+                            @Override
+                            public int compare(Integer o1, Integer o2) {
+                                GeoPoint o11 = new GeoPoint(shopInterfaces.get(o1).getCoordX(), shopInterfaces.get(o1).getCoordY());
+                                GeoPoint o22 = new GeoPoint(shopInterfaces.get(o2).getCoordX(), shopInterfaces.get(o2).getCoordY());
+                                if (Math.sqrt((o11.getLat() - my.getLat()) * (o11.getLat() - my.getLat()) + (o11.getLon() - my.getLon()) * (o11.getLon() - my.getLon())) > Math.sqrt((o22.getLat() - my.getLat()) * (o22.getLat() - my.getLat()) + (o22.getLon() - my.getLon()) * (o22.getLon() - my.getLon()))) {
+                                    return 1;
+                                } else {
+                                    return -1;
+                                }
+                            }
+                        });
+                        for (int q : geoPoints) {
+                            main.combine(q);
+                        }
+                    }
+                } else {
+                    System.out.println("hi");
+                    String[] strings = new String[MainActivity.shopInterfaces.size()];
+                    for (int i = 0; i < strings.length; i++) {
+                        strings[i] = MainActivity.shopInterfaces.get(i).getName();
+                    }
+                    for (int i = 0; i < strings.length; i++) {
+                        String a = strings[i];
+                        boolean w = false;
+                        for (int j = 0; j < strings.length; j++) {
+                            if (strings[j].toLowerCase().contains(obj.toLowerCase())) {
+                                w = true;
+                            }
+                        }
 
-                    if (w) {
-                        geoPoints.add(i);
-                    }
-                }
-                Log.e("q", points.size() + "_" + geoPoints.size());
-                Collections.sort(points, new Comparator<GeoPoint>() {
-                    @Override
-                    public int compare(GeoPoint o1, GeoPoint o2) {
-                        if (Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon())) > Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
-                            return 1;
-                        } else {
-                            return -1;
+                        if (w) {
+                            geoPoints.add(i);
                         }
                     }
-                });
-                Collections.sort(geoPoints, new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer o1, Integer o2) {
-                        GeoPoint o11 = new GeoPoint(shopInterfaces.get(o1).getCoordX(),shopInterfaces.get(o1).getCoordY());
-                        GeoPoint o22 = new GeoPoint(shopInterfaces.get(o2).getCoordX(),shopInterfaces.get(o2).getCoordY());
-                        if (Math.sqrt((o11.getLat() - my.getLat()) * (o11.getLat() - my.getLat()) + (o11.getLon() - my.getLon()) * (o11.getLon() - my.getLon())) > Math.sqrt((o22.getLat() - my.getLat()) * (o22.getLat() - my.getLat()) + (o22.getLon() - my.getLon()) * (o22.getLon() - my.getLon()))) {
-                            return 1;
-                        } else {
-                            return -1;
+                    Log.e("q", points.size() + "_" + geoPoints.size());
+                    Collections.sort(points, new Comparator<GeoPoint>() {
+                        @Override
+                        public int compare(GeoPoint o1, GeoPoint o2) {
+                            if (Math.sqrt((o1.getLat() - my.getLat()) * (o1.getLat() - my.getLat()) + (o1.getLon() - my.getLon()) * (o1.getLon() - my.getLon())) > Math.sqrt((o2.getLat() - my.getLat()) * (o2.getLat() - my.getLat()) + (o2.getLon() - my.getLon()) * (o2.getLon() - my.getLon()))) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
                         }
-                    }
-                });
+                    });
+                    Collections.sort(geoPoints, new Comparator<Integer>() {
+                        @Override
+                        public int compare(Integer o1, Integer o2) {
+                            GeoPoint o11 = new GeoPoint(shopInterfaces.get(o1).getCoordX(), shopInterfaces.get(o1).getCoordY());
+                            GeoPoint o22 = new GeoPoint(shopInterfaces.get(o2).getCoordX(), shopInterfaces.get(o2).getCoordY());
+                            if (Math.sqrt((o11.getLat() - my.getLat()) * (o11.getLat() - my.getLat()) + (o11.getLon() - my.getLon()) * (o11.getLon() - my.getLon())) > Math.sqrt((o22.getLat() - my.getLat()) * (o22.getLat() - my.getLat()) + (o22.getLon() - my.getLon()) * (o22.getLon() - my.getLon()))) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
+                        }
+                    });
 
                     if (geoPoints.size() == 0 && points.size() != 0) {
                         mc.setPositionAnimationTo(points.get(0));
-                        Log.e("Search","12");
+                        Log.e("Search", "12");
+
+                    } else {
+                        mc.setPositionAnimationTo(new GeoPoint(shopInterfaces.get(geoPoints.get(0)).getCoordX(), shopInterfaces.get(geoPoints.get(0)).getCoordY()));
 
                     }
-                    else{
-                        mc.setPositionAnimationTo(new GeoPoint(shopInterfaces.get(geoPoints.get(0)).getCoordX(),shopInterfaces.get(geoPoints.get(0)).getCoordY()));
 
+                    for (GeoPoint g : points) {
+                        mainActivity.makingFullStackIcon(R.drawable.orpgshop, g);
                     }
-
-                for (GeoPoint g : points) {
-                    mainActivity.makingFullStackIcon(R.drawable.orpgshop, g);
-                }
-                for (int q : geoPoints) {
-                    main.combine(q);
+                    for (int q : geoPoints) {
+                        main.combine(q);
+                    }
                 }
             }
         }.execute();

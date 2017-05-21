@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(true);
                         if (menuItem.getItemId() == R.id.favorite_button) {
                             sPref = getPreferences(MODE_PRIVATE);
-                            String savedText = sPref.getString("q", "null");
+                            String savedText = sPref.getString("q", "");
                             boolean w = true;
                             for (int i = 0; i <10 ; i++) {
                                 if(savedText.contains(Integer.toString(i))){
