@@ -61,22 +61,6 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".pack.AccountActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.paramonod.kikos.MainActivity" />
-        </activity>
-        <activity
-            android:name=".pack.LoginActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.paramonod.kikos.MainActivity" />
-        </activity>
-        <activity
             android:name=".pack.DetailYandexActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />

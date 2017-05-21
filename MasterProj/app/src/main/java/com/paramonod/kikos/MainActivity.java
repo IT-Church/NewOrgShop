@@ -53,7 +53,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -117,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
     public int Y;
     GestureDetectorCompat gt;
     private DatabaseReference myRef;
-    private FirebaseAuth mAuth;
     public static GeoPoint myLoc;
     public static final ArrayList<ShopInterface> shopInterfaces = new ArrayList<ShopInterface>();
     public static ArrayList<Pair> places = new ArrayList<>();
@@ -133,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance().getReference("Shops");
         //ShopInterface shopInterface = new ShopInterface("asas","qaqa","wdwdwd","12","11","11");
         //myRef.child("Shops").child("1").setValue(shopInterface);
-        mAuth = FirebaseAuth.getInstance();
         //mAuth.signInAnonymously();
         myRef.keepSynced(true);
         myRef.orderByValue().addChildEventListener(new ChildEventListener() {
