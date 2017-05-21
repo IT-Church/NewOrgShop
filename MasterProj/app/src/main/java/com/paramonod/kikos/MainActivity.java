@@ -313,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                Toast.makeText(main, savedText, Toast.LENGTH_SHORT).show();
                                 ListContentFragment l = new ListContentFragment();
                                 l.flag = 1;
                                 l.idx = a;
